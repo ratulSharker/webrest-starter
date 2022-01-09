@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/admin/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>All Users</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<h2>All Users</h2>
+		<div class="mt-4">
+			<table id="user-table" class="table table-striped table-bordered" style="width:100%">
+				<thead>
+					<tr>
+						<th>User Id</th>
+						<th>Name</th>
+						<th>Mobile</th>
+						<th>Email</th>
+						<th>
+							<select id="user-type-select" class="form-control form-control-sm">
+								<option value="" selected>All User Type</option>
+								<option value="END_USER">End User</option>
+								<option value="ADMIN">Admin</option>
+							</select>
+						</th>
+						<th class="text-center">Action</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<th>User Id</th>
+						<th>Name</th>
+						<th>Mobile</th>
+						<th>Email</th>
+						<th>User Type</th>
+						<th class="text-center">Action</th>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+	<div layout:fragment="scripts">
+		<script th:src="@{/static/js/app/user/user-list.js}"></script>
+	</div>
+</body>
+
+</html>

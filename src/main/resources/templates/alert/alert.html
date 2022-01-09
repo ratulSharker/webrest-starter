@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script th:fragment="alert" th:if="${alert != null}" th:inline="javascript">
+        $(document).ready(function () {
+            let alert = /*[[${alert}]]*/ "ALERT";
+            let options = {
+                timeOut: 86400000,  // 1 day B-)
+                closeButton: true,
+                positionClass: "toast-bottom-right"
+            };
+
+            if (alert.success == true) {
+                toastr.success(alert.details, alert.title, options);
+            } else {
+                toastr.error(alert.details, alert.title, options);
+            }
+        });
+    </script>
+</body>
+
+</html>

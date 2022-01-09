@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+
+    <!-- stylesheet -->
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap/4.5.3/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/toastr/toastr.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/common.css}">
+    <link rel="stylesheet" th:href="@{/static/css/loader/loader.css}">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="full-screen-loader" class="spinner-container">
+        <div class="spinner"></div>
+    </div>
+
+    <div th:replace="layouts/login/header :: header"></div>
+    <th:block layout:fragment="content"></th:block>
+
+    <!-- js lib -->
+
+    <!-- 3rd party -->
+    <script th:src="@{/static/js/jquery/3.5.1/jquery-3.5.1.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap/4.5.3/bootstrap.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap/popper.min.js}"></script>
+    <script th:src="@{/static/js/fontawesome-5.15.3/all.min.js}"></script>
+    <script th:src="@{/static/js/toastr/toastr.min.js}"></script>
+
+    <!-- App Library -->
+    <script th:src="@{/static/js/app/loader.js}"></script>
+
+    <!-- Feature Specific JS Scripts -->
+    <th:block layout:fragment="scripts">
+    </th:block>
+
+    <script>
+        FullScreenLoader.hide();
+
+        window.addEventListener("beforeunload", function () {
+            FullScreenLoader.show();
+        });
+    </script>
+
+    <div th:replace="alert/alert :: alert"></div>
+</body>
+
+</html>

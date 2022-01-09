@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+
+    <!-- Stylesheet 3rd party -->
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap/4.5.3/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/toastr/toastr.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/datatable/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/datatable/dataTables.searchHighlight.css}">
+	<link rel="stylesheet" th:href="@{/static/css/flatpickr/flatpickr.min.css}">
+
+    <!-- Stylesheet App -->
+    <link rel="stylesheet" th:href="@{/static/css/common.css}">
+    <link rel="stylesheet" th:href="@{/static/css/layout/admin-layout.css}">
+    <link rel="stylesheet" th:href="@{/static/css/loader/loader.css}">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="viewport">
+        <div id="full-screen-loader" class="spinner-container">
+            <div class="spinner"></div>
+        </div>
+        <div th:replace="layouts/admin/sidebar :: sidebar"></div>
+        <th:block class="content ml-4 mr-4 pb-3 mt-2" layout:fragment="content"></th:block>
+    </div>
+
+    <!-- js lib -->
+
+    <!-- 3rd party -->
+    <script th:src="@{/static/js/jquery/3.5.1/jquery-3.5.1.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap/popper.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap/4.5.3/bootstrap.min.js}"></script>
+    <script th:src="@{/static/js/fontawesome-5.15.3/all.min.js}"></script>
+    <script th:src="@{/static/js/js.cookie.js/js.cookie.js}"></script>
+    <script th:src="@{/static/js/toastr/toastr.min.js}"></script>
+    <script th:src="@{/static/js/datatable/jquery.dataTables.js}"></script>
+    <script th:src="@{/static/js/datatable/dataTables.bootstrap4.min.js}"></script>
+    <script th:src="@{/static/js/moment-2.29.1/moment.js}"></script>
+    <script th:src="@{/static/js/jquery-highlight/jquery.highlight.js}"></script>
+    <script th:src="@{/static/js/datatable/dataTables.searchHighlight.min.js}"></script>
+	<script th:src="@{/static/js/flatpickr/flatpickr.js}"></script>
+
+
+    <!-- app library -->
+    <script th:src="@{/static/js/app/sidebar-menu.js}"></script>
+    <script th:src="@{/static/js/app/ajax-promise.js}"></script>
+    <script th:src="@{/static/js/app/file-uploader.js}"></script>
+    <script th:src="@{/static/js/app/loader.js}"></script>
+    <script th:src="@{/static/js/app/init-datatable.js}"></script>
+	<script th:src="@{/static/js/app/init-flatpickr.js}"></script>
+
+    <!-- Feature Specific JS Scripts -->
+    <th:block layout:fragment="scripts">
+    </th:block>
+
+    <script>
+        FullScreenLoader.hide();
+
+        window.addEventListener("beforeunload", function () {
+            FullScreenLoader.show();
+        });
+    </script>
+
+    <!-- Alert -->
+    <div th:replace="alert/alert :: alert"></div>
+
+</body>
+
+</html>

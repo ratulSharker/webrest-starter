@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<div th:fragment="sidebar" class="sidebar bg-light shadow d-flex flex-column user-select-none">
+
+		<!-- Top branding start -->
+		<div class="d-flex justify-content-center align-items-center sidebar-top-branding">
+			<label>
+				<img th:src="@{/static/image/common/brand-logo.jpeg}" alt="Company">
+				<span class="navbar-brand h1">Company</span>
+			</label>
+		</div>
+		<!-- Top branding end -->
+
+		<!-- Menu start -->
+		<div class="list-group list-group-flush menu-container" id="menu-container-id">
+
+			<!-- User start -->
+			<div class="menu-group">
+				<a class="list-group-item list-group-item-action list-group-item-info menu-item menu-expander"
+					data-toggle="collapse" href="#user-actions" role="button" aria-expanded="false"
+					aria-controls="user-actions">
+					<span>
+						<i class="fas fa-users"></i>
+						<span>Users</span>
+					</span>
+				</a>
+				<div class="collapse small menu-link-collapse" id="user-actions" data-parent="#menu-container-id">
+					<a href="/user"
+						class="list-group-item list-group-item-action list-group-item-light menu-item menu-link">
+						<span class="pl-2">
+							<i class="fas fa-list-ul"></i>
+							<span>User List</span>
+						</span>
+
+					</a>
+					<a href="/create-admin-user"
+						class="list-group-item list-group-item-action list-group-item-light menu-item menu-link">
+						<span class="pl-2">
+							<i class="fas fa-user-plus"></i>
+							<span>Create Admin</span>
+						</span>
+					</a>
+					<a href="/create-end-user"
+						class="list-group-item list-group-item-action list-group-item-light menu-item menu-link">
+						<span class="pl-2">
+							<i class="fas fa-user-plus"></i>
+							<span>Create End User</span>
+						</span>
+					</a>
+				</div>
+			</div>
+			<!-- User end -->
+
+		</div>
+		<!-- Menu end -->
+
+		<!-- Bottom profile start -->
+		<div class="d-flex justify-content-center align-items-center mt-auto sidebar-bottom-profile">
+			<div class="dropup">
+				<a class="dropdown-toggle" href="#" id="profile-dropdown" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false">
+
+					<img th:src="${#strings.isEmpty(loggedInUser.profilePicturePath)} ? @{'/static/image/common/avatar.png'} : ${fileDownloadPath + loggedInUser.profilePicturePath}"
+						onerror="this.src='/static/image/common/avatar.png';" class="avatar shadow">
+
+				</a>
+				<div class="dropdown-menu small">
+					<a class="dropdown-item text-left no-menu-group" th:href="@{/profile}"><i
+							class="fas fa-user-circle"></i><span class="pl-2">Profile</span></a>
+					<hr class="dropdown-divider" />
+					<a class="dropdown-item text-left text-danger no-menu-group" th:href="@{/logout}"><i
+							class="fas fa-sign-out-alt"></i><span class="pl-2">Log out</span></a>
+				</div>
+			</div>
+		</div>
+		<!-- Bottom profile end -->
+
+	</div>
+</body>
+
+</html>

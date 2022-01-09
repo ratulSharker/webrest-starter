@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/login/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<div
+			class="d-flex flex-md-row flex-column-reverse justify-content-center align-items-center user-select-none fixed-top fixed-bottom">
+
+			<!-- login image -->
+			<img class="col-xl-4 col-lg-5 col-md-5" th:src="@{/static/image/login/login.png}" alt="">
+
+			<!-- login form -->
+			<div class="card col-xl-4 col-lg-5 col-md-6 max-width-500px shadow">
+				<div class="card-body">
+					<h4 class="card-title">Admin Login</h4>
+					<form th:action="${T(com.webrest.web.constants.WebEndpoint).LOGIN}" method="POST"
+						th:object="${loginForm}">
+						<div class="form-group">
+							<label for="username-input"><i class="fas fa-user-tie"></i><span
+									class="pl-2">Username</span></label>
+							<input type="text" class="form-control" id="username-input"
+								placeholder="Enter your mobile or email" th:field="*{mobileOrEmail}" required
+								pattern="^([^\s@]+@[^\s@]+\.[^\s@]+)|(\+)?8801[0-9]{9}|01[0-9]{9}$"
+								title="Enter valid email address">
+							<span class="text-danger small" th:if="${#fields.hasErrors('mobileOrEmail')}"
+								th:errors="*{mobileOrEmail}">Mobile or
+								Email cannot be empty</span>
+						</div>
+						<div class="form-group">
+							<label for="pwd-input"><i class="fas fa-key"></i><span class="pl-2">Password</span></label>
+							<input type="password" class="form-control" id="pwd-input" placeholder="Enter your password"
+								th:field="*{password}" required>
+							<span class="text-danger small" th:if="${#fields.hasErrors('password')}"
+								th:errors="*{password}">Password cannot be
+								empty</span>
+						</div>
+						<a th:href="@{${forgotPasswordPath}}" class="float-left small">Forgot
+							password ?</a>
+						<button type="submit" class="btn btn-success float-right"><i
+								class="fas fa-sign-in-alt"></i><span class="pl-2">Log in</span></button>
+						<div th:if="${#fields.hasGlobalErrors()}">
+							<p class="text-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}">Global
+								Errors</p>
+						</div>
+					</form>
+				</div>
+			</div>
+        </div>
+    </div>
+</body>
+
+</html>

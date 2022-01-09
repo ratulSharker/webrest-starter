@@ -1,0 +1,58 @@
+.height-100vh {
+    height: 100vh;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-lg {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.placeholder-image {
+    width: 150px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.font-2rem {
+    font-size: 2rem;
+}
+
+.max-width-500px {
+    max-width: 500px;
+}
+
+/* Scrollbar customization start */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0000cc;
+}
+
+/* Scrollbar customization end */
+
+.whitespace-pre-line {
+    white-space: pre-line;
+}
+
+.pb-70 {
+    padding-bottom: 70px;
+}
