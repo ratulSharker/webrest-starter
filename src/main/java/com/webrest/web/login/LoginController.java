@@ -58,7 +58,7 @@ public class LoginController {
 
 		model.addAttribute("loginForm", new AuthenticationRequestDto());
 		model.addAttribute("forgotPasswordPath", WebEndpoint.FORGOT_PASSWORD);
-		return "login/login-form";
+		return "features/login/login-form";
 	}
 
 	@PostMapping(WebEndpoint.LOGIN)
@@ -68,7 +68,7 @@ public class LoginController {
 		if (result.hasErrors()) {
 			model.addAttribute("loginForm", authenticationRequestDto);
 			model.addAttribute("forgotPasswordPath", WebEndpoint.FORGOT_PASSWORD);
-			return "login/login-form";
+			return "features/login/login-form";
 		}
 
 		try {
@@ -81,7 +81,7 @@ public class LoginController {
 					.build();
 			model.addAttribute("alert", alert);
 			model.addAttribute("forgotPasswordPath", WebEndpoint.FORGOT_PASSWORD);
-			return "login/login-form";
+			return "features/login/login-form";
 		}
 
 		CookieUtils.setLastSelectedMenu(WebEndpoint.USER, response, Integer.MAX_VALUE);

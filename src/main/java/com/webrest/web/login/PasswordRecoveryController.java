@@ -34,7 +34,7 @@ public class PasswordRecoveryController {
 
 		model.addAttribute("forgotPasswordForm", new ForgotPasswordRequestDto());
 		model.addAttribute("loginPath", WebEndpoint.LOGIN);
-		return "login/forgot-password-form";
+		return "features/login/forgot-password-form";
 	}
 
 	@PostMapping(value = WebEndpoint.FORGOT_PASSWORD)
@@ -46,7 +46,7 @@ public class PasswordRecoveryController {
 
 		if (result.hasErrors()) {
 			model.addAttribute("forgotPasswordForm", forgotPasswordRequestDto);
-			return "login/forgot-password-form";
+			return "features/login/forgot-password-form";
 		}
 
 		try {
@@ -60,7 +60,7 @@ public class PasswordRecoveryController {
 			model.addAttribute("alert", alert);
 		}
 
-		return "login/forgot-password-form";
+		return "features/login/forgot-password-form";
 	}
 
 	@GetMapping(value = WebEndpoint.RECOVER_PASSWORD)
@@ -70,7 +70,7 @@ public class PasswordRecoveryController {
 		model.addAttribute("recoverPasswordForm", recoverPasswordRequestDto);
 		model.addAttribute("loginPath", WebEndpoint.LOGIN);
 
-		return "login/recover-password-form";
+		return "features/login/recover-password-form";
 	}
 
 	@PostMapping(value = WebEndpoint.RECOVER_PASSWORD)
@@ -81,7 +81,7 @@ public class PasswordRecoveryController {
 		model.addAttribute("loginPath", WebEndpoint.LOGIN);
 		if (result.hasErrors()) {
 			model.addAttribute("recoverPasswordForm", recoverPasswordRequestDto);
-			return "login/recover-password-form";
+			return "features/login/recover-password-form";
 		}
 
 		try {
@@ -95,6 +95,6 @@ public class PasswordRecoveryController {
 			model.addAttribute("alert", alert);
 		}
 
-		return "login/recover-password-form";
+		return "features/login/recover-password-form";
 	}
 }
