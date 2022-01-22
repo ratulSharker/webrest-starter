@@ -33,7 +33,7 @@ public class ProfileController {
 		model.addAttribute("user", userMe);
 		model.addAttribute("updateProfilePath", WebEndpoint.MY_PROFILE_UPDATE);
 
-		return "profile/profile-preview";
+		return "features/profile/profile-preview";
 	}
 
 	@GetMapping(value = WebEndpoint.MY_PROFILE_UPDATE)
@@ -45,7 +45,7 @@ public class ProfileController {
 		model.addAttribute("user", userMe);
 		model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
 
-		return "profile/profile-update";
+		return "features/profile/profile-update";
 	}
 
 	@PostMapping(value = WebEndpoint.MY_PROFILE_UPDATE)
@@ -69,6 +69,6 @@ public class ProfileController {
 		}
 
 		model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
-		return "profile/profile-update";
+		return "features/profile/profile-update";
 	}
 }
