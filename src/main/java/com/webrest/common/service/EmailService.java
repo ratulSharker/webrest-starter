@@ -25,7 +25,7 @@ public class EmailService {
 	public void sendPasswordRecoveryEmail(String toEmailAddr, String redirectURL) {
 		final Context ctx = new Context();
 		ctx.setVariable("passwordResetUrl", redirectURL);
-		final String htmlContent = this.templateEngine.process("mail/password-recovery-template", ctx);
+		final String htmlContent = this.templateEngine.process("features/mail/password-recovery-template", ctx);
 
 		sendEmail(List.of(toEmailAddr), "Recover Company Admin panel password", htmlContent);
 	}
