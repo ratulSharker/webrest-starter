@@ -28,5 +28,6 @@ public class WebEndpoint {
 	public static final String UPDATE_END_USER = "/update-end-user/{appUserId}";
 
 	public static final List<String> PUBLIC_ROUTE_PATTERNS = List.of(FAVICON, BLANK, LOGIN, LOGOUT, "/static/**",
+			"/webjars/**",
 			FORGOT_PASSWORD, RECOVER_PASSWORD.replace("{token}", "**"));
 }
