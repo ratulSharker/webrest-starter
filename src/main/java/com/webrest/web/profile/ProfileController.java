@@ -6,6 +6,7 @@ import com.webrest.common.entity.AppUser;
 import com.webrest.common.interceptor.AuthorizationInterceptor;
 import com.webrest.common.service.AppUserService;
 import com.webrest.web.common.Alert;
+import com.webrest.web.common.Breadcrumb;
 import com.webrest.web.constants.WebEndpoint;
 
 import org.slf4j.Logger;
@@ -33,6 +34,8 @@ public class ProfileController {
 		model.addAttribute("user", userMe);
 		model.addAttribute("updateProfilePath", WebEndpoint.MY_PROFILE_UPDATE);
 
+		Breadcrumb.builder().addItem("My Profile").build(model);
+
 		return "features/profile/profile-preview";
 	}
 
@@ -45,9 +48,12 @@ public class ProfileController {
 		model.addAttribute("user", userMe);
 		model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
 
+		Breadcrumb.builder().addItem("My Profile", WebEndpoint.MY_PROFILE).addItem("Update My Profile").build(model);
+
 		return "features/profile/profile-update";
 	}
 
+	// TODO: Use cookiesFlashAttribute and redirect to `My Profile` page
 	@PostMapping(value = WebEndpoint.MY_PROFILE_UPDATE)
 	public String submitUpdateForm(@ModelAttribute("user") AppUser updatedUser, HttpServletRequest request,
 			Model model) {
@@ -69,6 +75,8 @@ public class ProfileController {
 		}
 
 		model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
+		Breadcrumb.builder().addItem("My Profile", WebEndpoint.MY_PROFILE).addItem("Update My Profile").build(model);
+
 		return "features/profile/profile-update";
 	}
 }
