@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<div th:fragment="breadcrumb-title(pageTitle)">
+
+	<h3 th:text="${pageTitle}" th:classappend="${breadcrumb} ? '' : mb-4"></h3>
+
+	<th:block th:if="${breadcrumb}">
+		<nav aria-label="breadcrumb" class="mt-2 mb-4">
+			<ol class="breadcrumb">
+				<li th:each="breadcrumbItem, iterStat : ${breadcrumb.items}" class="breadcrumb-item"
+					th:classappend="${iterStat.last} ? 'active' : ''"
+					th:attr="aria-current=${iterStat.last ? 'page' : null}">
+
+					<a th:if="${iterStat.last} == false" th:href="@{${breadcrumbItem.link}}"
+						th:text="${breadcrumbItem.title}">BREADCRUMB ITEM TITLE</a>
+					<span th:if="${iterStat.last} == true" th:text="${breadcrumbItem.title}"></span>
+				</li>
+			</ol>
+		</nav>
+	</th:block>
+</div>

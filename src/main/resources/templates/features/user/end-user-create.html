@@ -11,7 +11,8 @@
 
 <body>
 	<div layout:fragment="content">
-		<h2>Create End User</h2>
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('Create End User')">
+		</div>
 		<form method="post" th:object="${appUserForm}" class="pb-70">
 
 			<div class="d-flex justify-content-between">
