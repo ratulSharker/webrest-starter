@@ -11,7 +11,8 @@
 
 <body>
 	<div layout:fragment="content">
-		<h2>End User Detail</h2>
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('End User Detail')">
+		</div>
 
 		<div class="d-flex justify-content-between pb-70">
 			<div class="col-8">

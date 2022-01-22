@@ -11,7 +11,8 @@
 
 <body>
 	<div layout:fragment="content">
-		<h2>Update End User</h2>
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('Update End User')">
+		</div>
 		<form method="post" th:if="${appUserForm != null}" th:object="${appUserForm}" class="pb-70">
 
 			<div class="d-flex justify-content-between">

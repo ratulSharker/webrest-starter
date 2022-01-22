@@ -10,7 +10,8 @@
 
 <body>
     <div layout:fragment="content">
-        <h2>My Profile</h2>
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('My Profile')">
+		</div>
 
         <div class="d-flex justify-content-between">
             <!-- Profile content start -->
