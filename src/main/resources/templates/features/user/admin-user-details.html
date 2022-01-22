@@ -11,7 +11,8 @@
 
 <body>
 	<div layout:fragment="content">
-		<h2>Admin User Detail</h2>
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('Admin User Detail')">
+		</div>
 		<div class="d-flex justify-content-between">
 			<div class="col-8">
 				<div class="row">

@@ -11,7 +11,10 @@
 
 <body>
 	<div layout:fragment="content">
-		<h2>All Users</h2>
+
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('All Users')">
+		</div>
+
 		<div class="mt-4">
 			<table id="user-table" class="table table-striped table-bordered" style="width:100%">
 				<thead>

@@ -12,6 +12,7 @@ import com.webrest.common.enums.AppUserType;
 import com.webrest.common.service.AppUserService;
 import com.webrest.common.utils.SimpleDataTableHelper;
 import com.webrest.web.common.Alert;
+import com.webrest.web.common.Breadcrumb;
 import com.webrest.web.common.CookieFlashAttribute;
 import com.webrest.web.constants.WebEndpoint;
 
@@ -62,6 +63,7 @@ public class AppUserController {
 			logger.error("Cookie flash attr de serialization error", ex);
 		}
 
+		Breadcrumb.builder().addItem("All User").build(model);
 		return "features/user/user-list";
 	}
 
@@ -82,9 +84,11 @@ public class AppUserController {
 	public String getCreateAdminForm(Model model) {
 		AppUser appUser = new AppUser();
 		model.addAttribute("appUserForm", appUser);
+		Breadcrumb.builder().addItem("Create Admin User").build(model);
 		return "features/user/admin-user-create";
 	}
 
+	// TODO: After successful creation, should redirect to `WebEndpoint.CREATE_ADMIN_USER` with cookies flash attribute
 	@PostMapping(value = WebEndpoint.CREATE_ADMIN_USER)
 	public String submitCreateAdminForm(@ModelAttribute("appUserForm") AppUser appUser, Model model) {
 
@@ -104,6 +108,7 @@ public class AppUserController {
 			model.addAttribute("alert", alert);
 		}
 
+		Breadcrumb.builder().addItem("Create Admin User").build(model);
 		return "features/user/admin-user-create";
 	}
 
@@ -111,9 +116,11 @@ public class AppUserController {
 	public String getCreateEndUserForm(Model model) {
 		AppUser appUser = new AppUser();
 		model.addAttribute("appUserForm", appUser);
+		Breadcrumb.builder().addItem("Create Admin User").build(model);
 		return "features/user/end-user-create";
 	}
 
+	// TODO: After successful creation, should redirect to `WebEndpoint.CREATE_END_USER` with cookies flash attribute
 	@PostMapping(value = WebEndpoint.CREATE_END_USER)
 	public String submitCreateEndUser(@ModelAttribute("appUserForm") AppUser appUser, BindingResult result,
 			Model model) {
@@ -131,7 +138,7 @@ public class AppUserController {
 					.details(ex.getMessage()).build();
 			model.addAttribute("alert", alert);
 		}
-
+		Breadcrumb.builder().addItem("Create Admin User").build(model);
 		return "features/user/end-user-create";
 	}
 
@@ -141,6 +148,8 @@ public class AppUserController {
 		try {
 			AppUser appUser = appUserService.findById(appUserId);
 			model.addAttribute("appUser", appUser);
+			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
+					.addItem(String.format("Admin User details (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
 			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
 			model.addAttribute("alert", alert);
@@ -153,6 +162,8 @@ public class AppUserController {
 		try {
 			AppUser appUser = appUserService.findById(appUserId);
 			model.addAttribute("appUserForm", appUser);
+			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
+					.addItem(String.format("Update Admin User (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
 			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
 			model.addAttribute("alert", alert);
@@ -169,6 +180,8 @@ public class AppUserController {
 			Alert alert = Alert.builder().success(true).title("Success").details("Admin user updated successfully")
 					.build();
 			model.addAttribute("alert", alert);
+			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
+					.addItem(String.format("Update Admin User (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
 			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
 			model.addAttribute("alert", alert);
@@ -182,6 +195,8 @@ public class AppUserController {
 		try {
 			AppUser appUser = appUserService.findById(appUserId);
 			model.addAttribute("appUser", appUser);
+			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
+					.addItem(String.format("End User details (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
 			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
 			model.addAttribute("alert", alert);
@@ -195,6 +210,8 @@ public class AppUserController {
 		try {
 			AppUser appUser = appUserService.findById(appUserId);
 			model.addAttribute("appUserForm", appUser);
+			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
+					.addItem(String.format("Update End User (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
 			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
 			model.addAttribute("alert", alert);
@@ -211,6 +228,8 @@ public class AppUserController {
 			Alert alert = Alert.builder().success(true).title("Success")
 					.details("End user updated successfully").build();
 			model.addAttribute("alert", alert);
+			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
+					.addItem(String.format("Update End User (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
 			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
 			model.addAttribute("alert", alert);
