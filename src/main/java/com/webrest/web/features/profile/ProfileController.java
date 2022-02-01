@@ -1,5 +1,7 @@
 package com.webrest.web.features.profile;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 
 import com.webrest.common.entity.AppUser;
@@ -7,6 +9,7 @@ import com.webrest.common.interceptor.AuthorizationInterceptor;
 import com.webrest.common.service.AppUserService;
 import com.webrest.web.common.Alert;
 import com.webrest.web.common.Breadcrumb;
+import com.webrest.web.common.CookieFlashAttribute;
 import com.webrest.web.constants.WebEndpoint;
 
 import org.slf4j.Logger;
@@ -17,14 +20,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import lombok.AllArgsConstructor;
 
 @Controller
+@AllArgsConstructor
 public class ProfileController {
 
-	private Logger logger = LoggerFactory.getLogger(ProfileController.class);
+	private final Logger logger = LoggerFactory.getLogger(ProfileController.class);
+	private final String PROFILE_UPDATE_RESULT_KEY = "prof-update-res";
 
-	@Autowired
-	private AppUserService appUserService;
+	private final AppUserService appUserService;
+	private final CookieFlashAttribute cookieFlashAttribute;
 
 	@GetMapping(value = WebEndpoint.MY_PROFILE)
 	public String preview(Model model, HttpServletRequest request) {
@@ -55,7 +64,7 @@ public class ProfileController {
 
 	// TODO: Use cookiesFlashAttribute and redirect to `My Profile` page
 	@PostMapping(value = WebEndpoint.MY_PROFILE_UPDATE)
-	public String submitUpdateForm(@ModelAttribute("user") AppUser updatedUser, HttpServletRequest request,
+	public ModelAndView submitUpdateForm(@ModelAttribute("user") AppUser updatedUser, HttpServletRequest request,
 			Model model) {
 
 		try {
@@ -68,15 +77,17 @@ public class ProfileController {
 			// For updating for the top right corner
 			principleObject.setProfilePicturePath(updatedUser.getProfilePicturePath());
 
+			HashMap<String, Boolean> cookieData =  
+
+			return new ModelAndView(new RedirectView(WebEndpoint.MY_PROFILE_UPDATE));
+
 		} catch (Exception ex) {
 			logger.error("Error During profile update", ex);
 			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
 			model.addAttribute("alert", alert);
+			model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
+			Breadcrumb.builder().addItem("My Profile", WebEndpoint.MY_PROFILE).addItem("Update My Profile").build(model);
+			return new ModelAndView("features/profile/profile-update");
 		}
-
-		model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
-		Breadcrumb.builder().addItem("My Profile", WebEndpoint.MY_PROFILE).addItem("Update My Profile").build(model);
-
-		return "features/profile/profile-update";
 	}
 }
