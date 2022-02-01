@@ -1,4 +1,4 @@
-package com.webrest.web.user;
+package com.webrest.web.features.user;
 
 import java.util.Map;
 import java.util.Optional;

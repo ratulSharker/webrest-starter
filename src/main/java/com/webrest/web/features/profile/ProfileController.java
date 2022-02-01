@@ -1,4 +1,4 @@
-package com.webrest.web.profile;
+package com.webrest.web.features.profile;
 
 import javax.servlet.http.HttpServletRequest;
 

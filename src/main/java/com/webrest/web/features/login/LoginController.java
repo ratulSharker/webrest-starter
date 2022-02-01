@@ -1,4 +1,4 @@
-package com.webrest.web.login;
+package com.webrest.web.features.login;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
