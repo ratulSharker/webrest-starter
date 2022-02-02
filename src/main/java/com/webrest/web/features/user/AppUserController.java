@@ -1,8 +1,5 @@
 package com.webrest.web.features.user;
 
-import java.util.Map;
-import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,41 +25,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+import lombok.AllArgsConstructor;
 
 @Controller
+@AllArgsConstructor
 public class AppUserController {
 
 	private final Logger logger = LoggerFactory.getLogger(AppUserController.class);
+
 	private final AppUserService appUserService;
 	private final CookieFlashAttribute cookieFlashAttribute;
 
-	private final String SUCCESS_OR_FAILED_OPERATION_KEY = "res-stat-key";
-	private final String SUCCESS_OR_FAILED_MESSAGE_KEY = "res-msg-key";
-
-	public AppUserController(AppUserService appUserService, CookieFlashAttribute cookieFlashAttribute) {
-		this.appUserService = appUserService;
-		this.cookieFlashAttribute = cookieFlashAttribute;
-	}
-
 	@GetMapping(value = WebEndpoint.USER)
 	public String index(Model model, HttpServletRequest request, HttpServletResponse response) {
-
-		try {
-			Optional<Map<String, Object>> optionalValues = cookieFlashAttribute.getValues(request, response);
-
-			if (optionalValues.isPresent()) {
-				boolean isSuccess = (boolean) optionalValues.get().get(SUCCESS_OR_FAILED_OPERATION_KEY);
-				String message = (String) optionalValues.get().get(SUCCESS_OR_FAILED_MESSAGE_KEY);
-
-				Alert alert = Alert.builder().success(isSuccess).title(isSuccess ? "Success" : "Failure")
-						.details(message).build();
-				model.addAttribute("alert", alert);
-			}
-
-		} catch (Exception ex) {
-			logger.error("Cookie flash attr de serialization error", ex);
-		}
-
+		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 		Breadcrumb.builder().addItem("All User").build(model);
 		return "features/user/user-list";
 	}
@@ -81,65 +59,61 @@ public class AppUserController {
 	}
 
 	@GetMapping(value = WebEndpoint.CREATE_ADMIN_USER)
-	public String getCreateAdminForm(Model model) {
+	public String getCreateAdminForm(Model model, HttpServletRequest request,
+			HttpServletResponse response) {
 		AppUser appUser = new AppUser();
+		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 		model.addAttribute("appUserForm", appUser);
 		Breadcrumb.builder().addItem("Create Admin User").build(model);
 		return "features/user/admin-user-create";
 	}
 
-	// TODO: After successful creation, should redirect to `WebEndpoint.CREATE_ADMIN_USER` with cookies flash attribute
 	@PostMapping(value = WebEndpoint.CREATE_ADMIN_USER)
-	public String submitCreateAdminForm(@ModelAttribute("appUserForm") AppUser appUser, Model model) {
+	public ModelAndView submitCreateAdminForm(@ModelAttribute("appUserForm") AppUser appUser,
+			Model model, HttpServletResponse response) {
 
 		try {
 			appUser.setAppUserType(AppUserType.ADMIN);
 			appUserService.createAppUser(appUser);
-
-			Alert alert = Alert.builder().success(true).title("Successful").details("Admin user creation successful")
-					.build();
-			model.addAttribute("alert", alert);
-			model.addAttribute("appUserForm", new AppUser());
-
+			cookieFlashAttribute.setAlertValues(true, "Success", "Admin user creation successful", response);
+			return new ModelAndView(new RedirectView(WebEndpoint.CREATE_ADMIN_USER));
 		} catch (Exception ex) {
 
 			Alert alert = Alert.builder().success(false).title("Admin user creation failed").details(ex.getMessage())
 					.build();
 			model.addAttribute("alert", alert);
-		}
 
-		Breadcrumb.builder().addItem("Create Admin User").build(model);
-		return "features/user/admin-user-create";
+			Breadcrumb.builder().addItem("Create Admin User").build(model);
+			return new ModelAndView("features/user/admin-user-create");
+		}
 	}
 
 	@GetMapping(value = WebEndpoint.CREATE_END_USER)
-	public String getCreateEndUserForm(Model model) {
+	public String getCreateEndUserForm(Model model, HttpServletRequest request,
+			HttpServletResponse response) {
 		AppUser appUser = new AppUser();
+		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 		model.addAttribute("appUserForm", appUser);
 		Breadcrumb.builder().addItem("Create Admin User").build(model);
 		return "features/user/end-user-create";
 	}
 
-	// TODO: After successful creation, should redirect to `WebEndpoint.CREATE_END_USER` with cookies flash attribute
 	@PostMapping(value = WebEndpoint.CREATE_END_USER)
-	public String submitCreateEndUser(@ModelAttribute("appUserForm") AppUser appUser, BindingResult result,
-			Model model) {
+	public ModelAndView submitCreateEndUser(@ModelAttribute("appUserForm") AppUser appUser,
+			BindingResult result, Model model, HttpServletResponse response) {
 
 		try {
 			appUser.setAppUserType(AppUserType.END_USER);
 			appUserService.createAppUser(appUser);
-
-			Alert alert = Alert.builder().success(true).title("Success").details("End user created").build();
-			model.addAttribute("alert", alert);
-			model.addAttribute("appUserForm", new AppUser());
-
+			cookieFlashAttribute.setAlertValues(true, "Success", "End user creation successful", response);
+			return new ModelAndView(new RedirectView(WebEndpoint.CREATE_END_USER));
 		} catch (Exception ex) {
 			Alert alert = Alert.builder().success(false).title("End user creation failed")
 					.details(ex.getMessage()).build();
 			model.addAttribute("alert", alert);
+			Breadcrumb.builder().addItem("Create Admin User").build(model);
+			return new ModelAndView("features/user/end-user-create");
 		}
-		Breadcrumb.builder().addItem("Create Admin User").build(model);
-		return "features/user/end-user-create";
 	}
 
 	@GetMapping(value = WebEndpoint.ADMIN_USER_DETAILS)
@@ -158,9 +132,11 @@ public class AppUserController {
 	}
 
 	@GetMapping(value = WebEndpoint.UPDATE_ADMIN_USER)
-	public String getAdminUpdateForm(@PathVariable("appUserId") Long appUserId, Model model) {
+	public String getAdminUpdateForm(@PathVariable("appUserId") Long appUserId, Model model,
+			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			AppUser appUser = appUserService.findById(appUserId);
+			cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 			model.addAttribute("appUserForm", appUser);
 			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
 					.addItem(String.format("Update Admin User (%s)", appUser.getEmail())).build(model);
@@ -172,22 +148,19 @@ public class AppUserController {
 	}
 
 	@PostMapping(value = WebEndpoint.UPDATE_ADMIN_USER)
-	public String submitAdminUpdateForm(@ModelAttribute("appUserForm") AppUser appUser, BindingResult bindingResult,
-			@PathVariable("appUserId") Long appUserId, Model model) {
+	public ModelAndView submitAdminUpdateForm(@ModelAttribute("appUserForm") AppUser appUser,
+			BindingResult bindingResult, @PathVariable("appUserId") Long appUserId, Model model,
+			HttpServletResponse response) {
 
 		try {
 			appUserService.update(appUserId, appUser);
-			Alert alert = Alert.builder().success(true).title("Success").details("Admin user updated successfully")
-					.build();
-			model.addAttribute("alert", alert);
-			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
-					.addItem(String.format("Update Admin User (%s)", appUser.getEmail())).build(model);
+			cookieFlashAttribute.setAlertValues(true, "Success", "Admin user updated successfully",
+					response);
+			return new ModelAndView(new RedirectView(WebEndpoint.UPDATE_ADMIN_USER));
 		} catch (Exception ex) {
-			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
+			return new ModelAndView("features/user/admin-user-update");
 		}
-
-		return "features/user/admin-user-update";
 	}
 
 	@GetMapping(value = WebEndpoint.END_USER_DETAILS)
@@ -206,9 +179,11 @@ public class AppUserController {
 	}
 
 	@GetMapping(value = WebEndpoint.UPDATE_END_USER)
-	public String getEndUserUpdateForm(@PathVariable("appUserId") Long appUserId, Model model) {
+	public String getEndUserUpdateForm(@PathVariable("appUserId") Long appUserId, Model model,
+			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			AppUser appUser = appUserService.findById(appUserId);
+			cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 			model.addAttribute("appUserForm", appUser);
 			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
 					.addItem(String.format("Update End User (%s)", appUser.getEmail())).build(model);
@@ -220,21 +195,18 @@ public class AppUserController {
 	}
 
 	@PostMapping(value = WebEndpoint.UPDATE_END_USER)
-	public String postEndUserUpdateForm(@PathVariable("appUserId") Long appUserId,
-			@ModelAttribute("appUserForm") AppUser appUser, BindingResult bindingResult, Model model) {
+	public ModelAndView postEndUserUpdateForm(@PathVariable("appUserId") Long appUserId,
+			@ModelAttribute("appUserForm") AppUser appUser, BindingResult bindingResult,
+			Model model, HttpServletResponse response) {
 
 		try {
 			appUserService.update(appUserId, appUser);
-			Alert alert = Alert.builder().success(true).title("Success")
-					.details("End user updated successfully").build();
-			model.addAttribute("alert", alert);
-			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
-					.addItem(String.format("Update End User (%s)", appUser.getEmail())).build(model);
+			cookieFlashAttribute.setAlertValues(true, "Success", "End user updated successfully",
+					response);
+			return new ModelAndView(new RedirectView(WebEndpoint.UPDATE_END_USER));
 		} catch (Exception ex) {
-			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
+			return new ModelAndView("features/user/end-user-update");
 		}
-
-		return "features/user/end-user-update";
 	}
 }

@@ -18,7 +18,7 @@ public class Alert {
 	private String title;
 	private String details;
 
-	public static void addExceptionAlertAttribuiteToModel(String title, Exception ex, Model model) {
+	public static void addExceptionAlertAttributeToModel(String title, Exception ex, Model model) {
 		addAlertAttributeToModel(false, title, ex.getMessage(), model);
 	}
 
