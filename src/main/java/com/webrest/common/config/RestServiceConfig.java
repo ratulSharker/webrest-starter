@@ -6,8 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
-
+import java.util.List;
 import com.webrest.common.service.RestService;
 
 @Configuration
@@ -28,7 +27,7 @@ public class RestServiceConfig {
 	public MappingJackson2HttpMessageConverter getMappingJackson2HttpMessageConverter() {
 		MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
 		mappingJackson2HttpMessageConverter
-				.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_FORM_URLENCODED));
+				.setSupportedMediaTypes(List.<MediaType>of(MediaType.APPLICATION_FORM_URLENCODED));
 		return mappingJackson2HttpMessageConverter;
 	}
 }

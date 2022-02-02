@@ -18,13 +18,20 @@ public class Alert {
 	private String title;
 	private String details;
 
-	public static void addExceptionAlertAttribuiteToModel(String title, Exception ex, Model model) {
-		Alert alert = Alert.builder().success(false).title(title).details(ex.getMessage()).build();
-		model.addAttribute("alert", alert);
+	public static void addExceptionAlertAttributeToModel(String title, Exception ex, Model model) {
+		addAlertAttributeToModel(false, title, ex.getMessage(), model);
 	}
 
 	public static void addSuccessAlertAttributeToModel(String title, String details, Model model) {
-		Alert alert = Alert.builder().success(true).title(title).details(details).build();
-		model.addAttribute("alert", alert);
+		addAlertAttributeToModel(true, title, details, model);
 	}
+
+	public static void addFailureAlertAttributeToModel(String title, String details, Model model) {
+		addAlertAttributeToModel(false, title, details, model);
+	}
+
+	public static void addAlertAttributeToModel(boolean success, String title, String details, Model model) {
+		Alert alert = Alert.builder().success(success).title(title).details(details).build();
+		model.addAttribute("alert", alert);
+	} 
 }
