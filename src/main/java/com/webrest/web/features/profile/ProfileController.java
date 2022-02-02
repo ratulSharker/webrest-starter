@@ -1,7 +1,5 @@
 package com.webrest.web.features.profile;
 
-import java.util.Map;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.webrest.common.entity.AppUser;
@@ -27,7 +25,6 @@ import lombok.AllArgsConstructor;
 public class ProfileController {
 
 	private final Logger logger = LoggerFactory.getLogger(ProfileController.class);
-	private final String PROFILE_UPDATE_RESULT_KEY = "prof-update-res";
 
 	private final AppUserService appUserService;
 	private final CookieFlashAttribute cookieFlashAttribute;
@@ -51,19 +48,7 @@ public class ProfileController {
 		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
 		AppUser userMe = appUserService.findById(principleObject.getAppUserId());
 
-		try {
-			Optional<Map<String, Object>> cookieData = cookieFlashAttribute.getValues(request, response);
-			if(cookieData.isPresent()) {
-				Boolean isUpdateSuccess = (Boolean) cookieData.get().get(PROFILE_UPDATE_RESULT_KEY);
-				if(isUpdateSuccess) {
-					Alert.addSuccessAlertAttributeToModel("Success", "Successfully updated profile", model);
-				} else {
-					Alert.addFailureAlertAttributeToModel("Failure", "Failed to update profile", model);
-				}
-			}
-		} catch(Exception ex) {
-			logger.error("Error accessing cookie flash attribute", ex);
-		}
+		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 
 		model.addAttribute("user", userMe);
 		model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
@@ -81,14 +66,10 @@ public class ProfileController {
 			AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
 			appUserService.updateOwnProfile(principleObject.getAppUserId(), updatedUser);
 
-			Alert alert = Alert.builder().success(true).title("Success").details("Profile Updated").build();
-			model.addAttribute("alert", alert);
-
 			// For updating for the top right corner
 			principleObject.setProfilePicturePath(updatedUser.getProfilePicturePath());
 
-			Map<String, Object> cookieData = Map.of(PROFILE_UPDATE_RESULT_KEY, true);
-			cookieFlashAttribute.setValues(cookieData, response);
+			cookieFlashAttribute.setAlertValues(true, "Success", "Profile updated successfully", response);
 
 			return new ModelAndView(new RedirectView(WebEndpoint.MY_PROFILE_UPDATE));
 
