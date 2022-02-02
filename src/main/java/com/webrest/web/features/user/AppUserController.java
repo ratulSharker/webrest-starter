@@ -33,6 +33,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AppUserController {
 
+	// TODO: Use lombok's `@Slf4j` annotation
 	private final Logger logger = LoggerFactory.getLogger(AppUserController.class);
 
 	private final AppUserService appUserService;
@@ -79,6 +80,7 @@ public class AppUserController {
 			return new ModelAndView(new RedirectView(WebEndpoint.CREATE_ADMIN_USER));
 		} catch (Exception ex) {
 
+			// TODO: Use upgraded alert builder api.
 			Alert alert = Alert.builder().success(false).title("Admin user creation failed").details(ex.getMessage())
 					.build();
 			model.addAttribute("alert", alert);
