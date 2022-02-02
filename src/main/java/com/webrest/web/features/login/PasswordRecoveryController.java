@@ -1,4 +1,4 @@
-package com.webrest.web.login;
+package com.webrest.web.features.login;
 
 import javax.validation.Valid;
 

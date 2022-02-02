@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class AppUserService {
 
+	// Use log4j's `@Slf4j` api.
 	private Logger logger = LoggerFactory.getLogger(AppUserService.class);
 
 	private AppUserRepository appUserRepository;
