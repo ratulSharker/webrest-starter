@@ -77,10 +77,7 @@ public class LoginController {
 			int tokenExpiryTimeInSeconds = (int) authenticationService.tokenExpiryTimeInMinutes() * 60;
 			CookieUtils.setAuthorization(authenticationResponseDto.getToken(), response, tokenExpiryTimeInSeconds);
 		} catch (Exception ex) {
-			// TODO: Use updated alert builder api.
-			Alert alert = Alert.builder().success(false).title("Authentication failed").details(ex.getMessage())
-					.build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Authentication failed", ex, model);
 			model.addAttribute("forgotPasswordPath", WebEndpoint.FORGOT_PASSWORD);
 			return "features/login/login-form";
 		}
