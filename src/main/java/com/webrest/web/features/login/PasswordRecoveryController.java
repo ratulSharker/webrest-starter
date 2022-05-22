@@ -51,13 +51,11 @@ public class PasswordRecoveryController {
 
 		try {
 			passwordRecoveryService.sendPasswordRecoveryEmail(forgotPasswordRequestDto.getEmail());
-			Alert alert = Alert.builder().success(true).title("Success")
-					.details("Sent a password recovery email, please check your email").build();
-			model.addAttribute("alert", alert);
+			Alert.addSuccessAlertAttributeToModel("Success",
+					"Sent a password recovery email, please check your email", model);
 		} catch (Exception ex) {
 			logger.error("ERROR: Sending recovery password email", ex);
-			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 		}
 
 		return "features/login/forgot-password-form";
@@ -87,12 +85,9 @@ public class PasswordRecoveryController {
 		try {
 			passwordRecoveryService.recoverPassword(recoverPasswordRequestDto.getToken(),
 					recoverPasswordRequestDto.getPassword());
-			Alert alert = Alert.builder().success(true).title("Success").details("Password reset successful").build();
-			model.addAttribute("alert", alert);
+			Alert.addSuccessAlertAttributeToModel("Success", "Password reset successful", model);
 		} catch (Exception ex) {
-			Alert alert = Alert.builder().success(false).title("Unable to reset password").details(ex.getMessage())
-					.build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Unable to reset password", ex, model);
 		}
 
 		return "features/login/recover-password-form";

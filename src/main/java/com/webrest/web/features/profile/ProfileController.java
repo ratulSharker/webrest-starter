@@ -75,8 +75,7 @@ public class ProfileController {
 
 		} catch (Exception ex) {
 			logger.error("Error During profile update", ex);
-			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 			model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
 			Breadcrumb.builder().addItem("My Profile", WebEndpoint.MY_PROFILE).addItem("Update My Profile").build(model);
 			return new ModelAndView("features/profile/profile-update");

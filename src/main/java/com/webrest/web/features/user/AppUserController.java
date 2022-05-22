@@ -79,12 +79,7 @@ public class AppUserController {
 			cookieFlashAttribute.setAlertValues(true, "Success", "Admin user creation successful", response);
 			return new ModelAndView(new RedirectView(WebEndpoint.CREATE_ADMIN_USER));
 		} catch (Exception ex) {
-
-			// TODO: Use upgraded alert builder api.
-			Alert alert = Alert.builder().success(false).title("Admin user creation failed").details(ex.getMessage())
-					.build();
-			model.addAttribute("alert", alert);
-
+			Alert.addExceptionAlertAttributeToModel("Admin user creation failed", ex, model);
 			Breadcrumb.builder().addItem("Create Admin User").build(model);
 			return new ModelAndView("features/user/admin-user-create");
 		}
@@ -110,9 +105,7 @@ public class AppUserController {
 			cookieFlashAttribute.setAlertValues(true, "Success", "End user creation successful", response);
 			return new ModelAndView(new RedirectView(WebEndpoint.CREATE_END_USER));
 		} catch (Exception ex) {
-			Alert alert = Alert.builder().success(false).title("End user creation failed")
-					.details(ex.getMessage()).build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("End user creation failed", ex, model);
 			Breadcrumb.builder().addItem("Create Admin User").build(model);
 			return new ModelAndView("features/user/end-user-create");
 		}
@@ -127,8 +120,7 @@ public class AppUserController {
 			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
 					.addItem(String.format("Admin User details (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
-			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 		}
 		return "features/user/admin-user-details";
 	}
@@ -143,8 +135,7 @@ public class AppUserController {
 			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
 					.addItem(String.format("Update Admin User (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
-			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 		}
 		return "features/user/admin-user-update";
 	}
@@ -173,8 +164,7 @@ public class AppUserController {
 			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
 					.addItem(String.format("End User details (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
-			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 		}
 
 		return "features/user/end-user-details";
@@ -190,8 +180,7 @@ public class AppUserController {
 			Breadcrumb.builder().addItem("All Users", WebEndpoint.USER)
 					.addItem(String.format("Update End User (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
-			Alert alert = Alert.builder().success(false).title("Failure").details(ex.getMessage()).build();
-			model.addAttribute("alert", alert);
+			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 		}
 		return "features/user/end-user-update";
 	}
