@@ -1,8 +1,8 @@
-function initDataTable(tableId, url, columns, searchPlaceholder, extraParamsCallback) {
+function initDataTable(tableId, url, columns, searchPlaceholder, extraParamsCallback, excelExportOptions) {
 
     // init the data table
     let dataTable = $(`#${tableId}`).DataTable({
-        ordering: false,
+		order: [[ 0, "desc" ]],
         processing: false,
         serverSide: true,
         searchHighlight: true,
@@ -20,6 +20,27 @@ function initDataTable(tableId, url, columns, searchPlaceholder, extraParamsCall
             searchPlaceholder: searchPlaceholder,
             search: '<i class="fa fa-search" aria-hidden="true"></i>'
         },
+		buttons: [
+			{
+				// https://datatables.net/reference/button/excelHtml5
+				extend: "excelHtml5",
+				text: "<i class='fas fa-file-download'></i> Excel",
+				className: "btn btn-primary btn-sm ml-2",
+
+				// https://jsfiddle.net/saurabhmisra87/hL6xw1sk/18/
+				exportOptions: Object.assign({
+					columns: ":not(:last-child)"
+				}, excelExportOptions || {}),
+				createEmptyCells : true
+			}
+		],
+		lengthMenu: [
+			10, 50, 100, 500, 1000
+		],
+		// https://datatables.net/reference/option/dom#Styling
+		dom: "<'row'<'col-sm-12 col-md-6 d-flex'lB><'col-sm-12 col-md-6'f>>" +
+		"<'row'<'col-sm-12'tr>>" +
+		"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
 
     });
 
