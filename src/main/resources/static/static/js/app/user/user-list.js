@@ -1,7 +1,8 @@
 $(document).ready(function () {
 
-	const dataTable = initDataTable("user-table", "/user-load-data", [{
-				data: "appUserId"
+	const dataTable = initDataTable("user-table", "/user-load-data", [
+			{
+				data: "appUserId",
 			},
 			{
 				data: "name"
@@ -13,6 +14,7 @@ $(document).ready(function () {
 				data: "email"
 			},
 			{
+				orderable: false,
 				data: "appUserType"
 			},
 			{
@@ -62,6 +64,18 @@ $(document).ready(function () {
 			return {
 				"appUserType": $("#user-type-select").val()
 			};
+		}, 
+		{
+			format: {
+				header: function(header, index) {
+					switch (index) {
+						case 4:
+							return "User Type";
+						default:
+							return header;
+					}
+				}
+			}
 		});
 
 	$("#user-type-select").on("change", function () {
