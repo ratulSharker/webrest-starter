@@ -1,0 +1,63 @@
+version: '3.2'
+services:
+  web-rest:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: web-rest:latest
+    ports:
+    - 8000:8080
+    networks:
+    - dbnet
+    volumes:
+    - type: bind
+      source: ./storage/temp
+      target: /storage/temp
+    - type: bind
+      source: ./storage/root
+      target: /storage/root
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+        reservations:
+          memory: 300M
+    environment:
+    - DB_SERVER=${WEB_REST_DB_SERVER:-jdbc:mysql://db:3306/webrest}
+    - DB_USERNAME=${WEB_REST_DB_USERNAME:-webrest-user}
+    - DB_PASSWORD=${WEB_REST_DB_PASSWORD:-secret}
+    - DB_DRIVER=${WEB_REST_DB_DRIVER:-com.mysql.cj.jdbc.Driver}
+    - JWT_EXPIRY_IN_MINUTES=525600
+    - JWT_SYMETTRIC_SECRET=super#secret!string
+    - FILE_STORAGE_TEMP_PATH=/storage/temp
+    - FILE_STORAGE_ROOT_PATH=/storage/root
+    - FILE_STORAGE_TYPE=FILESYSTEM
+    - EMAIL_HOST=${WEB_REST_EMAIL_HOST:-smtp.gmail.com}
+    - EMAIL_HOST_PORT=${WEB_REST_EMAIL_HOST_PORT:-587}
+    - EMAIL_USERNAME=${WEB_REST_EMAIL_USERNAME}
+    - EMAIL_PASSWORD=${WEB_REST_EMAIL_PASSWORD}
+    - APP_HOST_URL=http://localhost:8000
+    depends_on:
+      db:
+        condition: service_healthy
+      
+  db:
+    image: mysql:8.0.29-oracle
+    networks:
+    - dbnet
+    volumes:
+    - type: bind
+      source: ./storage/mysql-data
+      target: /var/lib/mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=root-secret
+    - MYSQL_DATABASE=webrest
+    - MYSQL_USER=webrest-user
+    - MYSQL_PASSWORD=secret
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping --user=webrest-user --password=secret"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+networks:
+  dbnet: null
