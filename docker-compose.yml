@@ -40,7 +40,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      
   db:
     image: mysql:8.0.29-oracle
     networks:
@@ -55,7 +54,7 @@ services:
     - MYSQL_USER=webrest-user
     - MYSQL_PASSWORD=secret
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping --user=webrest-user --password=secret"]
+      test: ["CMD-SHELL", "/usr/bin/mysql --user=webrest-user --password=secret --execute \"SHOW DATABASES;\""]
       interval: 30s
       timeout: 10s
       retries: 10
