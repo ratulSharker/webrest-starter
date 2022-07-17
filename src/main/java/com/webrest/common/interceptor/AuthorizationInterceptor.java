@@ -11,6 +11,7 @@ import com.webrest.common.dto.response.Metadata;
 import com.webrest.common.dto.response.Response;
 import com.webrest.common.entity.AppUser;
 import com.webrest.common.service.AppUserService;
+import com.webrest.common.service.AuthorizationService;
 import com.webrest.common.service.JWTService;
 import com.webrest.common.utils.CookieUtils;
 import com.webrest.rest.constants.RestEndpoint;
@@ -20,22 +21,26 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	public static final String PRINCIPLE_APP_USER_KEY = "principle_app_user";
 	public final String REST_AUTHORIZATION_HEADER = "Authorization";
 
-	private JWTService jwtService;
+	private final JWTService jwtService;
 	// TODO: Remove this app user service from here
-	private AppUserService appUserService;
-	private ObjectMapper objectMapper;
+	private final AppUserService appUserService;
+	private final ObjectMapper objectMapper;
+	private final AuthorizationService authorizationService;
 
-	public AuthorizationInterceptor(JWTService jwtService, AppUserService appUserService, ObjectMapper objectMapper) {
-		this.jwtService = jwtService;
-		this.appUserService = appUserService;
-		this.objectMapper = objectMapper;
-	}
+	// public AuthorizationInterceptor(JWTService jwtService, AppUserService appUserService, ObjectMapper objectMapper) {
+	// 	this.jwtService = jwtService;
+	// 	this.appUserService = appUserService;
+	// 	this.objectMapper = objectMapper;
+	// }
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -47,6 +52,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			return handleRestAuthorization(request, response);
 		} else {
 			// Coming from Web Admin
+			authorizationService.printEndpointDetails(request);
 			return handleWebappAuthorization(request, response);
 		}
 
@@ -88,6 +94,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		}
 	}
 
+	// Delegate this verification process to `AuthenticationService`
 	private void verifyTokenAndInjectAppUser(HttpServletRequest request, String token) {
 		Map<String, Claim> claims = jwtService.verifyToken(token);
 
