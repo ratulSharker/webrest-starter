@@ -15,7 +15,6 @@ import com.webrest.web.constants.WebEndpoint;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 
 import lombok.AllArgsConstructor;
@@ -88,10 +87,11 @@ public class AuthorizationService {
 
 	public void printEndpointDetails(HttpServletRequest request) {
 		HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
-	    String bestMatchPattern = (String ) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+		String bestMatchPattern =
+				(String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 		Endpoint endpoint = endpointByVerbAndPath.get(httpMethod).get(bestMatchPattern);
 		log.info(endpoint.getFeature().toString());
 		log.info(endpoint.getAction().toString());
-		log.info(endpoint.getPath());		
+		log.info(endpoint.getPath());
 	}
 }
