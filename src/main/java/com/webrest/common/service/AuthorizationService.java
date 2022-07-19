@@ -89,9 +89,9 @@ public class AuthorizationService {
 		HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
 		String bestMatchPattern =
 				(String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-		Endpoint endpoint = endpointByVerbAndPath.get(httpMethod).get(bestMatchPattern);
-		log.info(endpoint.getFeature().toString());
-		log.info(endpoint.getAction().toString());
-		log.info(endpoint.getPath());
+		// Endpoint endpoint = endpointByVerbAndPath.get(httpMethod).get(bestMatchPattern);
+		// log.info(endpoint.getFeature().toString());
+		// log.info(endpoint.getAction().toString());
+		// log.info(endpoint.getPath());
 	}
 }

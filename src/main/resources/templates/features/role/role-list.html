@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/admin/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>All Roles</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('All Roles')">
+		</div>
+
+		<div class="mt-4">
+			<table id="role-table" class="table table-striped table-bordered" style="width:100%">
+				<thead>
+					<tr>
+						<th>Role Id</th>
+						<th>Name</th>
+						<th class="text-center">Action</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<th>Role Id</th>
+						<th>Name</th>
+						<th class="text-center">Action</th>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+	<div layout:fragment="scripts">
+		<script th:src="@{/static/js/app/role/role-list.js}"></script>
+	</div>
+</body>
+
+</html>
