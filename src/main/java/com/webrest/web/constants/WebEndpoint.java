@@ -46,6 +46,9 @@ public class WebEndpoint {
 	public static final String END_USER_DETAILS = "/end-user-details/{appUserId}";
 	public static final String UPDATE_END_USER = "/update-end-user/{appUserId}";
 
+	public static final String ROLE = "/role";
+	public static final String ROLE_LOAD_DATA = "/role-load-data";
+
 	public static final List<String> PUBLIC_ROUTE_PATTERNS = List.of(FAVICON, BLANK, LOGIN, LOGOUT, "/static/**",
 			"/webjars/**",
 			FORGOT_PASSWORD, RECOVER_PASSWORD.replace("{token}", "**"));

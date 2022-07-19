@@ -23,6 +23,36 @@
 		<!-- Menu start -->
 		<div class="list-group list-group-flush menu-container" id="menu-container-id">
 
+			<!-- Role start -->
+			<div class="menu-group">
+				<a class="list-group-item list-group-item-action list-group-item-info menu-item menu-expander"
+					data-toggle="collapse" href="#role-actions" role="button" aria-expanded="false"
+					aria-controls="role-actions">
+					<span>
+						<i class="fas fa-user-lock"></i>
+						<span>Roles</span>
+					</span>
+				</a>
+				<div class="collapse small menu-link-collapse" id="role-actions" data-parent="#menu-container-id">
+					<a href="/role"
+						class="list-group-item list-group-item-action list-group-item-light menu-item menu-link">
+						<span class="pl-2">
+							<i class="fas fa-list-ul"></i>
+							<span>Role list</span>
+						</span>
+
+					</a>
+					<a href="/create-admin-user"
+						class="list-group-item list-group-item-action list-group-item-light menu-item menu-link">
+						<span class="pl-2">
+							<i class="fas fa-plus"></i>
+							<span>Create Role</span>
+						</span>
+					</a>
+				</div>
+			</div>
+			<!-- Role end -->
+
 			<!-- User start -->
 			<div class="menu-group">
 				<a class="list-group-item list-group-item-action list-group-item-info menu-item menu-expander"
