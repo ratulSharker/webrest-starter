@@ -48,6 +48,7 @@ public class WebEndpoint {
 
 	public static final String ROLE = "/role";
 	public static final String ROLE_LOAD_DATA = "/role-load-data";
+	public static final String CREATE_ROLE = "/create-role";
 
 	public static final List<String> PUBLIC_ROUTE_PATTERNS = List.of(FAVICON, BLANK, LOGIN, LOGOUT, "/static/**",
 			"/webjars/**",

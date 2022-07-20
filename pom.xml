@@ -55,6 +55,13 @@
 			<version>2.29.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>masonry</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
+
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -109,7 +116,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.20</version>
+			<version>42.3.5</version>
 		</dependency>
 
 		<!-- Hibernate + REST -->

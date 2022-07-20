@@ -20,5 +20,4 @@ public class RoleService {
 		Specification<Role> specification = RoleSpecification.likeName(searchValue);
 		return roleRepository.findAll(specification, pageable);
 	}
-
 }

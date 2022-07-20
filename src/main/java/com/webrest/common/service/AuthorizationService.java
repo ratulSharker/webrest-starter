@@ -2,7 +2,9 @@ package com.webrest.common.service;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +40,7 @@ public class AuthorizationService {
 
 	// TODO: Needed to be stored into the redis
 	private Map<HttpMethod, Map<String, Endpoint>> endpointByVerbAndPath = new HashMap<>();
+	private Map<AuthorizedFeature, List<AuthorizedAction>> featuresWithActions = new HashMap<>();
 
 	@PostConstruct
 	public void postConstruct() {
@@ -60,6 +63,7 @@ public class AuthorizationService {
 							String fieldValue = (String) value;
 							Endpoint endpoint = new Endpoint(authorization.feature(), authorization.action(), authorization.isPublic(), authorization.isPublicForAuthorizedUser(), fieldValue, authorization.httpMethods());
 							addEndpoint(endpoint);
+							addFeatureAndActions(endpoint);
 						}
 						
 					} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -83,6 +87,17 @@ public class AuthorizationService {
 			endpointByPath.put(endpoint.getPath(), endpoint);
 			endpointByVerbAndPath.put(httpMethod, endpointByPath);
 		}
+	}
+
+	private void addFeatureAndActions(Endpoint endpoint) {
+		List<AuthorizedAction> actions = featuresWithActions.get(endpoint.getFeature());
+
+		if(actions == null) {
+			actions = new ArrayList<AuthorizedAction>();
+			featuresWithActions.put(endpoint.getFeature(), actions);
+		}
+
+		actions.add(endpoint.getAction());
 	}
 
 	public void printEndpointDetails(HttpServletRequest request) {

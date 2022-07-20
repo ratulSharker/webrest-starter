@@ -1,0 +1,9 @@
+.grid-item {
+	width: 25%;
+	margin-bottom: .5rem;
+	min-width: 300px;
+}
+
+.grid {
+	/* margin: 0 auto; */
+}
