@@ -2,12 +2,9 @@ package com.webrest.common.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
@@ -32,10 +29,6 @@ public class Role {
 
 	@Column(nullable = false)
 	private boolean active;
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "manager_role_id", nullable = true)
-	private Role managerRole;
 
 	@Column(nullable = false)
 	private Boolean isSuperAdmin = false;
