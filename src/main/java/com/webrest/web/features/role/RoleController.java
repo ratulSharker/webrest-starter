@@ -1,16 +1,26 @@
 package com.webrest.web.features.role;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.webrest.common.dto.datatable.DataTableResponseModel;
 import com.webrest.common.entity.Role;
+import com.webrest.common.enums.authorization.AuthorizedAction;
+import com.webrest.common.enums.authorization.AuthorizedFeature;
 import com.webrest.common.service.RoleService;
 import com.webrest.common.utils.SimpleDataTableHelper;
 import com.webrest.web.constants.WebEndpoint;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -38,6 +48,17 @@ public class RoleController {
 	public String getCreateRoleForm(Model model) {
 
 		model.addAttribute("roleForm", new Role());
+		
+		List<Pair<AuthorizedFeature, List<AuthorizedAction>>> assignableFeaturesWithActions = roleService.getAssignableFeaturesWithAction();
+		model.addAttribute("assignableFeaturesWithActions", assignableFeaturesWithActions);
+
+		return "features/role/role-create";
+	}
+
+	@PostMapping(WebEndpoint.CREATE_ROLE)
+	public String submitCreateRoleForm(@ModelAttribute("roleForm") Role role) {
+
+		
 
 		return "features/role/role-create";
 	}

@@ -46,63 +46,37 @@
 			</div>
 
 			<div class="col-12 p-0 pt-4">
-				<div class="card">
+				<div class="card" id="authorization-card">
 					<div class="card-header">
 						Authorizations
 					</div>
 					<div class="card-body">
-						<div class="grid">
-							<div class="grid-item px-1">
-								<div class="card">
-									<div class="card-header">
-										First card
-									</div>
-									<div class="card-body">
 
-									</div>
-								</div>
-							</div>
-							<div class="grid-item px-1">
+						<div class="grid">
+							<div class="grid-item px-1" th:each="featuresWithAction: ${assignableFeaturesWithActions}"
+								th:with="feature = ${featuresWithAction.getFirst()}">
 								<div class="card">
 									<div class="card-header">
-										Second card
+										<input type="checkbox" th:id="${feature.name() + '-feature-checkbox'}">
+										<label class="m-0" th:for="${feature.name() + '-feature-checkbox'}" th:text="${feature.name()}">
+											Feature
+										</label>
 									</div>
 									<div class="card-body">
-										
-									</div>
-								</div>
-							</div>
-							<div class="grid-item px-1">
-								<div class="card">
-									<div class="card-header">
-										Third card
-									</div>
-									<div class="card-body">
-										
-									</div>
-								</div>
-							</div>
-							<div class="grid-item px-1">
-								<div class="card">
-									<div class="card-header">
-										Fourth card
-									</div>
-									<div class="card-body">
-										
-									</div>
-								</div>
-							</div>
-							<div class="grid-item px-1">
-								<div class="card">
-									<div class="card-header">
-										Fifth card
-									</div>
-									<div class="card-body">
-										
+										<div class="row" th:each="action : ${featuresWithAction.getSecond()}">
+											<div class="col">
+												<input type="checkbox" th:id="${action + '-action-checkbox'}"
+													th:name="hyphenSeparatedFeatureActions" th:value="${feature.name() + '-' + action.name()}">
+												<label class="m-0" th:for="${action + '-action-checkbox'}" th:text="${action.name()}">
+													Feature action
+												</label>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+
 					</div>
 				</div>
 			</div>
@@ -110,7 +84,7 @@
             <div class="fixed-bottom bottom-action-bar">
                 <div>
                     <label for="create-admin-user-submit" class="btn btn-success m-0">
-                        <i class="fas fa-plus-circle"></i> Create Admin
+                        <i class="fas fa-plus-circle"></i> Create Role
                     </label>
                     <input type="submit" id="create-admin-user-submit" class="d-none">
                 </div>

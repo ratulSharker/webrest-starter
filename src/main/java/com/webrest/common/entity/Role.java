@@ -1,6 +1,8 @@
 package com.webrest.common.entity;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +15,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
+
+import com.webrest.common.enums.authorization.AuthorizedAction;
+import com.webrest.common.enums.authorization.AuthorizedFeature;
+
+import org.springframework.data.util.Pair;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,4 +49,18 @@ public class Role {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "roleAuthorizationId.role", cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
 	private Set<RoleAuthorization> authorizations;
+
+	// Used for web form data binding
+	public void setHyphenSeparatedFeatureActions(List<String> hyphenSeparatedFeatureActions) {
+		authorizations = hyphenSeparatedFeatureActions.stream().map(hyphenSeparatedFeatureAction -> {
+			String[] featureAction = hyphenSeparatedFeatureAction.split("-");
+			AuthorizedFeature feature = AuthorizedFeature.valueOf(featureAction[0]);
+			AuthorizedAction action = AuthorizedAction.valueOf(featureAction[1]);
+			return Pair.of(feature, action);
+		}).map(featureActionPair -> {
+			return new RoleAuthorizationId(this, featureActionPair.getFirst(), featureActionPair.getSecond());
+		}).map(roleAuthorizationId -> {
+			return new RoleAuthorization(roleAuthorizationId);
+		}).collect(Collectors.toSet());
+	}
 }

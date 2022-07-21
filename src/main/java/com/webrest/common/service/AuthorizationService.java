@@ -2,10 +2,10 @@ package com.webrest.common.service;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@Getter
 public class AuthorizationService {
 
 	@Getter
@@ -40,7 +41,7 @@ public class AuthorizationService {
 
 	// TODO: Needed to be stored into the redis
 	private Map<HttpMethod, Map<String, Endpoint>> endpointByVerbAndPath = new HashMap<>();
-	private Map<AuthorizedFeature, List<AuthorizedAction>> featuresWithActions = new HashMap<>();
+	private Map<AuthorizedFeature, Set<AuthorizedAction>> featuresWithActions = new HashMap<>();
 
 	@PostConstruct
 	public void postConstruct() {
@@ -90,10 +91,10 @@ public class AuthorizationService {
 	}
 
 	private void addFeatureAndActions(Endpoint endpoint) {
-		List<AuthorizedAction> actions = featuresWithActions.get(endpoint.getFeature());
+		Set<AuthorizedAction> actions = featuresWithActions.get(endpoint.getFeature());
 
 		if(actions == null) {
-			actions = new ArrayList<AuthorizedAction>();
+			actions = new HashSet<AuthorizedAction>();
 			featuresWithActions.put(endpoint.getFeature(), actions);
 		}
 
