@@ -6,9 +6,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import com.webrest.common.entity.Role;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
+import com.webrest.common.exception.BadRequestException;
 import com.webrest.common.repostiory.RoleRepository;
 import com.webrest.common.specification.RoleSpecification;
 import org.springframework.data.domain.Page;
@@ -41,5 +44,18 @@ public class RoleService {
 			List<AuthorizedAction> actions = new ArrayList<AuthorizedAction>(entrySet.getValue());
 			return Pair.of(entrySet.getKey(), actions);
 		}).collect(Collectors.toList());
+	}
+
+	@Transactional
+	public Role createNewRole(Role role) {
+		throwIfRoleFoundWithSameName(role.getName());
+		return roleRepository.save(role);
+	}
+
+	public void throwIfRoleFoundWithSameName(String roleName) {
+		Long count = roleRepository.countByName(roleName);
+		if(count > 0) {
+			throw new BadRequestException("Role exists with the given name");
+		}
 	}
 }
