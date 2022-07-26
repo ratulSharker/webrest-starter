@@ -14,7 +14,7 @@
 
 <body>
     <div layout:fragment="content">
-		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('Create Role')">
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('Update Role')">
 		</div>
         <form method="post" th:object="${roleForm}">
 
@@ -81,17 +81,17 @@
 
             <div class="fixed-bottom bottom-action-bar">
                 <div>
-                    <label for="create-role-submit" class="btn btn-success m-0">
-                        <i class="fas fa-plus-circle"></i> Create Role
+                    <label for="update-role-submit" class="btn btn-warning m-0">
+                        <i class="fas fa-plus-circle"></i> Update Role
                     </label>
-                    <input type="submit" id="create-role-submit" class="d-none">
+                    <input type="submit" id="update-role-submit" class="d-none">
                 </div>
             </div>
         </form>
     </div>
 
     <div layout:fragment="scripts">
-        <script th:src="@{/static/js/app/role/role-create.js}"></script>
+        <!-- <script th:src="@{/static/js/app/role/role-create.js}"></script> -->
     </div>
 </body>
 

@@ -39,7 +39,7 @@ $(document).ready(function () {
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="user-manage-dropdown-${row.appUserId}">
                                 <li><a class="dropdown-item text-primary" href="${'#'}"><span><i class="fas fa-info-circle"></i> Details</span></a></li>
-                                <li><a class="dropdown-item text-primary" href="${'#'}"><span><i class="fa fa-edit"></i> Update</span></a></li>
+                                <li><a class="dropdown-item text-primary" href="${'/update-role/' + row.roleId}"><span><i class="fa fa-edit"></i> Update</span></a></li>
                             </ul>
                             </div>
                         </div>

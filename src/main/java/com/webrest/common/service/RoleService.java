@@ -3,9 +3,11 @@ package com.webrest.common.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import com.webrest.common.entity.Role;
@@ -52,7 +54,14 @@ public class RoleService {
 		return roleRepository.save(role);
 	}
 
-	public void throwIfRoleFoundWithSameName(String roleName) {
+	public Role getRoleDetails(Long roleId) {
+		Optional<Role> optionalRole = roleRepository.getRoleDetailsById(roleId);
+		return optionalRole.orElseThrow(() -> {
+			throw new EntityNotFoundException("No role found with given id");
+		});
+	}
+
+	private void throwIfRoleFoundWithSameName(String roleName) {
 		Long count = roleRepository.countByName(roleName);
 		if(count > 0) {
 			throw new BadRequestException("Role exists with the given name");

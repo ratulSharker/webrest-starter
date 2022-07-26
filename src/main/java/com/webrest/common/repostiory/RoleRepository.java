@@ -1,5 +1,7 @@
 package com.webrest.common.repostiory;
 
+import java.util.Optional;
+
 import com.webrest.common.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -12,4 +14,10 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
 	
 	@Query("SELECT COUNT(role) FROM Role role WHERE LOWER(role.name) = LOWER(:name)")
 	public Long countByName(@Param("name") String name);
+
+
+	@Query("SELECT role FROM Role role"
+			+ " LEFT JOIN FETCH role.authorizations"
+			+ " WHERE role.roleId = :roleId")
+	public Optional<Role> getRoleDetailsById(@Param("roleId") Long roleId);
 }
