@@ -11,11 +11,13 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import com.webrest.common.entity.Role;
+import com.webrest.common.entity.RoleAuthorizationId;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
 import com.webrest.common.exception.BadRequestException;
 import com.webrest.common.repostiory.RoleRepository;
 import com.webrest.common.specification.RoleSpecification;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -50,7 +52,7 @@ public class RoleService {
 
 	@Transactional
 	public Role createNewRole(Role role) {
-		throwIfRoleFoundWithSameName(role.getName());
+		throwIfRoleFoundWithSameName(role.getName(), null);
 		return roleRepository.save(role);
 	}
 
@@ -61,8 +63,35 @@ public class RoleService {
 		});
 	}
 
-	private void throwIfRoleFoundWithSameName(String roleName) {
-		Long count = roleRepository.countByName(roleName);
+	public Set<Pair<AuthorizedFeature, AuthorizedAction>> getRoleFeatureActions(Role role) {
+		return role.getAuthorizations().stream().map(authorization -> {
+			RoleAuthorizationId roleAuthorizationId = authorization.getRoleAuthorizationId();
+			return Pair.of(roleAuthorizationId.getFeature(), roleAuthorizationId.getAction());
+		}).collect(Collectors.toSet());
+	}
+
+	@Transactional
+	public Role updateRole(Role role) {
+		throwIfRoleFoundWithSameName(role.getName(), role.getRoleId());
+		Role existingRole = getRoleDetails(role.getRoleId());
+		BeanUtils.copyProperties(role, existingRole, "roleId", "isSuperAdmin", "authorizations");
+
+		existingRole.getAuthorizations().clear();
+		existingRole.getAuthorizations().addAll(role.getAuthorizations());
+
+		return roleRepository.save(role);
+	}
+
+	private void throwIfRoleFoundWithSameName(String roleName, Long exceptRoleId) {
+
+		Long count = 0L;
+
+		if(exceptRoleId != null) {
+			count = roleRepository.countByNameExceptRoleId(roleName, exceptRoleId);
+		} else {
+			count = roleRepository.countByName(roleName);
+		}
+
 		if(count > 0) {
 			throw new BadRequestException("Role exists with the given name");
 		}

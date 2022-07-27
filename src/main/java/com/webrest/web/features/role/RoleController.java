@@ -1,7 +1,7 @@
 package com.webrest.web.features.role;
 
 import java.util.List;
-
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -92,6 +92,8 @@ public class RoleController {
 
 		Role role = roleService.getRoleDetails(roleId);
 		model.addAttribute("roleForm", role);
+		Set<Pair<AuthorizedFeature, AuthorizedAction>> roleFeatureActions = roleService.getRoleFeatureActions(role);
+		model.addAttribute("roleFeatureActions", roleFeatureActions);
 
 		List<Pair<AuthorizedFeature, List<AuthorizedAction>>> assignableFeaturesWithActions = roleService
 				.getAssignableFeaturesWithAction();
@@ -101,5 +103,20 @@ public class RoleController {
 		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 
 		return "features/role/role-update";
+	}
+
+	@PostMapping(WebEndpoint.UPDATE_ROLE)
+	public ModelAndView submitUpdateRoleForm(@PathVariable("roleId") Long roleId,
+			@ModelAttribute("roleForm") Role role, HttpServletResponse response, Model model) throws Exception {
+		try {
+			role.setRoleId(roleId);
+			roleService.updateRole(role);
+			cookieFlashAttribute.setAlertValues(true, "Success", "Role updated successfully",
+					response);
+			return new ModelAndView(new RedirectView(WebEndpoint.UPDATE_ROLE));
+		} catch (Exception ex) {
+			cookieFlashAttribute.setAlertValues(false, "Failure", ex.getMessage(), response);
+			return new ModelAndView(new RedirectView(WebEndpoint.UPDATE_ROLE));
+		}
 	}
 }

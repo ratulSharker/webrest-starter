@@ -15,6 +15,9 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
 	@Query("SELECT COUNT(role) FROM Role role WHERE LOWER(role.name) = LOWER(:name)")
 	public Long countByName(@Param("name") String name);
 
+	@Query("SELECT COUNT(role) FROM Role role"
+			+ " WHERE LOWER(role.name) = LOWER(:name) AND role.roleId != :roleId")
+	public Long countByNameExceptRoleId(@Param("name") String name, @Param("roleId") Long roleId);
 
 	@Query("SELECT role FROM Role role"
 			+ " LEFT JOIN FETCH role.authorizations"
