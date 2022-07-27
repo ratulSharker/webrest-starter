@@ -1,7 +1,6 @@
 package com.webrest.common.entity;
 
 import java.io.Serializable;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
