@@ -59,8 +59,8 @@ public class AppUserController {
 		return simpleDataTableHelper.getResponse();
 	}
 
-	@GetMapping(value = WebEndpoint.CREATE_END_USER)
-	public String getCreateEndUserForm(Model model, HttpServletRequest request,
+	@GetMapping(value = WebEndpoint.CREATE_USER)
+	public String getCreateUserForm(Model model, HttpServletRequest request,
 			HttpServletResponse response) {
 		AppUser appUser = new AppUser();
 		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
@@ -69,15 +69,15 @@ public class AppUserController {
 		return "features/user/end-user-create";
 	}
 
-	@PostMapping(value = WebEndpoint.CREATE_END_USER)
-	public ModelAndView submitCreateEndUser(@ModelAttribute("appUserForm") AppUser appUser,
+	@PostMapping(value = WebEndpoint.CREATE_USER)
+	public ModelAndView submitCreateUserForm(@ModelAttribute("appUserForm") AppUser appUser,
 			BindingResult result, Model model, HttpServletResponse response) {
 
 		try {
 			appUser.setAppUserType(AppUserType.END_USER);
 			appUserService.createAppUser(appUser);
 			cookieFlashAttribute.setAlertValues(true, "Success", "End user creation successful", response);
-			return new ModelAndView(new RedirectView(WebEndpoint.CREATE_END_USER));
+			return new ModelAndView(new RedirectView(WebEndpoint.CREATE_USER));
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("End user creation failed", ex, model);
 			Breadcrumb.builder().addItem("Create Admin User").build(model);
