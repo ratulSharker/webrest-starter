@@ -34,9 +34,6 @@ public class WebEndpoint {
 	public static final String USER = "/user";
 	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.LISTING)
 	public static final String USER_LOAD_DATA = "/user-load-data";
-	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.CREATE_ADMIN_USER)
-	public static final String CREATE_ADMIN_USER = "/create-admin-user";
-
 	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.CREATE_END_USER)
 	public static final String CREATE_END_USER = "/create-end-user";
 

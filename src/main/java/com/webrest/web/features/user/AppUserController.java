@@ -59,32 +59,6 @@ public class AppUserController {
 		return simpleDataTableHelper.getResponse();
 	}
 
-	@GetMapping(value = WebEndpoint.CREATE_ADMIN_USER)
-	public String getCreateAdminForm(Model model, HttpServletRequest request,
-			HttpServletResponse response) {
-		AppUser appUser = new AppUser();
-		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
-		model.addAttribute("appUserForm", appUser);
-		Breadcrumb.builder().addItem("Create Admin User").build(model);
-		return "features/user/admin-user-create";
-	}
-
-	@PostMapping(value = WebEndpoint.CREATE_ADMIN_USER)
-	public ModelAndView submitCreateAdminForm(@ModelAttribute("appUserForm") AppUser appUser,
-			Model model, HttpServletResponse response) {
-
-		try {
-			appUser.setAppUserType(AppUserType.ADMIN);
-			appUserService.createAppUser(appUser);
-			cookieFlashAttribute.setAlertValues(true, "Success", "Admin user creation successful", response);
-			return new ModelAndView(new RedirectView(WebEndpoint.CREATE_ADMIN_USER));
-		} catch (Exception ex) {
-			Alert.addExceptionAlertAttributeToModel("Admin user creation failed", ex, model);
-			Breadcrumb.builder().addItem("Create Admin User").build(model);
-			return new ModelAndView("features/user/admin-user-create");
-		}
-	}
-
 	@GetMapping(value = WebEndpoint.CREATE_END_USER)
 	public String getCreateEndUserForm(Model model, HttpServletRequest request,
 			HttpServletResponse response) {
