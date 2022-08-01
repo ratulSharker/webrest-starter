@@ -96,4 +96,8 @@ public class RoleService {
 			throw new BadRequestException("Role exists with the given name");
 		}
 	}
+
+	public List<Role> getNonSuperAdminActiveRoles() {
+		return roleRepository.findNonSuperAdminActiveRoles();
+	}
 }

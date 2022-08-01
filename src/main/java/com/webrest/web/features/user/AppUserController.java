@@ -1,12 +1,16 @@
 package com.webrest.web.features.user;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.webrest.common.dto.datatable.DataTableResponseModel;
 import com.webrest.common.entity.AppUser;
+import com.webrest.common.entity.Role;
 import com.webrest.common.enums.AppUserType;
 import com.webrest.common.service.AppUserService;
+import com.webrest.common.service.RoleService;
 import com.webrest.common.utils.SimpleDataTableHelper;
 import com.webrest.web.common.Alert;
 import com.webrest.web.common.Breadcrumb;
@@ -38,6 +42,7 @@ public class AppUserController {
 
 	private final AppUserService appUserService;
 	private final CookieFlashAttribute cookieFlashAttribute;
+	private final RoleService roleService;
 
 	@GetMapping(value = WebEndpoint.USER)
 	public String index(Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -65,6 +70,8 @@ public class AppUserController {
 		AppUser appUser = new AppUser();
 		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 		model.addAttribute("appUserForm", appUser);
+		List<Role> roles = roleService.getNonSuperAdminActiveRoles();
+		model.addAttribute("roles", roles);
 		Breadcrumb.builder().addItem("Create Admin User").build(model);
 		return "features/user/end-user-create";
 	}
