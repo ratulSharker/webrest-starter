@@ -76,14 +76,17 @@
 				</div>
 				<!-- End image upload -->
 
-				<div class="col-4">
+				<!-- Start role selection -->
+				<div class="col-4 form-group">
+					<label for="dob"><strong>Roles</strong></label>
 					<div class="row" th:each="role : ${roles}">
 						<div class="col">
 							<input type="checkbox" name="" th:id="'role-id-' + ${role.roleId}" th:value="${role.roleId}">
-							<span th:text="${role.name}"></span>
+							<label th:text="${role.name}" th:for="'role-id-' + ${role.roleId}"></label>
 						</div>
 					</div>
 				</div>
+				<!-- End role selection -->
 			</div>
 
 			<div class="fixed-bottom bottom-action-bar">
