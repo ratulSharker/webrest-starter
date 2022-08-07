@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Response<T> {
+public class Response<T extends Object> {
 	Metadata metadata;
 	T data;
 
