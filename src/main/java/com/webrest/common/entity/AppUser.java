@@ -24,7 +24,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webrest.common.annotation.ValidJson;
-import com.webrest.common.enums.AppUserType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -64,10 +63,6 @@ public class AppUser {
 	@Column
 	@JsonIgnore
 	private String password;
-
-	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private AppUserType appUserType;
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)

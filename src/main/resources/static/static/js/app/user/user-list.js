@@ -15,10 +15,6 @@ $(document).ready(function () {
 			},
 			{
 				orderable: false,
-				data: "appUserType"
-			},
-			{
-				orderable: false,
 				render: function (data, type, row, meta) {
 
 					const rowConfiguration = {
@@ -62,7 +58,6 @@ $(document).ready(function () {
 		], "Search name, mobile or email",
 		function () {
 			return {
-				"appUserType": $("#user-type-select").val()
 			};
 		}, 
 		{
@@ -78,7 +73,4 @@ $(document).ready(function () {
 			}
 		});
 
-	$("#user-type-select").on("change", function () {
-		dataTable.ajax.reload();
-	});
 });

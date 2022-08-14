@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.webrest.common.annotation.Authorization;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
-import com.webrest.web.constants.WebEndpoint;
+import com.webrest.web.constants.WebRoutes;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class AuthorizationService {
 	}
 
 	private void collectEndpoints() {
-		Field[] fields = WebEndpoint.class.getDeclaredFields();
+		Field[] fields = WebRoutes.class.getDeclaredFields();
 		for (int index = 0; index < fields.length; index++) {
 			Field field = fields[index];
 
@@ -59,7 +59,7 @@ public class AuthorizationService {
 				if(annotation instanceof Authorization) {
 					Authorization authorization = (Authorization) annotation;
 					try {
-						Object value = field.get(WebEndpoint.class);
+						Object value = field.get(WebRoutes.class);
 						if(value instanceof String) {
 							String fieldValue = (String) value;
 							Endpoint endpoint = new Endpoint(authorization.feature(), authorization.action(), authorization.isPublic(), authorization.isPublicForAuthorizedUser(), fieldValue, authorization.httpMethods());

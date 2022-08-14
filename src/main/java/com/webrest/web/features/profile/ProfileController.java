@@ -8,7 +8,7 @@ import com.webrest.common.service.AppUserService;
 import com.webrest.web.common.Alert;
 import com.webrest.web.common.Breadcrumb;
 import com.webrest.web.common.CookieFlashAttribute;
-import com.webrest.web.constants.WebEndpoint;
+import com.webrest.web.constants.WebRoutes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -29,20 +29,20 @@ public class ProfileController {
 	private final AppUserService appUserService;
 	private final CookieFlashAttribute cookieFlashAttribute;
 
-	@GetMapping(value = WebEndpoint.MY_PROFILE)
+	@GetMapping(value = WebRoutes.MY_PROFILE)
 	public String preview(Model model, HttpServletRequest request) {
 		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
 		AppUser userMe = appUserService.findById(principleObject.getAppUserId());
 
 		model.addAttribute("user", userMe);
-		model.addAttribute("updateProfilePath", WebEndpoint.MY_PROFILE_UPDATE);
+		model.addAttribute("updateProfilePath", WebRoutes.MY_PROFILE_UPDATE);
 
 		Breadcrumb.builder().addItem("My Profile").build(model);
 
 		return "features/profile/profile-preview";
 	}
 
-	@GetMapping(value = WebEndpoint.MY_PROFILE_UPDATE)
+	@GetMapping(value = WebRoutes.MY_PROFILE_UPDATE)
 	public String getUpdateForm(Model model, HttpServletRequest request, HttpServletResponse response) {
 
 		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
@@ -51,14 +51,14 @@ public class ProfileController {
 		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 
 		model.addAttribute("user", userMe);
-		model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
+		model.addAttribute("myProfilePath", WebRoutes.MY_PROFILE);
 
-		Breadcrumb.builder().addItem("My Profile", WebEndpoint.MY_PROFILE).addItem("Update My Profile").build(model);
+		Breadcrumb.builder().addItem("My Profile", WebRoutes.MY_PROFILE).addItem("Update My Profile").build(model);
 
 		return "features/profile/profile-update";
 	}
 
-	@PostMapping(value = WebEndpoint.MY_PROFILE_UPDATE)
+	@PostMapping(value = WebRoutes.MY_PROFILE_UPDATE)
 	public ModelAndView submitUpdateForm(@ModelAttribute("user") AppUser updatedUser, HttpServletRequest request,
 			Model model, HttpServletResponse response) {
 
@@ -71,13 +71,13 @@ public class ProfileController {
 
 			cookieFlashAttribute.setAlertValues(true, "Success", "Profile updated successfully", response);
 
-			return new ModelAndView(new RedirectView(WebEndpoint.MY_PROFILE_UPDATE));
+			return new ModelAndView(new RedirectView(WebRoutes.MY_PROFILE_UPDATE));
 
 		} catch (Exception ex) {
 			logger.error("Error During profile update", ex);
 			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
-			model.addAttribute("myProfilePath", WebEndpoint.MY_PROFILE);
-			Breadcrumb.builder().addItem("My Profile", WebEndpoint.MY_PROFILE).addItem("Update My Profile").build(model);
+			model.addAttribute("myProfilePath", WebRoutes.MY_PROFILE);
+			Breadcrumb.builder().addItem("My Profile", WebRoutes.MY_PROFILE).addItem("Update My Profile").build(model);
 			return new ModelAndView("features/profile/profile-update");
 		}
 	}

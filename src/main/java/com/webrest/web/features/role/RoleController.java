@@ -14,7 +14,7 @@ import com.webrest.common.utils.SimpleDataTableHelper;
 import com.webrest.web.common.Alert;
 import com.webrest.web.common.Breadcrumb;
 import com.webrest.web.common.CookieFlashAttribute;
-import com.webrest.web.constants.WebEndpoint;
+import com.webrest.web.constants.WebRoutes;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
@@ -37,12 +37,12 @@ public class RoleController {
 	private final RoleService roleService;
 	private final CookieFlashAttribute cookieFlashAttribute;
 
-	@GetMapping(WebEndpoint.ROLE)
+	@GetMapping(WebRoutes.ROLE)
 	public String list() {
 		return "features/role/role-list";
 	}
 
-	@GetMapping(WebEndpoint.ROLE_LOAD_DATA)
+	@GetMapping(WebRoutes.ROLE_LOAD_DATA)
 	@ResponseBody
 	public DataTableResponseModel<Role> loadRoleData(HttpServletRequest request) {
 		SimpleDataTableHelper<Role> simpleDataTableHelper = SimpleDataTableHelper.<Role>builder()
@@ -52,7 +52,7 @@ public class RoleController {
 		return simpleDataTableHelper.getResponse();
 	}
 
-	@GetMapping(WebEndpoint.CREATE_ROLE)
+	@GetMapping(WebRoutes.CREATE_ROLE)
 	public String getCreateRoleForm(Model model, HttpServletRequest request, HttpServletResponse response) {
 
 		model.addAttribute("roleForm", new Role());
@@ -66,7 +66,7 @@ public class RoleController {
 		return "features/role/role-create";
 	}
 
-	@PostMapping(WebEndpoint.CREATE_ROLE)
+	@PostMapping(WebRoutes.CREATE_ROLE)
 	public ModelAndView submitCreateRoleForm(@ModelAttribute("roleForm") Role role, HttpServletResponse response,
 			Model model) {
 
@@ -74,7 +74,7 @@ public class RoleController {
 			roleService.createNewRole(role);
 			String message = String.format("Role created with name `%s`", role.getName());
 			cookieFlashAttribute.setAlertValues(true, "Success", message, response);
-			return new ModelAndView(new RedirectView(WebEndpoint.CREATE_ROLE));
+			return new ModelAndView(new RedirectView(WebRoutes.CREATE_ROLE));
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("Role creation failed", ex, model);
 			Breadcrumb.builder().addItem("Create Role").build(model);
@@ -87,7 +87,7 @@ public class RoleController {
 		}
 	}
 
-	@GetMapping(WebEndpoint.UPDATE_ROLE)
+	@GetMapping(WebRoutes.UPDATE_ROLE)
 	public String getUpdateRoleForm(@PathVariable("roleId") Long roleId, Model model, HttpServletRequest request, HttpServletResponse response) {
 
 		Role role = roleService.getRoleDetails(roleId);
@@ -99,13 +99,13 @@ public class RoleController {
 				.getAssignableFeaturesWithAction();
 		model.addAttribute("assignableFeaturesWithActions", assignableFeaturesWithActions);
 
-		Breadcrumb.builder().addItem("Role list", WebEndpoint.ROLE).addItem("Update Role").build(model);
+		Breadcrumb.builder().addItem("Role list", WebRoutes.ROLE).addItem("Update Role").build(model);
 		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 
 		return "features/role/role-update";
 	}
 
-	@PostMapping(WebEndpoint.UPDATE_ROLE)
+	@PostMapping(WebRoutes.UPDATE_ROLE)
 	public ModelAndView submitUpdateRoleForm(@PathVariable("roleId") Long roleId,
 			@ModelAttribute("roleForm") Role role, HttpServletResponse response, Model model) throws Exception {
 		try {
@@ -113,10 +113,10 @@ public class RoleController {
 			roleService.updateRole(role);
 			cookieFlashAttribute.setAlertValues(true, "Success", "Role updated successfully",
 					response);
-			return new ModelAndView(new RedirectView(WebEndpoint.UPDATE_ROLE));
+			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_ROLE));
 		} catch (Exception ex) {
 			cookieFlashAttribute.setAlertValues(false, "Failure", ex.getMessage(), response);
-			return new ModelAndView(new RedirectView(WebEndpoint.UPDATE_ROLE));
+			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_ROLE));
 		}
 	}
 }

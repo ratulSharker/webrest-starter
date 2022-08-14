@@ -6,8 +6,8 @@ import com.webrest.common.annotation.Authorization;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
 
-public class WebEndpoint {
-	private WebEndpoint() {
+public class WebRoutes {
+	private WebRoutes() {
 
 	}
 

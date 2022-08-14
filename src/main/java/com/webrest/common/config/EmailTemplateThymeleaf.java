@@ -20,7 +20,7 @@ public class EmailTemplateThymeleaf { // https://www.thymeleaf.org/doc/articles/
 
 	private ITemplateResolver htmlTemplateResolver() {
 		final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-		templateResolver.setPrefix("/mail/");
+		templateResolver.setPrefix("/templates/");
 		templateResolver.setSuffix(".html");
 		templateResolver.setTemplateMode(TemplateMode.HTML);
 		templateResolver.setCharacterEncoding("utf-8");

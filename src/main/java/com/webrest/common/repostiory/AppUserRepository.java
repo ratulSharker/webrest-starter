@@ -1,10 +1,8 @@
 package com.webrest.common.repostiory;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import com.webrest.common.entity.AppUser;
-import com.webrest.common.enums.AppUserType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -29,9 +27,8 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long>, JpaSpec
 
 	public Long countByEmailAndAppUserIdNot(String mobile, Long appUserId);
 
-	public Optional<AppUser> findByMobileAndAppUserType(String mobile, AppUserType appUserType);
 
-	public Optional<AppUser> findByEmailAndAppUserTypeIn(String email, Collection<AppUserType> appUserType);
+	public Optional<AppUser> findByEmail(String email);
 
 	@Modifying
 	@Query("UPDATE AppUser user SET user.password = :password WHERE user.appUserId = :appUserId")

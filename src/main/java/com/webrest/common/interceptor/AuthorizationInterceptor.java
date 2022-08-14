@@ -14,7 +14,7 @@ import com.webrest.common.service.AppUserService;
 import com.webrest.common.service.AuthorizationService;
 import com.webrest.common.service.JWTService;
 import com.webrest.common.utils.CookieUtils;
-import com.webrest.rest.constants.RestEndpoint;
+import com.webrest.rest.constants.RestRoutes;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -47,7 +47,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			throws Exception {
 		String path = request.getRequestURI().substring(request.getContextPath().length());
 
-		if (path.startsWith(RestEndpoint.PREFIX)) {
+		if (path.startsWith(RestRoutes.PREFIX)) {
 			// Coming from API
 			return handleRestAuthorization(request, response);
 		} else {
@@ -89,7 +89,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			return true;
 		} catch (Exception ex) {
 			// Logout the web user
-			response.sendRedirect(com.webrest.web.constants.WebEndpoint.LOGOUT);
+			response.sendRedirect(com.webrest.web.constants.WebRoutes.LOGOUT);
 			return false;
 		}
 	}
@@ -118,7 +118,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
 		if (principleObject != null && modelAndView != null && !(modelAndView.getView() instanceof RedirectView)) {
 			modelAndView.addObject("loggedInUser", principleObject);
-			modelAndView.addObject("fileDownloadPath", RestEndpoint.FILE_DOWNLOAD.replace("**", ""));
+			modelAndView.addObject("fileDownloadPath", RestRoutes.FILE_DOWNLOAD.replace("**", ""));
 		}
 
 	}

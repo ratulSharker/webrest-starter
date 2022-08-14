@@ -1,6 +1,5 @@
 package com.webrest.common.service;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -8,7 +7,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import com.webrest.common.entity.AppUser;
-import com.webrest.common.enums.AppUserType;
 import com.webrest.common.exception.AppUserAlreadyExistsException;
 import com.webrest.common.repostiory.AppUserRepository;
 import com.webrest.common.service.storage.StorageService;
@@ -54,16 +52,9 @@ public class AppUserService {
 		return optionalAppUser.get();
 	}
 
-	public AppUser getEndAppUserByMobile(String mobile) {
-		Optional<AppUser> optionalUser = appUserRepository.findByMobileAndAppUserType(mobile, AppUserType.END_USER);
-		return optionalUser.orElseThrow(() -> {
-			String message = String.format("User not found with mobile : %s", mobile);
-			throw new EntityNotFoundException(message);
-		});
-	}
 
-	public AppUser getAppUserByEmail(String email, List<AppUserType> appUserTypes) {
-		Optional<AppUser> optionalUser = appUserRepository.findByEmailAndAppUserTypeIn(email, appUserTypes);
+	public AppUser getAppUserByEmail(String email) {
+		Optional<AppUser> optionalUser = appUserRepository.findByEmail(email);
 		return optionalUser.orElseThrow(() -> {
 			String message = String.format("User not found with email : %s", email);
 			throw new EntityNotFoundException(message);
@@ -95,13 +86,7 @@ public class AppUserService {
 		}
 
 		handleUpdateProfilePicture(updatedUser, existingUser);
-		if (existingUser.getAppUserType() == AppUserType.END_USER) {
-			BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "email", "mobile", "password",
-					"appUserType", "createdAt", "updatedAt");
-		} else {
-			BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "password", "appUserType", "createdAt",
-					"updatedAt");
-		}
+		BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "createdAt", "updatedAt");
 
 		appUserRepository.save(existingUser);
 		return existingUser;
@@ -165,10 +150,9 @@ public class AppUserService {
 		appUserRepository.updateUserPassword(appUserId, password);
 	}
 
-	public Page<AppUser> filter(Pageable pageable, String searchValue, AppUserType appUserType) {
+	public Page<AppUser> filter(Pageable pageable, String searchValue) {
 		Specification<AppUser> specification = Specification
-				.where(AppUserSpecification.likeNameOrMobileOrEmail(searchValue))
-				.and(AppUserSpecification.equalAppUserType(appUserType));
+				.where(AppUserSpecification.likeNameOrMobileOrEmail(searchValue));
 
 		return appUserRepository.findAll(specification, pageable);
 	}

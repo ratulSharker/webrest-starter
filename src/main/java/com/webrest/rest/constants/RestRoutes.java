@@ -2,8 +2,8 @@ package com.webrest.rest.constants;
 
 import java.util.List;
 
-public final class RestEndpoint {
-	private RestEndpoint() {
+public final class RestRoutes {
+	private RestRoutes() {
 
 	}
 
