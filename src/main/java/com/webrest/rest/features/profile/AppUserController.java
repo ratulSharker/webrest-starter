@@ -10,8 +10,10 @@ import com.webrest.common.interceptor.AuthorizationInterceptor;
 import com.webrest.common.service.AppUserService;
 import com.webrest.rest.constants.RestEndpoint;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,5 +40,12 @@ public class AppUserController {
 		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
 		AppUser updatedMe = appUserService.updateOwnProfile(principleObject.getAppUserId(), updatedAppUser);
 		return Response.<AppUser>builder().data(updatedMe).build();
+	}
+
+	@Cacheable(value = RedisConfiguration.CACHE_CONFIGURATION_FULL_RESPONSE, key = "'user-by-id-' + #userId")
+	@GetMapping(value = RestEndpoint.USER_BY_ID)
+	public Response<AppUser> userById(@PathVariable("userId") Long userId) {
+		AppUser userMe = appUserService.findById(userId);
+		return Response.<AppUser>builder().data(userMe).build();
 	}
 }

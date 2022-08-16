@@ -35,12 +35,14 @@ public class AppUserService {
 	private AppUserRepository appUserRepository;
 	private EntityManager entityManager;
 	private StorageService storageService;
+	private AppUserCacheService appUserCacheService;
 
 	public AppUserService(AppUserRepository appUserRepository, EntityManager entityManager,
-			StorageService storageService) {
+			StorageService storageService, AppUserCacheService appUserCacheService) {
 		this.appUserRepository = appUserRepository;
 		this.entityManager = entityManager;
 		this.storageService = storageService;
+		this.appUserCacheService = appUserCacheService;
 	}
 
 	public AppUser getAppUserMobileOrEmailAndPassword(String mobileOrEmail, String password) {
@@ -71,7 +73,19 @@ public class AppUserService {
 	}
 
 	public AppUser findById(Long userId) {
+
+		// Lookup cache first
+		if(appUserCacheService.cacheConfirmsThatUserDoesNotExistsById(userId)) {
+			String message = String.format("App user not found with id : %d", userId);
+			throw new EntityNotFoundException(message);			
+		}
+
+		// No such cache exists which confirms that user does not exists
+		// So lookup in database.
 		Optional<AppUser> optionalAppUser = appUserRepository.findById(userId);
+
+		// Update the cache if user exists or not by id
+		appUserCacheService.updateCacheConfirmationThatUserDoesNotExists(userId, optionalAppUser);
 
 		return optionalAppUser.orElseThrow(() -> {
 			String message = String.format("App user not found with id : %d", userId);

@@ -14,6 +14,7 @@ public final class RestEndpoint {
 
 	public static final String USERS = PREFIX_VERSION + "/users";
 	public static final String USERS_ME = USERS + "/me";
+	public static final String USER_BY_ID = USERS + "/{userId}";
 
 	public static final String FILE_UPLOAD = PREFIX_VERSION + "/upload";
 	public static final String FILE_DOWNLOAD = PREFIX_VERSION + "/download/**";

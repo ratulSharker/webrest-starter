@@ -3,6 +3,7 @@ package com.webrest.common.config;
 import java.time.Duration;
 
 import com.webrest.common.dto.response.Response;
+import com.webrest.common.utils.BooleanRedisSerializer;
 import com.webrest.common.utils.HibernateAwareFullResponseRedisSerializer;
 import com.webrest.common.utils.HibernateAwareResponseDataRedisSerializer;
 
@@ -16,12 +17,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfiguration {
 
 	public static final String CACHE_CONFIGURATION_FULL_RESPONSE = "full-response";
 	public static final String CACHE_CONFIGURATION_DATA_ONLY = "data-only";
+	public static final String CACHE_CONFIGURATION_BOOLEAN = "bool";
 
 	@Bean
 	public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
@@ -38,10 +41,16 @@ public class RedisConfiguration {
 				.serializeValuesWith(SerializationPair
 						.fromSerializer(new HibernateAwareResponseDataRedisSerializer()));
 
+		RedisCacheConfiguration primitiveConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+				.entryTtl(Duration.ofMinutes(60))
+				.disableCachingNullValues()
+				.serializeValuesWith(SerializationPair.fromSerializer(new BooleanRedisSerializer()));
+
 		return (builder) -> builder
 				.withCacheConfiguration(CACHE_CONFIGURATION_FULL_RESPONSE,
 						fullResponseConfiguration)
 				.withCacheConfiguration(CACHE_CONFIGURATION_DATA_ONLY,
-						dataOnlyConfiguration);
+						dataOnlyConfiguration)
+				.withCacheConfiguration(CACHE_CONFIGURATION_BOOLEAN, primitiveConfiguration);
 	}
 }
