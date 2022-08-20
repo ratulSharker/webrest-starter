@@ -69,8 +69,8 @@ public class AppUserController {
 		model.addAttribute("appUserForm", appUser);
 		List<Role> roles = roleService.getNonSuperAdminActiveRoles();
 		model.addAttribute("roles", roles);
-		Breadcrumb.builder().addItem("Create Admin User").build(model);
-		return "features/user/end-user-create";
+		Breadcrumb.builder().addItem("Create User").build(model);
+		return "features/user/user-create";
 	}
 
 	@PostMapping(value = WebRoutes.CREATE_USER)
