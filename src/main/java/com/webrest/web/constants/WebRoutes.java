@@ -37,11 +37,12 @@ public class WebRoutes {
 	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.CREATE)
 	public static final String CREATE_USER = "/create-user";
 
-	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.ADMIN_USER_VIEW_DETAILS)
-	public static final String ADMIN_USER_DETAILS = "/admin-user-details/{appUserId}";
-	public static final String UPDATE_ADMIN_USER = "/update-admin-user/{appUserId}";
-	public static final String END_USER_DETAILS = "/end-user-details/{appUserId}";
 	public static final String UPDATE_END_USER = "/update-end-user/{appUserId}";
+
+	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.VIEW)
+	public static final String USER_DETAILS = "/user-details/{appUserId}";
+	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.UPDATE)
+	public static final String UPDATE_USER = "/update-user/{appUserId}";
 
 	public static final String ROLE = "/role";
 	public static final String ROLE_LOAD_DATA = "/role-load-data";

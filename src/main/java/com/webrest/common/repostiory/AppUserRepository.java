@@ -33,4 +33,9 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long>, JpaSpec
 	@Modifying
 	@Query("UPDATE AppUser user SET user.password = :password WHERE user.appUserId = :appUserId")
 	public void updateUserPassword(@Param("appUserId") Long appUserId, @Param("password") String password);
+
+	@Query("SELECT user FROM AppUser user"
+			+ " LEFT JOIN FETCH user.roles"
+			+ " WHERE user.appUserId = :appUserId")
+	public Optional<AppUser> findByIdWithRoles(@Param("appUserId") Long appUserId);
 }

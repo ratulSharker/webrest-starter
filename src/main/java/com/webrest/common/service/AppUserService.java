@@ -70,6 +70,15 @@ public class AppUserService {
 		});
 	}
 
+	public AppUser findByIdWithRoles(Long appUserId) {
+		Optional<AppUser> optionalAppUser = appUserRepository.findByIdWithRoles(appUserId);
+
+		return optionalAppUser.orElseThrow(() -> {
+			String message = String.format("App user not found with id : %d", appUserId);
+			throw new EntityNotFoundException(message);
+		});
+	}
+
 	public AppUser updateOwnProfile(Long appUserId, AppUser updatedUser) {
 		AppUser existingUser = findById(appUserId);
 

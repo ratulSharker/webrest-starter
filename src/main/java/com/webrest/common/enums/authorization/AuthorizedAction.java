@@ -4,8 +4,5 @@ public enum AuthorizedAction {
 	NONE,
 
 	// Common
-	CREATE, UPDATE, LISTING, DELETE,
-	
-	// User Action
-	ADMIN_USER_VIEW_DETAILS,
+	CREATE, VIEW, UPDATE, LISTING, DELETE,
 }

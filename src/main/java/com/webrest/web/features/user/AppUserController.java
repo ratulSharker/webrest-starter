@@ -88,63 +88,18 @@ public class AppUserController {
 		}
 	}
 
-	@GetMapping(value = WebRoutes.ADMIN_USER_DETAILS)
-	public String getAdminDetails(@PathVariable("appUserId") Long appUserId, Model model) {
-
-		try {
-			AppUser appUser = appUserService.findById(appUserId);
-			model.addAttribute("appUser", appUser);
-			Breadcrumb.builder().addItem("All Users", WebRoutes.USER)
-					.addItem(String.format("Admin User details (%s)", appUser.getEmail())).build(model);
-		} catch (Exception ex) {
-			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
-		}
-		return "features/user/admin-user-details";
-	}
-
-	@GetMapping(value = WebRoutes.UPDATE_ADMIN_USER)
-	public String getAdminUpdateForm(@PathVariable("appUserId") Long appUserId, Model model,
-			HttpServletRequest request, HttpServletResponse response) {
-		try {
-			AppUser appUser = appUserService.findById(appUserId);
-			cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
-			model.addAttribute("appUserForm", appUser);
-			Breadcrumb.builder().addItem("All Users", WebRoutes.USER)
-					.addItem(String.format("Update Admin User (%s)", appUser.getEmail())).build(model);
-		} catch (Exception ex) {
-			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
-		}
-		return "features/user/admin-user-update";
-	}
-
-	@PostMapping(value = WebRoutes.UPDATE_ADMIN_USER)
-	public ModelAndView submitAdminUpdateForm(@ModelAttribute("appUserForm") AppUser appUser,
-			BindingResult bindingResult, @PathVariable("appUserId") Long appUserId, Model model,
-			HttpServletResponse response) {
-
-		try {
-			appUserService.update(appUserId, appUser);
-			cookieFlashAttribute.setAlertValues(true, "Success", "Admin user updated successfully",
-					response);
-			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_ADMIN_USER));
-		} catch (Exception ex) {
-			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
-			return new ModelAndView("features/user/admin-user-update");
-		}
-	}
-
-	@GetMapping(value = WebRoutes.END_USER_DETAILS)
+	@GetMapping(value = WebRoutes.USER_DETAILS)
 	public String getEndUserDetails(@PathVariable("appUserId") Long appUserId, Model model) {
 		try {
-			AppUser appUser = appUserService.findById(appUserId);
+			AppUser appUser = appUserService.findByIdWithRoles(appUserId);
 			model.addAttribute("appUser", appUser);
 			Breadcrumb.builder().addItem("All Users", WebRoutes.USER)
-					.addItem(String.format("End User details (%s)", appUser.getEmail())).build(model);
+					.addItem(String.format("User details (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 		}
 
-		return "features/user/end-user-details";
+		return "features/user/user-details";
 	}
 
 	@GetMapping(value = WebRoutes.UPDATE_END_USER)
