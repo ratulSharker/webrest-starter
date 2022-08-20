@@ -100,4 +100,8 @@ public class RoleService {
 	public List<Role> getNonSuperAdminActiveRoles() {
 		return roleRepository.findNonSuperAdminActiveRoles();
 	}
+
+	public Role getOne(Long roleId) {
+		return roleRepository.getOne(roleId);
+	}
 }

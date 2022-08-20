@@ -79,12 +79,12 @@ public class AppUserController {
 
 		try {
 			appUserService.createAppUser(appUser);
-			cookieFlashAttribute.setAlertValues(true, "Success", "End user creation successful", response);
+			cookieFlashAttribute.setAlertValues(true, "Success", "User creation successful", response);
 			return new ModelAndView(new RedirectView(WebRoutes.CREATE_USER));
 		} catch (Exception ex) {
-			Alert.addExceptionAlertAttributeToModel("End user creation failed", ex, model);
-			Breadcrumb.builder().addItem("Create Admin User").build(model);
-			return new ModelAndView("features/user/end-user-create");
+			Alert.addExceptionAlertAttributeToModel("User creation failed", ex, model);
+			Breadcrumb.builder().addItem("Create User").build(model);
+			return new ModelAndView("features/user/user-create");
 		}
 	}
 
@@ -102,34 +102,36 @@ public class AppUserController {
 		return "features/user/user-details";
 	}
 
-	@GetMapping(value = WebRoutes.UPDATE_END_USER)
+	@GetMapping(value = WebRoutes.UPDATE_USER)
 	public String getEndUserUpdateForm(@PathVariable("appUserId") Long appUserId, Model model,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-			AppUser appUser = appUserService.findById(appUserId);
+			AppUser appUser = appUserService.findByIdWithRoles(appUserId);
 			cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 			model.addAttribute("appUserForm", appUser);
+			List<Role> roles = roleService.getNonSuperAdminActiveRoles();
+			model.addAttribute("roles", roles);
 			Breadcrumb.builder().addItem("All Users", WebRoutes.USER)
-					.addItem(String.format("Update End User (%s)", appUser.getEmail())).build(model);
+					.addItem(String.format("Update User (%s)", appUser.getEmail())).build(model);
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 		}
-		return "features/user/end-user-update";
+		return "features/user/user-update";
 	}
 
-	@PostMapping(value = WebRoutes.UPDATE_END_USER)
+	@PostMapping(value = WebRoutes.UPDATE_USER)
 	public ModelAndView postEndUserUpdateForm(@PathVariable("appUserId") Long appUserId,
 			@ModelAttribute("appUserForm") AppUser appUser, BindingResult bindingResult,
 			Model model, HttpServletResponse response) {
 
 		try {
 			appUserService.update(appUserId, appUser);
-			cookieFlashAttribute.setAlertValues(true, "Success", "End user updated successfully",
+			cookieFlashAttribute.setAlertValues(true, "Success", "User Updated Successfully",
 					response);
-			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_END_USER));
+			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_USER));
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
-			return new ModelAndView("features/user/end-user-update");
+			return new ModelAndView("features/user/user-update");
 		}
 	}
 }

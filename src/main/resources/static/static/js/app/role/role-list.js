@@ -11,11 +11,6 @@ $(document).ready(function () {
 				orderable: false,
 				render: function (data, type, row, meta) {
 
-					// const rowConfiguration = {
-					// 	detailsPagePath: row.appUserType == "ADMIN" ? `/admin-user-details/${row.appUserId}` : `/end-user-details/${row.appUserId}`,
-					// 	updatePagePath: row.appUserType == "ADMIN" ? `/update-admin-user/${row.appUserId}` : `/update-end-user/${row.appUserId}`
-					// };
-
 					if (row.isSuperAdmin === true) {
 						return `
                         <div class="d-flex justify-content-center">

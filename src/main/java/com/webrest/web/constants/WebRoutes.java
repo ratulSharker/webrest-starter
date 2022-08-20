@@ -37,8 +37,6 @@ public class WebRoutes {
 	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.CREATE)
 	public static final String CREATE_USER = "/create-user";
 
-	public static final String UPDATE_END_USER = "/update-end-user/{appUserId}";
-
 	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.VIEW)
 	public static final String USER_DETAILS = "/user-details/{appUserId}";
 	@Authorization(feature = AuthorizedFeature.USER, action = AuthorizedAction.UPDATE)

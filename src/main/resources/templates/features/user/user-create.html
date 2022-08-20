@@ -81,7 +81,7 @@
 					<label for="dob"><strong>Roles</strong></label>
 					<div class="row" th:each="role : ${roles}">
 						<div class="col">
-							<input type="checkbox" name="" th:id="'role-id-' + ${role.roleId}" th:value="${role.roleId}">
+							<input type="checkbox" name="roles" th:id="'role-id-' + ${role.roleId}" th:value="${role.roleId}">
 							<label th:text="${role.name}" th:for="'role-id-' + ${role.roleId}"></label>
 						</div>
 					</div>

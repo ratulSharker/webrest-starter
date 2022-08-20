@@ -7,6 +7,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import com.webrest.common.entity.AppUser;
+import com.webrest.common.entity.Role;
 import com.webrest.common.exception.AppUserAlreadyExistsException;
 import com.webrest.common.repostiory.AppUserRepository;
 import com.webrest.common.service.storage.StorageService;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Transactional
@@ -31,6 +33,7 @@ public class AppUserService {
 	private Logger logger = LoggerFactory.getLogger(AppUserService.class);
 
 	private AppUserRepository appUserRepository;
+	private RoleService roleService;
 	private EntityManager entityManager;
 	private StorageService storageService;
 
@@ -117,8 +120,17 @@ public class AppUserService {
 		}
 
 		handleUpdateProfilePicture(updatedUser, existingUser);
-		BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "password", "appUserType", "createdAt",
-				"updatedAt");
+		BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "password", "createdAt",
+				"updatedAt", "roles");
+
+		// Update roles
+		existingUser.getRoles().clear();
+		if(CollectionUtils.isEmpty(updatedUser.getRoles()) == false) {
+			updatedUser.getRoles().stream().forEach(role -> {
+				Role proxyRole = roleService.getOne(role.getRoleId());
+				existingUser.getRoles().add(proxyRole);
+			});
+		}
 
 		appUserRepository.save(existingUser);
 		return existingUser;

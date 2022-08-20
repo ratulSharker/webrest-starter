@@ -1,6 +1,8 @@
 package com.webrest.common.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +22,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.util.CollectionUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webrest.common.annotation.ValidJson;
 import lombok.AllArgsConstructor;
@@ -76,7 +80,7 @@ public class AppUser {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "app_user_role", joinColumns = {@JoinColumn(name = "app_user_id")},
 			inverseJoinColumns = {@JoinColumn(name = "role_id")})
-	private Set<Role> roles;
+	private Set<Role> roles = new HashSet<Role>();
 
 	@PrePersist
 	private void prePersist() {
@@ -88,5 +92,18 @@ public class AppUser {
 	@PreUpdate
 	private void preUpdate() {
 		this.updatedAt = new Date();
+	}
+
+	// TODO: Prepare a js which will ensure the serial
+	// of the checked roles.
+	public void setRoles(List<Long> roleIds) {
+		roles.clear();
+		if(CollectionUtils.isEmpty(roleIds) == false) {
+			roleIds.stream().forEach(roleId -> {
+				Role role = new Role();
+				role.setRoleId(roleId);
+				roles.add(role);
+			});
+		}
 	}
 }
