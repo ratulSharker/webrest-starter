@@ -63,9 +63,9 @@
 									<div class="card-body">
 										<div class="row" th:each="action : ${featuresWithAction.getSecond()}">
 											<div class="col">
-												<input type="checkbox" th:id="${action + '-action-checkbox'}"
+												<input type="checkbox" th:id="${feature.name() + '-' + action + '-action-checkbox'}"
 													th:name="hyphenSeparatedFeatureActions" th:value="${feature.name() + '-' + action.name()}">
-												<label class="m-0" th:for="${action + '-action-checkbox'}" th:text="${action.name()}">
+												<label class="m-0" th:for="${feature.name() + '-' + action + '-action-checkbox'}" th:text="${action.name()}">
 													Feature action
 												</label>
 											</div>

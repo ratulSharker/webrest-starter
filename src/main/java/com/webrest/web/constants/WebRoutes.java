@@ -19,6 +19,8 @@ public class WebRoutes {
 	public static final String BLANK = "/";
 	@Authorization(isPublic = true)
 	public static final String LOGIN = "/login";
+	@Authorization(isPublic = true)
+	public static final String ERROR = "/error";
 	@Authorization(isPublicForAuthorizedUser = true)
 	public static final String LOGOUT = "/logout";
 

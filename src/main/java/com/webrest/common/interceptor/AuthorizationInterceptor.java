@@ -24,9 +24,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	public static final String PRINCIPLE_APP_USER_KEY = "principle_app_user";
@@ -89,6 +91,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			return true;
 		} catch (Exception ex) {
 			// Logout the web user
+			log.error("Error during web app authorization", ex);
 			response.sendRedirect(com.webrest.web.constants.WebRoutes.LOGOUT);
 			return false;
 		}
