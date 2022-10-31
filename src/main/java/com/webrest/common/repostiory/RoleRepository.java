@@ -26,9 +26,8 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
 	public Optional<Role> getRoleDetailsById(@Param("roleId") Long roleId);
 
 	@Query("SELECT role FROM Role role"
-			+ " WHERE role.isSuperAdmin = false"
-			+ " AND role.active = true")
-	public List<Role> findNonSuperAdminActiveRoles();
+			+ " WHERE role.active = true")
+	public List<Role> findActiveRoles();
 
 	@Query("SELECT role FROM Role role " + "LEFT JOIN FETCH role.authorizations "
 			+ " WHERE role.roleId IN :roleIds")

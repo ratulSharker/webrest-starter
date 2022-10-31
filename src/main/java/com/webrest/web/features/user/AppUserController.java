@@ -67,7 +67,7 @@ public class AppUserController {
 		AppUser appUser = new AppUser();
 		cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 		model.addAttribute("appUserForm", appUser);
-		List<Role> roles = roleService.getNonSuperAdminActiveRoles();
+		List<Role> roles = roleService.getActiveRoles();
 		model.addAttribute("roles", roles);
 		Breadcrumb.builder().addItem("Create User").build(model);
 		return "features/user/user-create";
@@ -109,7 +109,7 @@ public class AppUserController {
 			AppUser appUser = appUserService.findByIdWithRoles(appUserId);
 			cookieFlashAttribute.getValuesAndAddAlertModel(model, request, response);
 			model.addAttribute("appUserForm", appUser);
-			List<Role> roles = roleService.getNonSuperAdminActiveRoles();
+			List<Role> roles = roleService.getActiveRoles();
 			model.addAttribute("roles", roles);
 			Breadcrumb.builder().addItem("All Users", WebRoutes.USER)
 					.addItem(String.format("Update User (%s)", appUser.getEmail())).build(model);
