@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -114,5 +115,10 @@ public class AppUser {
 		return roles.stream().filter(role -> {
 			return Objects.equal(role.getRoleId(), roleId);
 		}).findFirst().isPresent();
+	}
+
+	@JsonIgnore
+	public List<Long> getRoleIds() {
+		return roles.stream().map(Role::getRoleId).collect(Collectors.toList());
 	}
 }

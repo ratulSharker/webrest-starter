@@ -50,7 +50,6 @@ public class AppUserService {
 		return optionalAppUser.get();
 	}
 
-
 	public AppUser getAppUserByEmail(String email) {
 		Optional<AppUser> optionalUser = appUserRepository.findByEmail(email);
 		return optionalUser.orElseThrow(() -> {
@@ -212,4 +211,6 @@ public class AppUserService {
 			}
 		}
 	}
+
+
 }

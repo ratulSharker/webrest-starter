@@ -1,6 +1,7 @@
 package com.webrest.common.interceptor;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import com.webrest.common.entity.AppUser;
 import com.webrest.common.service.AppUserService;
 import com.webrest.common.service.AuthorizationService;
 import com.webrest.common.service.JWTService;
+import com.webrest.common.service.AuthorizationService.Endpoint;
 import com.webrest.common.utils.CookieUtils;
 import com.webrest.rest.constants.RestRoutes;
 
@@ -36,12 +38,6 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 	private final ObjectMapper objectMapper;
 	private final AuthorizationService authorizationService;
 
-	// public AuthorizationInterceptor(JWTService jwtService, AppUserService appUserService, ObjectMapper objectMapper) {
-	// 	this.jwtService = jwtService;
-	// 	this.appUserService = appUserService;
-	// 	this.objectMapper = objectMapper;
-	// }
-
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
@@ -52,7 +48,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			return handleRestAuthorization(request, response);
 		} else {
 			// Coming from Web Admin
-			authorizationService.printEndpointDetails(request);
+			// authorizationService.printEndpointDetails(request);
 			return handleWebappAuthorization(request, response);
 		}
 
@@ -63,7 +59,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		String token = request.getHeader(REST_AUTHORIZATION_HEADER);
 
 		try {
-			verifyTokenAndInjectAppUser(request, token);
+			verifyTokenInjectAppUserAndExtractRoleIds(request, token);
 			return true;
 		} catch (Exception ex) {
 			// Send 401, with appropriate reasoning
@@ -85,7 +81,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		String token = CookieUtils.getAuthorization(request);
 
 		try {
-			verifyTokenAndInjectAppUser(request, token);
+			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
+			if()
 			return true;
 		} catch (Exception ex) {
 			// Logout the web user
@@ -95,16 +92,24 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 	}
 
 	// Delegate this verification process to `AuthenticationService`
-	private void verifyTokenAndInjectAppUser(HttpServletRequest request, String token) {
+	private List<Long> verifyTokenInjectAppUserAndExtractRoleIds(HttpServletRequest request, String token) {
 		Map<String, Claim> claims = jwtService.verifyToken(token);
 
 		Long appUserId = claims.get(jwtService.APP_USER_ID_CLAIM_KEY).asLong();
+		List<Long> roleIds = claims.get(jwtService.APP_USER_ROLE_IDS).asList(Long.class);
 
 		// TODO: This db call needed to be removed ASAP.
 		AppUser appUser = appUserService.findById(appUserId);
 		appUserService.detachAppUserFromJPA(appUser);
 
 		request.setAttribute(PRINCIPLE_APP_USER_KEY, appUser);
+
+		return roleIds;
+	}
+
+	private boolean hasAuthorizationToRoute(HttpServletRequest request, List<Long> roleIds) {
+		Endpoint endpoint = authorizationService.getEndpoint(request);
+		return authorizationService.hasAccess(endpoint, roleIds);
 	}
 
 	public static AppUser getPrincipleObject(HttpServletRequest request) {

@@ -4,13 +4,16 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-
+import com.google.api.client.util.Objects;
 import com.webrest.common.annotation.Authorization;
+import com.webrest.common.entity.Role;
+import com.webrest.common.entity.RoleAuthorization;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
 import com.webrest.web.constants.WebRoutes;
@@ -21,16 +24,20 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 @Getter
+@RequiredArgsConstructor
 public class AuthorizationService {
+
+	private final RoleService roleService;
 
 	@Getter
 	@AllArgsConstructor
-	private class Endpoint {
+	public class Endpoint {
 		private final AuthorizedFeature feature;
 		private final AuthorizedAction action;
 		private final boolean isPublic;
@@ -109,5 +116,30 @@ public class AuthorizationService {
 		// log.info(endpoint.getFeature().toString());
 		// log.info(endpoint.getAction().toString());
 		// log.info(endpoint.getPath());
+	}
+
+	public Endpoint getEndpoint(HttpServletRequest request) {
+		HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
+		String bestMatchPattern =
+				(String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+
+		return endpointByVerbAndPath.get(httpMethod).get(bestMatchPattern);
+	}
+
+	// TODO: Current implementation does db call and checking is not efficient.
+	// We want to introduce redis and optimize the lookup.
+	public boolean hasAccess(Endpoint endpoint, List<Long> roleIds) {
+		List<Role> rolesWithAuthorization = roleService.getRolesWithAuthorization(roleIds);
+		for(Role role : rolesWithAuthorization) {
+			Set<RoleAuthorization> authorizations = role.getAuthorizations();
+			for(RoleAuthorization authorization: authorizations) {
+				if(Objects.equal(authorization.getRoleAuthorizationId().getFeature(), endpoint.getFeature()) && 
+				Objects.equal(authorization.getRoleAuthorizationId().getAction(), endpoint.getAction())) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

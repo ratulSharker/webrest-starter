@@ -14,7 +14,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long>, JpaSpecificationExecutor<AppUser> {
 
-	@Query(value = "SELECT au FROM AppUser au" + " WHERE (au.mobile = :mobileOrEmail OR au.email = :mobileOrEmail) AND"
+	@Query(value = "SELECT au FROM AppUser au" + " LEFT JOIN FETCH au.roles "
+			+ " WHERE (au.mobile = :mobileOrEmail OR au.email = :mobileOrEmail) AND"
 			+ " au.password = :password")
 	public Optional<AppUser> findByMobileOrEmailAndPassword(@Param("mobileOrEmail") String mobileOrEmail,
 			@Param("password") String password);

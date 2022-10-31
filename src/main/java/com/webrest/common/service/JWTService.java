@@ -19,6 +19,7 @@ import lombok.Getter;
 public class JWTService {
 
 	public final String APP_USER_ID_CLAIM_KEY = "uid";
+	public final String APP_USER_ROLE_IDS = "roleIds";
 
 	@Value("${JWT_EXPIRY_IN_MINUTES}")
 	@Getter
@@ -48,8 +49,10 @@ public class JWTService {
 	private String generateToken(AppUser appUser, long timeout) {
 		Date issuedAt = new Date();
 		Date expiresAt = new Date(issuedAt.getTime() + (timeout * 60 * 1000));
+
 		return JWT.create().withIssuedAt(issuedAt).withExpiresAt(expiresAt)
-				.withClaim(APP_USER_ID_CLAIM_KEY, appUser.getAppUserId()).sign(algorithm);
+				.withClaim(APP_USER_ID_CLAIM_KEY, appUser.getAppUserId())
+				.withClaim(APP_USER_ROLE_IDS, appUser.getRoleIds()).sign(algorithm);
 	}
 
 	public Map<String, Claim> verifyToken(String token) {

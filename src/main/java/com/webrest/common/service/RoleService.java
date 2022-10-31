@@ -104,4 +104,8 @@ public class RoleService {
 	public Role getOne(Long roleId) {
 		return roleRepository.getOne(roleId);
 	}
+
+	public List<Role> getRolesWithAuthorization(List<Long> roleIds) {
+		return roleRepository.rolesWithAuthorizationRoleIdIn(roleIds);
+	}
 }
