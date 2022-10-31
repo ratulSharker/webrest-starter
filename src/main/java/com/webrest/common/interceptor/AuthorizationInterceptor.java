@@ -3,18 +3,23 @@ package com.webrest.common.interceptor;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webrest.common.dto.response.ErrorResponse;
 import com.webrest.common.dto.response.Metadata;
 import com.webrest.common.dto.response.Response;
 import com.webrest.common.entity.AppUser;
+import com.webrest.common.enums.authorization.AuthorizedAction;
+import com.webrest.common.enums.authorization.AuthorizedFeature;
 import com.webrest.common.service.AppUserService;
 import com.webrest.common.service.AuthorizationService;
-import com.webrest.common.service.JWTService;
 import com.webrest.common.service.AuthorizationService.Endpoint;
+import com.webrest.common.service.JWTService;
 import com.webrest.common.utils.CookieUtils;
 import com.webrest.rest.constants.RestRoutes;
 
@@ -32,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	public static final String PRINCIPLE_APP_USER_KEY = "principle_app_user";
+	public static final String PRINCIPLE_APP_USER_ROLE_IDS_KEY = "principle_app_user_role_ids";
 	public final String REST_AUTHORIZATION_HEADER = "Authorization";
 
 	private final JWTService jwtService;
@@ -109,6 +115,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		appUserService.detachAppUserFromJPA(appUser);
 
 		request.setAttribute(PRINCIPLE_APP_USER_KEY, appUser);
+		request.setAttribute(PRINCIPLE_APP_USER_ROLE_IDS_KEY, roleIds);
 
 		return roleIds;
 	}
@@ -125,14 +132,23 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		return (AppUser) request.getAttribute(PRINCIPLE_APP_USER_KEY);
 	}
 
+	public static List<Long> getPrincipleObjectRoleIds(HttpServletRequest request) {
+		return (List<Long>) request.getAttribute(PRINCIPLE_APP_USER_ROLE_IDS_KEY);
+	}
+
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 
-		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
+		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);		
 		if (principleObject != null && modelAndView != null && !(modelAndView.getView() instanceof RedirectView)) {
 			modelAndView.addObject("loggedInUser", principleObject);
 			modelAndView.addObject("fileDownloadPath", RestRoutes.FILE_DOWNLOAD.replace("**", ""));
+
+			List<Long> principleObjectRoleIds = AuthorizationInterceptor.getPrincipleObjectRoleIds(request);
+			Map<AuthorizedFeature, Set<AuthorizedAction>> authorizedFeatureActions = authorizationService
+					.getAuthorizedFeatureActions(principleObjectRoleIds);
+			modelAndView.addObject("authorizedFeatureActions", authorizedFeatureActions);
 		}
 
 	}

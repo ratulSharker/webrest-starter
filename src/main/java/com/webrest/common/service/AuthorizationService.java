@@ -69,7 +69,9 @@ public class AuthorizationService {
 						Object value = field.get(WebRoutes.class);
 						if(value instanceof String) {
 							String fieldValue = (String) value;
-							Endpoint endpoint = new Endpoint(authorization.feature(), authorization.action(), authorization.isPublic(), authorization.isPublicForAuthorizedUser(), fieldValue, authorization.httpMethods());
+							Endpoint endpoint = new Endpoint(authorization.feature(), authorization.action(),
+									authorization.isPublic(), authorization.isPublicForAuthorizedUser(), fieldValue,
+									authorization.httpMethods());
 							addEndpoint(endpoint);
 							addFeatureAndActions(endpoint);
 						}
@@ -141,5 +143,28 @@ public class AuthorizationService {
 		}
 
 		return false;
+	}
+
+	// TODO: Current implementation does db call and checking is not efficient.
+	// We want to introduce redis and optimize the lookup.
+	public Map<AuthorizedFeature, Set<AuthorizedAction>> getAuthorizedFeatureActions(List<Long> roleIds) {
+		List<Role> rolesWithAuthorization = roleService.getRolesWithAuthorization(roleIds);
+
+		Map<AuthorizedFeature, Set<AuthorizedAction>> authorizedFeatureActions = new HashMap<>();
+		for(Role role : rolesWithAuthorization) {
+			Set<RoleAuthorization> authorizations = role.getAuthorizations();
+			for(RoleAuthorization authorization: authorizations) {
+				AuthorizedFeature feature = authorization.getRoleAuthorizationId().getFeature();
+				AuthorizedAction action = authorization.getRoleAuthorizationId().getAction();
+				Set<AuthorizedAction> actions = authorizedFeatureActions.get(feature);
+				if(actions == null) {
+					actions = new HashSet<>();
+					authorizedFeatureActions.put(feature, actions);
+				}
+				actions.add(action);
+			}
+		}
+
+		return authorizedFeatureActions;
 	}
 }
