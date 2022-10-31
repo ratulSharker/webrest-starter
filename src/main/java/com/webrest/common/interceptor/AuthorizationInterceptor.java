@@ -82,7 +82,10 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 		try {
 			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
-			if()
+			if(hasAuthorizationToRoute(request, roleIds) == false) {
+				// TODO: Handle this separately. Showing a forbidden page would be the best option.
+				throw new Exception("Incoming user has no access to this route");
+			}
 			return true;
 		} catch (Exception ex) {
 			// Logout the web user
@@ -109,6 +112,9 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	private boolean hasAuthorizationToRoute(HttpServletRequest request, List<Long> roleIds) {
 		Endpoint endpoint = authorizationService.getEndpoint(request);
+		if (endpoint.isPublic() || endpoint.isPublicForAuthorizedUser()) {
+			return true;
+		}
 		return authorizationService.hasAccess(endpoint, roleIds);
 	}
 
