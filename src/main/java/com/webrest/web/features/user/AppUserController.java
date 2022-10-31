@@ -16,8 +16,6 @@ import com.webrest.web.common.Breadcrumb;
 import com.webrest.web.common.CookieFlashAttribute;
 import com.webrest.web.constants.WebRoutes;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,14 +27,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
 import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
 public class AppUserController {
-
-	// TODO: Use lombok's `@Slf4j` annotation
-	private final Logger logger = LoggerFactory.getLogger(AppUserController.class);
 
 	private final AppUserService appUserService;
 	private final CookieFlashAttribute cookieFlashAttribute;
