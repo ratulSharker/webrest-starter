@@ -22,6 +22,7 @@ import com.webrest.common.service.AuthorizationService.Endpoint;
 import com.webrest.common.service.JWTService;
 import com.webrest.common.utils.CookieUtils;
 import com.webrest.rest.constants.RestRoutes;
+import com.webrest.web.constants.WebRoutes;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -91,14 +92,14 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		try {
 			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
 			if(hasAuthorizationToRoute(request, roleIds) == false) {
-				// TODO: Handle this separately. Showing a forbidden page would be the best option.
-				throw new Exception("Incoming user has no access to this route");
+				response.sendRedirect(WebRoutes.ACCESS_DENIED);
+				return false;
 			}
 			return true;
 		} catch (Exception ex) {
 			// Logout the web user
 			log.error("Error during web app authorization", ex);
-			response.sendRedirect(com.webrest.web.constants.WebRoutes.LOGOUT);
+			response.sendRedirect(WebRoutes.LOGOUT);
 			return false;
 		}
 	}

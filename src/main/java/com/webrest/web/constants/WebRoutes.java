@@ -22,6 +22,8 @@ public class WebRoutes {
 	@Authorization(isPublic = true)
 	public static final String ERROR = "/error";
 	@Authorization(isPublicForAuthorizedUser = true)
+	public static final String ACCESS_DENIED = "/access-denied";
+	@Authorization(isPublicForAuthorizedUser = true)
 	public static final String LOGOUT = "/logout";
 
 	@Authorization(isPublic = true)
@@ -31,7 +33,8 @@ public class WebRoutes {
 
 	@Authorization(isPublicForAuthorizedUser = true)
 	public static final String MY_PROFILE = "/profile";
-	@Authorization(isPublicForAuthorizedUser = true)
+	@Authorization(isPublicForAuthorizedUser = true, httpMethods = { HttpMethod.GET,
+		HttpMethod.POST })
 	public static final String MY_PROFILE_UPDATE = "/update-profile";
 
 	// User
