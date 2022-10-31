@@ -14,7 +14,7 @@ import com.webrest.common.service.storage.StorageService;
 import com.webrest.common.service.storage.SubDirectory;
 import com.webrest.common.specification.AppUserSpecification;
 import com.webrest.common.utils.HashUtils;
-
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,22 +27,17 @@ import org.springframework.util.CollectionUtils;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AppUserService {
 
 	// Use log4j's `@Slf4j` api.
 	private Logger logger = LoggerFactory.getLogger(AppUserService.class);
 
-	private AppUserRepository appUserRepository;
-	private RoleService roleService;
-	private EntityManager entityManager;
-	private StorageService storageService;
+	private final AppUserRepository appUserRepository;
+	private final RoleService roleService;
+	private final EntityManager entityManager; // TODO: Introduce Custom Base Repository, Introduce `detach` method into that repository.
+	private final StorageService storageService;
 
-	public AppUserService(AppUserRepository appUserRepository, EntityManager entityManager,
-			StorageService storageService) {
-		this.appUserRepository = appUserRepository;
-		this.entityManager = entityManager;
-		this.storageService = storageService;
-	}
 
 	public AppUser getAppUserMobileOrEmailAndPassword(String mobileOrEmail, String password) {
 		Optional<AppUser> optionalAppUser = appUserRepository.findByMobileOrEmailAndPassword(mobileOrEmail, password);

@@ -25,6 +25,7 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.api.client.util.Objects;
 import com.webrest.common.annotation.ValidJson;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -105,5 +106,13 @@ public class AppUser {
 				roles.add(role);
 			});
 		}
+	}
+
+	// TODO: Running complexity O(n), find a better way
+	@JsonIgnore
+	public boolean containsRoleId(Long roleId) {
+		return roles.stream().filter(role -> {
+			return Objects.equal(role.getRoleId(), roleId);
+		}).findFirst().isPresent();
 	}
 }
