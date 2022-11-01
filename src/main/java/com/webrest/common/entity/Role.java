@@ -39,9 +39,6 @@ public class Role {
 	@Column(nullable = false)
 	private Boolean active;
 
-	// @Column(nullable = false)
-	// private Boolean isSuperAdmin = false;
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "roleAuthorizationId.role", cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
 	private Set<RoleAuthorization> authorizations;
