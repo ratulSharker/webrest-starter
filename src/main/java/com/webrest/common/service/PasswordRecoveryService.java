@@ -1,13 +1,11 @@
 package com.webrest.common.service;
 
-import java.util.List;
 import java.util.Map;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.webrest.common.entity.AppUser;
-import com.webrest.common.enums.AppUserType;
 import com.webrest.common.utils.HashUtils;
-import com.webrest.web.constants.WebEndpoint;
+import com.webrest.web.constants.WebRoutes;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,9 +27,9 @@ public class PasswordRecoveryService {
 	}
 
 	public void sendPasswordRecoveryEmail(String email) {
-		AppUser appUser = this.appUserService.getAppUserByEmail(email, List.of(AppUserType.ADMIN));
+		AppUser appUser = this.appUserService.getAppUserByEmail(email);
 		String token = jwtService.generateJWTTokenForPasswordRecovery(appUser);
-		String redirectUrl = String.format("%s%s%s", appHost, WebEndpoint.RECOVER_PASSWORD.replace("{token}", ""),
+		String redirectUrl = String.format("%s%s%s", appHost, WebRoutes.RECOVER_PASSWORD.replace("{token}", ""),
 				token);
 		emailService.sendPasswordRecoveryEmail(email, redirectUrl);
 	}

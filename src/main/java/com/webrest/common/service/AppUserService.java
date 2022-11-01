@@ -1,6 +1,5 @@
 package com.webrest.common.service;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -8,14 +7,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import com.webrest.common.entity.AppUser;
-import com.webrest.common.enums.AppUserType;
+import com.webrest.common.entity.Role;
 import com.webrest.common.exception.AppUserAlreadyExistsException;
 import com.webrest.common.repostiory.AppUserRepository;
 import com.webrest.common.service.storage.StorageService;
 import com.webrest.common.service.storage.SubDirectory;
 import com.webrest.common.specification.AppUserSpecification;
 import com.webrest.common.utils.HashUtils;
-
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,24 +23,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AppUserService {
 
 	// Use log4j's `@Slf4j` api.
 	private Logger logger = LoggerFactory.getLogger(AppUserService.class);
 
-	private AppUserRepository appUserRepository;
-	private EntityManager entityManager;
-	private StorageService storageService;
+	private final AppUserRepository appUserRepository;
+	private final RoleService roleService;
+	private final EntityManager entityManager; // TODO: Introduce Custom Base Repository, Introduce `detach` method into that repository.
+	private final StorageService storageService;
 
-	public AppUserService(AppUserRepository appUserRepository, EntityManager entityManager,
-			StorageService storageService) {
-		this.appUserRepository = appUserRepository;
-		this.entityManager = entityManager;
-		this.storageService = storageService;
-	}
 
 	public AppUser getAppUserMobileOrEmailAndPassword(String mobileOrEmail, String password) {
 		Optional<AppUser> optionalAppUser = appUserRepository.findByMobileOrEmailAndPassword(mobileOrEmail, password);
@@ -54,16 +50,8 @@ public class AppUserService {
 		return optionalAppUser.get();
 	}
 
-	public AppUser getEndAppUserByMobile(String mobile) {
-		Optional<AppUser> optionalUser = appUserRepository.findByMobileAndAppUserType(mobile, AppUserType.END_USER);
-		return optionalUser.orElseThrow(() -> {
-			String message = String.format("User not found with mobile : %s", mobile);
-			throw new EntityNotFoundException(message);
-		});
-	}
-
-	public AppUser getAppUserByEmail(String email, List<AppUserType> appUserTypes) {
-		Optional<AppUser> optionalUser = appUserRepository.findByEmailAndAppUserTypeIn(email, appUserTypes);
+	public AppUser getAppUserByEmail(String email) {
+		Optional<AppUser> optionalUser = appUserRepository.findByEmail(email);
 		return optionalUser.orElseThrow(() -> {
 			String message = String.format("User not found with email : %s", email);
 			throw new EntityNotFoundException(message);
@@ -75,6 +63,15 @@ public class AppUserService {
 
 		return optionalAppUser.orElseThrow(() -> {
 			String message = String.format("App user not found with id : %d", userId);
+			throw new EntityNotFoundException(message);
+		});
+	}
+
+	public AppUser findByIdWithRoles(Long appUserId) {
+		Optional<AppUser> optionalAppUser = appUserRepository.findByIdWithRoles(appUserId);
+
+		return optionalAppUser.orElseThrow(() -> {
+			String message = String.format("App user not found with id : %d", appUserId);
 			throw new EntityNotFoundException(message);
 		});
 	}
@@ -95,13 +92,7 @@ public class AppUserService {
 		}
 
 		handleUpdateProfilePicture(updatedUser, existingUser);
-		if (existingUser.getAppUserType() == AppUserType.END_USER) {
-			BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "email", "mobile", "password",
-					"appUserType", "createdAt", "updatedAt");
-		} else {
-			BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "password", "appUserType", "createdAt",
-					"updatedAt");
-		}
+		BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "createdAt", "updatedAt");
 
 		appUserRepository.save(existingUser);
 		return existingUser;
@@ -123,8 +114,17 @@ public class AppUserService {
 		}
 
 		handleUpdateProfilePicture(updatedUser, existingUser);
-		BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "password", "appUserType", "createdAt",
-				"updatedAt");
+		BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "password", "createdAt",
+				"updatedAt", "roles");
+
+		// Update roles
+		existingUser.getRoles().clear();
+		if(CollectionUtils.isEmpty(updatedUser.getRoles()) == false) {
+			updatedUser.getRoles().stream().forEach(role -> {
+				Role proxyRole = roleService.getOne(role.getRoleId());
+				existingUser.getRoles().add(proxyRole);
+			});
+		}
 
 		appUserRepository.save(existingUser);
 		return existingUser;
@@ -165,10 +165,9 @@ public class AppUserService {
 		appUserRepository.updateUserPassword(appUserId, password);
 	}
 
-	public Page<AppUser> filter(Pageable pageable, String searchValue, AppUserType appUserType) {
+	public Page<AppUser> filter(Pageable pageable, String searchValue) {
 		Specification<AppUser> specification = Specification
-				.where(AppUserSpecification.likeNameOrMobileOrEmail(searchValue))
-				.and(AppUserSpecification.equalAppUserType(appUserType));
+				.where(AppUserSpecification.likeNameOrMobileOrEmail(searchValue));
 
 		return appUserRepository.findAll(specification, pageable);
 	}
@@ -212,4 +211,6 @@ public class AppUserService {
 			}
 		}
 	}
+
+
 }

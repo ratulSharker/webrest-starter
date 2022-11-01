@@ -10,7 +10,7 @@ import com.webrest.common.service.AuthenticationService;
 import com.webrest.common.service.JWTService;
 import com.webrest.common.utils.CookieUtils;
 import com.webrest.web.common.Alert;
-import com.webrest.web.constants.WebEndpoint;
+import com.webrest.web.constants.WebRoutes;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,12 +35,12 @@ public class LoginController {
 		this.jwtService = jwtService;
 	}
 
-	@GetMapping(WebEndpoint.BLANK)
+	@GetMapping(WebRoutes.BLANK)
 	public String blankURL() {
-		return String.format("redirect:%s", WebEndpoint.LOGIN);
+		return String.format("redirect:%s", WebRoutes.LOGIN);
 	}
 
-	@GetMapping(WebEndpoint.LOGIN)
+	@GetMapping(WebRoutes.LOGIN)
 	public String getLoginForm(Model model, HttpServletRequest request, HttpServletResponse response) {
 
 		String token = CookieUtils.getAuthorization(request);
@@ -48,8 +48,8 @@ public class LoginController {
 			try {
 				jwtService.verifyToken(token);
 
-				CookieUtils.setLastSelectedMenu(WebEndpoint.USER, response, Integer.MAX_VALUE);
-				return String.format("redirect:%s", WebEndpoint.USER);
+				CookieUtils.setLastSelectedMenu(WebRoutes.USER, response, Integer.MAX_VALUE);
+				return String.format("redirect:%s", WebRoutes.USER);
 			} catch (Exception ex) {
 				logger.error("Error during token verification", ex);
 				CookieUtils.clearAuthorization(request, response);
@@ -57,17 +57,17 @@ public class LoginController {
 		}
 
 		model.addAttribute("loginForm", new AuthenticationRequestDto());
-		model.addAttribute("forgotPasswordPath", WebEndpoint.FORGOT_PASSWORD);
+		model.addAttribute("forgotPasswordPath", WebRoutes.FORGOT_PASSWORD);
 		return "features/login/login-form";
 	}
 
-	@PostMapping(WebEndpoint.LOGIN)
+	@PostMapping(WebRoutes.LOGIN)
 	public String submitLoginForm(@Valid @ModelAttribute("loginForm") AuthenticationRequestDto authenticationRequestDto,
 			BindingResult result, Model model, HttpServletResponse response) {
 
 		if (result.hasErrors()) {
 			model.addAttribute("loginForm", authenticationRequestDto);
-			model.addAttribute("forgotPasswordPath", WebEndpoint.FORGOT_PASSWORD);
+			model.addAttribute("forgotPasswordPath", WebRoutes.FORGOT_PASSWORD);
 			return "features/login/login-form";
 		}
 
@@ -78,19 +78,19 @@ public class LoginController {
 			CookieUtils.setAuthorization(authenticationResponseDto.getToken(), response, tokenExpiryTimeInSeconds);
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("Authentication failed", ex, model);
-			model.addAttribute("forgotPasswordPath", WebEndpoint.FORGOT_PASSWORD);
+			model.addAttribute("forgotPasswordPath", WebRoutes.FORGOT_PASSWORD);
 			return "features/login/login-form";
 		}
 
-		CookieUtils.setLastSelectedMenu(WebEndpoint.USER, response, Integer.MAX_VALUE);
-		return String.format("redirect:%s", WebEndpoint.USER);
+		CookieUtils.setLastSelectedMenu(WebRoutes.USER, response, Integer.MAX_VALUE);
+		return String.format("redirect:%s", WebRoutes.USER);
 	}
 
-	@GetMapping(WebEndpoint.LOGOUT)
+	@GetMapping(WebRoutes.LOGOUT)
 	public String logout(Model model, HttpServletResponse response, HttpServletRequest request) {
 
 		CookieUtils.clearAuthorization(request, response);
 
-		return String.format("redirect:%s", WebEndpoint.LOGIN);
+		return String.format("redirect:%s", WebRoutes.LOGIN);
 	}
 }

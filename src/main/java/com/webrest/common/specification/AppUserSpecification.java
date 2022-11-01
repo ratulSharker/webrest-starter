@@ -4,7 +4,6 @@ import javax.persistence.criteria.Predicate;
 
 import com.webrest.common.entity.AppUser;
 import com.webrest.common.entity.AppUser_;
-import com.webrest.common.enums.AppUserType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,14 +26,4 @@ public class AppUserSpecification {
 		};
 	}
 
-	public static Specification<AppUser> equalAppUserType(AppUserType appUserType) {
-
-		if (appUserType == null) {
-			return null;
-		}
-
-		return (root, query, builder) -> {
-			return builder.equal(root.get(AppUser_.APP_USER_TYPE), appUserType);
-		};
-	}
 }

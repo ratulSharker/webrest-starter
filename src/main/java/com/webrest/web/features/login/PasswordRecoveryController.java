@@ -6,7 +6,7 @@ import com.webrest.common.dto.authentication.request.web.ForgotPasswordRequestDt
 import com.webrest.common.dto.authentication.request.web.RecoverPasswordRequestDto;
 import com.webrest.common.service.PasswordRecoveryService;
 import com.webrest.web.common.Alert;
-import com.webrest.web.constants.WebEndpoint;
+import com.webrest.web.constants.WebRoutes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,20 +29,20 @@ public class PasswordRecoveryController {
 		this.passwordRecoveryService = passwordRecoveryService;
 	}
 
-	@GetMapping(value = WebEndpoint.FORGOT_PASSWORD)
+	@GetMapping(value = WebRoutes.FORGOT_PASSWORD)
 	public String forgotPasswordGetForm(Model model) {
 
 		model.addAttribute("forgotPasswordForm", new ForgotPasswordRequestDto());
-		model.addAttribute("loginPath", WebEndpoint.LOGIN);
+		model.addAttribute("loginPath", WebRoutes.LOGIN);
 		return "features/login/forgot-password-form";
 	}
 
-	@PostMapping(value = WebEndpoint.FORGOT_PASSWORD)
+	@PostMapping(value = WebRoutes.FORGOT_PASSWORD)
 	public String forgotPasswordSubmitForm(
 			@Valid @ModelAttribute("forgotPasswordForm") ForgotPasswordRequestDto forgotPasswordRequestDto,
 			BindingResult result, Model model) {
 
-		model.addAttribute("loginPath", WebEndpoint.LOGIN);
+		model.addAttribute("loginPath", WebRoutes.LOGIN);
 
 		if (result.hasErrors()) {
 			model.addAttribute("forgotPasswordForm", forgotPasswordRequestDto);
@@ -61,22 +61,22 @@ public class PasswordRecoveryController {
 		return "features/login/forgot-password-form";
 	}
 
-	@GetMapping(value = WebEndpoint.RECOVER_PASSWORD)
+	@GetMapping(value = WebRoutes.RECOVER_PASSWORD)
 	public String recoverPasswordForm(@PathVariable("token") String token, Model model) {
 
 		RecoverPasswordRequestDto recoverPasswordRequestDto = RecoverPasswordRequestDto.builder().token(token).build();
 		model.addAttribute("recoverPasswordForm", recoverPasswordRequestDto);
-		model.addAttribute("loginPath", WebEndpoint.LOGIN);
+		model.addAttribute("loginPath", WebRoutes.LOGIN);
 
 		return "features/login/recover-password-form";
 	}
 
-	@PostMapping(value = WebEndpoint.RECOVER_PASSWORD)
+	@PostMapping(value = WebRoutes.RECOVER_PASSWORD)
 	public String recoverPasswordSubmitForm(
 			@Valid @ModelAttribute("recoverPasswordForm") RecoverPasswordRequestDto recoverPasswordRequestDto,
 			BindingResult result, Model model) {
 
-		model.addAttribute("loginPath", WebEndpoint.LOGIN);
+		model.addAttribute("loginPath", WebRoutes.LOGIN);
 		if (result.hasErrors()) {
 			model.addAttribute("recoverPasswordForm", recoverPasswordRequestDto);
 			return "features/login/recover-password-form";

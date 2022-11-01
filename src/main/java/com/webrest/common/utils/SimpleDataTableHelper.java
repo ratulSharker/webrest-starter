@@ -7,17 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import com.webrest.common.dto.datatable.DataTableRequestModel;
 import com.webrest.common.dto.datatable.DataTableResponseModel;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
 @Builder
+@Slf4j
 public class SimpleDataTableHelper<T> {
 
-	private Logger logger = LoggerFactory.getLogger(SimpleDataTableHelper.class);
 
 	private HttpServletRequest request;
 	private BiFunction<Pageable, String, Page<T>> dataSupplier;
@@ -25,12 +24,12 @@ public class SimpleDataTableHelper<T> {
 	public DataTableResponseModel<T> getResponse() {
 
 		if (request == null) {
-			logger.info("`request` is null");
+			log.info("`request` is null");
 			return null;
 		}
 
 		if (dataSupplier == null) {
-			logger.info("`dataSupplier` is null");
+			log.info("`dataSupplier` is null");
 			return null;
 		}
 

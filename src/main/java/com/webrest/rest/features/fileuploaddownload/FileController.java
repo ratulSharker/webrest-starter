@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.webrest.common.dto.file.FileUploadResponseDto;
 import com.webrest.common.dto.response.Response;
 import com.webrest.common.service.storage.StorageService;
-import com.webrest.rest.constants.RestEndpoint;
+import com.webrest.rest.constants.RestRoutes;
 
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -28,7 +28,7 @@ public class FileController {
 		this.storageService = storageService;
 	}
 
-	@PostMapping(value = RestEndpoint.FILE_UPLOAD)
+	@PostMapping(value = RestRoutes.FILE_UPLOAD)
 	public Response<FileUploadResponseDto> upload(@RequestParam("file") MultipartFile file) {
 
 		String tempFilename = this.storageService.uniqueFilename(file);
@@ -38,10 +38,10 @@ public class FileController {
 		return Response.<FileUploadResponseDto>builder().data(dto).build();
 	}
 
-	@GetMapping(value = RestEndpoint.FILE_DOWNLOAD)
+	@GetMapping(value = RestRoutes.FILE_DOWNLOAD)
 	public ResponseEntity<Resource> download(HttpServletRequest request) {
 
-		String basePath = RestEndpoint.FILE_DOWNLOAD.replace("**", "");
+		String basePath = RestRoutes.FILE_DOWNLOAD.replace("**", "");
 		String subpath = request.getRequestURI().replace(basePath, "");
 
 		InputStream inputStream = storageService.getPermanentFileInputStream(subpath);

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+    layout:decorate="~{layouts/admin/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" th:href="@{/static/css/app/role/role-create-update.css}">
+
+    <title>Create Role</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('Update Role')">
+		</div>
+        <form method="post" th:object="${roleForm}" class="pb-70">
+
+			<div class="col-6 p-0">
+				<div class="card">
+					<div class="card-header">
+						Details
+					</div>
+					<div class="card-body">
+						
+						<div class="row">
+							<div class="col-12 form-group">
+								<label for="name"> <strong>Name</strong> </label>
+								<input type="text" class="form-control" th:field="*{name}" required
+									placeholder="Enter Role name">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-12">
+								<input type="checkbox" id="active" th:field="*{active}" required>
+								<label for="active"> <strong>Is Active</strong> </label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-12 p-0 pt-4">
+				<div class="card" id="authorization-card">
+					<div class="card-header">
+						Authorizations
+					</div>
+					<div class="card-body">
+
+						<div class="grid">
+							<div class="grid-item px-1" th:each="featuresWithAction: ${assignableFeaturesWithActions}"
+								th:with="feature = ${featuresWithAction.getFirst()}">
+								<div class="card">
+									<div class="card-header">
+										<input type="checkbox" th:id="${feature.name() + '-feature-checkbox'}">
+										<label class="m-0" th:for="${feature.name() + '-feature-checkbox'}" th:text="${feature.name()}">
+											Feature
+										</label>
+									</div>
+									<div class="card-body">
+										<div class="row" th:each="action : ${featuresWithAction.getSecond()}">
+											<div class="col">
+												<input type="checkbox" th:id="${feature.name() + '-' + action + '-action-checkbox'}" th:name="hyphenSeparatedFeatureActions"
+													th:value="${feature.name() + '-' + action.name()}"
+													th:checked="${roleFeatureActions.contains(T(org.springframework.data.util.Pair).of(feature, action))}">
+												<label class="m-0" th:for="${feature.name() + '-' + action + '-action-checkbox'}" th:text="${action.name()}">
+													Feature action
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+            <div class="fixed-bottom bottom-action-bar">
+                <div>
+                    <label for="update-role-submit" class="btn btn-warning m-0">
+                        <i class="fas fa-save"></i> Update Role
+                    </label>
+                    <input type="submit" id="update-role-submit" class="d-none">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div layout:fragment="scripts">
+        <script th:src="@{/static/js/app/role/role-update.js}"></script>
+    </div>
+</body>
+
+</html>

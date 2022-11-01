@@ -1,52 +1,63 @@
 package com.webrest.common.interceptor;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webrest.common.dto.response.ErrorResponse;
 import com.webrest.common.dto.response.Metadata;
 import com.webrest.common.dto.response.Response;
 import com.webrest.common.entity.AppUser;
+import com.webrest.common.enums.authorization.AuthorizedAction;
+import com.webrest.common.enums.authorization.AuthorizedFeature;
 import com.webrest.common.service.AppUserService;
+import com.webrest.common.service.AuthorizationService;
+import com.webrest.common.service.AuthorizationService.Endpoint;
 import com.webrest.common.service.JWTService;
 import com.webrest.common.utils.CookieUtils;
-import com.webrest.rest.constants.RestEndpoint;
+import com.webrest.rest.constants.RestRoutes;
+import com.webrest.web.constants.WebRoutes;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	public static final String PRINCIPLE_APP_USER_KEY = "principle_app_user";
+	public static final String PRINCIPLE_APP_USER_ROLE_IDS_KEY = "principle_app_user_role_ids";
 	public final String REST_AUTHORIZATION_HEADER = "Authorization";
 
-	private JWTService jwtService;
+	private final JWTService jwtService;
 	// TODO: Remove this app user service from here
-	private AppUserService appUserService;
-	private ObjectMapper objectMapper;
-
-	public AuthorizationInterceptor(JWTService jwtService, AppUserService appUserService, ObjectMapper objectMapper) {
-		this.jwtService = jwtService;
-		this.appUserService = appUserService;
-		this.objectMapper = objectMapper;
-	}
+	private final AppUserService appUserService;
+	private final ObjectMapper objectMapper;
+	private final AuthorizationService authorizationService;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String path = request.getRequestURI().substring(request.getContextPath().length());
 
-		if (path.startsWith(RestEndpoint.PREFIX)) {
+		if (path.startsWith(RestRoutes.PREFIX)) {
 			// Coming from API
 			return handleRestAuthorization(request, response);
 		} else {
 			// Coming from Web Admin
+			// authorizationService.printEndpointDetails(request);
 			return handleWebappAuthorization(request, response);
 		}
 
@@ -57,7 +68,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		String token = request.getHeader(REST_AUTHORIZATION_HEADER);
 
 		try {
-			verifyTokenAndInjectAppUser(request, token);
+			verifyTokenInjectAppUserAndExtractRoleIds(request, token);
 			return true;
 		} catch (Exception ex) {
 			// Send 401, with appropriate reasoning
@@ -79,39 +90,66 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		String token = CookieUtils.getAuthorization(request);
 
 		try {
-			verifyTokenAndInjectAppUser(request, token);
+			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
+			if(hasAuthorizationToRoute(request, roleIds) == false) {
+				response.sendRedirect(WebRoutes.ACCESS_DENIED);
+				return false;
+			}
 			return true;
 		} catch (Exception ex) {
 			// Logout the web user
-			response.sendRedirect(com.webrest.web.constants.WebEndpoint.LOGOUT);
+			log.error("Error during web app authorization", ex);
+			response.sendRedirect(WebRoutes.LOGOUT);
 			return false;
 		}
 	}
 
-	private void verifyTokenAndInjectAppUser(HttpServletRequest request, String token) {
+	// Delegate this verification process to `AuthenticationService`
+	private List<Long> verifyTokenInjectAppUserAndExtractRoleIds(HttpServletRequest request, String token) {
 		Map<String, Claim> claims = jwtService.verifyToken(token);
 
 		Long appUserId = claims.get(jwtService.APP_USER_ID_CLAIM_KEY).asLong();
+		List<Long> roleIds = claims.get(jwtService.APP_USER_ROLE_IDS).asList(Long.class);
 
 		// TODO: This db call needed to be removed ASAP.
 		AppUser appUser = appUserService.findById(appUserId);
 		appUserService.detachAppUserFromJPA(appUser);
 
 		request.setAttribute(PRINCIPLE_APP_USER_KEY, appUser);
+		request.setAttribute(PRINCIPLE_APP_USER_ROLE_IDS_KEY, roleIds);
+
+		return roleIds;
+	}
+
+	private boolean hasAuthorizationToRoute(HttpServletRequest request, List<Long> roleIds) {
+		Endpoint endpoint = authorizationService.getEndpoint(request);
+		if (endpoint.isPublic() || endpoint.isPublicForAuthorizedUser()) {
+			return true;
+		}
+		return authorizationService.hasAccess(endpoint, roleIds);
 	}
 
 	public static AppUser getPrincipleObject(HttpServletRequest request) {
 		return (AppUser) request.getAttribute(PRINCIPLE_APP_USER_KEY);
 	}
 
+	public static List<Long> getPrincipleObjectRoleIds(HttpServletRequest request) {
+		return (List<Long>) request.getAttribute(PRINCIPLE_APP_USER_ROLE_IDS_KEY);
+	}
+
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 
-		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
+		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);		
 		if (principleObject != null && modelAndView != null && !(modelAndView.getView() instanceof RedirectView)) {
 			modelAndView.addObject("loggedInUser", principleObject);
-			modelAndView.addObject("fileDownloadPath", RestEndpoint.FILE_DOWNLOAD.replace("**", ""));
+			modelAndView.addObject("fileDownloadPath", RestRoutes.FILE_DOWNLOAD.replace("**", ""));
+
+			List<Long> principleObjectRoleIds = AuthorizationInterceptor.getPrincipleObjectRoleIds(request);
+			Map<AuthorizedFeature, Set<AuthorizedAction>> authorizedFeatureActions = authorizationService
+					.getAuthorizedFeatureActions(principleObjectRoleIds);
+			modelAndView.addObject("authorizedFeatureActions", authorizedFeatureActions);
 		}
 
 	}

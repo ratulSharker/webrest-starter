@@ -1,14 +1,19 @@
 package com.webrest.common.entity;
 
 import java.util.Date;
-
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -16,14 +21,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.webrest.common.annotation.ValidJson;
-import com.webrest.common.enums.AppUserType;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.util.CollectionUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.api.client.util.Objects;
+import com.webrest.common.annotation.ValidJson;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -65,10 +69,6 @@ public class AppUser {
 	private String password;
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private AppUserType appUserType;
-
-	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
 
@@ -78,6 +78,11 @@ public class AppUser {
 
 	@Column
 	private String profilePicturePath;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "app_user_role", joinColumns = {@JoinColumn(name = "app_user_id")},
+			inverseJoinColumns = {@JoinColumn(name = "role_id")})
+	private Set<Role> roles = new HashSet<Role>();
 
 	@PrePersist
 	private void prePersist() {
@@ -89,5 +94,31 @@ public class AppUser {
 	@PreUpdate
 	private void preUpdate() {
 		this.updatedAt = new Date();
+	}
+
+	// TODO: Prepare a js which will ensure the serial
+	// of the checked roles.
+	public void setRoles(List<Long> roleIds) {
+		roles.clear();
+		if(CollectionUtils.isEmpty(roleIds) == false) {
+			roleIds.stream().forEach(roleId -> {
+				Role role = new Role();
+				role.setRoleId(roleId);
+				roles.add(role);
+			});
+		}
+	}
+
+	// TODO: Running complexity O(n), find a better way
+	@JsonIgnore
+	public boolean containsRoleId(Long roleId) {
+		return roles.stream().filter(role -> {
+			return Objects.equal(role.getRoleId(), roleId);
+		}).findFirst().isPresent();
+	}
+
+	@JsonIgnore
+	public List<Long> getRoleIds() {
+		return roles.stream().map(Role::getRoleId).collect(Collectors.toList());
 	}
 }

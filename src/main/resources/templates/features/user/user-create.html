@@ -6,32 +6,36 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Create End User</title>
+	<title>Create User</title>
 </head>
 
 <body>
 	<div layout:fragment="content">
-		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('Create End User')">
+		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('Create User')">
 		</div>
 		<form method="post" th:object="${appUserForm}" class="pb-70">
 
-			<div class="d-flex justify-content-between">
-				<div class="col-8">
+			<div class="row">
+				<!-- Start user field -->
+				<div class="col-4">
 					<div class="row">
 						<div class="col-12 form-group">
 							<label for="name"> <strong>Name</strong> </label>
 							<input type="text" class="form-control" th:field="*{name}" required
-								placeholder="Enter end user name">
+								placeholder="Enter name">
 						</div>
 					</div>
 
 					<div class="row">
-						<div class="col-sm-12 col-md-6 form-group">
+						<div class="col-12 form-group">
 							<label for="email"><strong>Email</strong></label>
 							<input type="text" class="form-control" th:field="*{email}" required
 								placeholder="Enter email">
 						</div>
-						<div class="col-sm-12 col-md-6 form-group">
+					</div>
+
+					<div class="row">
+						<div class="col-12 form-group">
 							<label for="mobile"><strong>Mobile</strong></label>
 							<input type="text" class="form-control" th:field="*{mobile}" required
 								placeholder="Enter mobile">
@@ -39,14 +43,15 @@
 					</div>
 
 					<div class="row">
-						<div class="col-sm-12 col-md-6 form-group">
+						<div class="col-12 form-group">
 							<label for="dob"><strong>Date or birth</strong></label>
 							<input type="date" class="form-control" th:field="*{dob}" required>
 						</div>
 					</div>
-
 				</div>
+				<!-- End user field -->
 
+				<!-- Start image upload -->
 				<div class="col-4">
 					<div class="row">
 						<!-- End user profile picture path end -->
@@ -56,25 +61,38 @@
 									th:src="@{/static/image/common/avatar.png}" alt="Profile Picture">
 							</div>
 							<div class="row justify-content-center mt-2">
-								<button type="button" id="upload-end-user-picture-button"
+								<button type="button" id="upload-user-picture-button"
 									class="btn btn-success btn-sm"><i class="fas fa-upload"></i> Upload Image</button>
 							</div>
 							<div class="row justify-content-center">
 								<span class="small text-warning">Image size must be under 100KB</span>
 								<input type="hidden" th:field="*{profilePicturePath}">
-								<input type="file" class="d-none" id="end-user-profile-image-file"
+								<input type="file" class="d-none" id="user-profile-image-file"
 									accept="image/*">
 							</div>
 						</div>
 						<!-- End user profile picture path end -->
 					</div>
 				</div>
+				<!-- End image upload -->
+
+				<!-- Start role selection -->
+				<div class="col-4 form-group">
+					<label for="dob"><strong>Roles</strong></label>
+					<div class="row" th:each="role : ${roles}">
+						<div class="col">
+							<input type="checkbox" name="roles" th:id="'role-id-' + ${role.roleId}" th:value="${role.roleId}">
+							<label th:text="${role.name}" th:for="'role-id-' + ${role.roleId}"></label>
+						</div>
+					</div>
+				</div>
+				<!-- End role selection -->
 			</div>
 
 			<div class="fixed-bottom bottom-action-bar">
 				<div>
 					<label for="create-end-user-submit" class="btn btn-success m-0">
-						<i class="fas fa-plus-circle"></i> Create End User
+						<i class="fas fa-plus-circle"></i> Create User
 					</label>
 					<input type="submit" id="create-end-user-submit" class="d-none">
 				</div>
@@ -83,7 +101,7 @@
 	</div>
 
 	<div layout:fragment="scripts">
-		<script th:src="@{/static/js/app/user/end-user-create.js}"></script>
+		<script th:src="@{/static/js/app/user/user-create.js}"></script>
 	</div>
 </body>
 
