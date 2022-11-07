@@ -9,6 +9,7 @@ services:
     - 8000:8080
     networks:
     - dbnet
+    - redisnet
     volumes:
     - type: bind
       source: ./storage/temp
@@ -40,6 +41,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
   db:
     image: mysql:8.0.29-oracle
     networks:
@@ -58,5 +61,18 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
+  redis:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    image: web-rest-redis
+    networks:
+    - redisnet
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "-a secret", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 networks:
   dbnet: null
+  redisnet: null
