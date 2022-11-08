@@ -38,6 +38,9 @@ services:
     - EMAIL_USERNAME=${WEB_REST_EMAIL_USERNAME}
     - EMAIL_PASSWORD=${WEB_REST_EMAIL_PASSWORD}
     - APP_HOST_URL=http://localhost:8000
+    - REDIS_HOST=${REDIS_HOST:-redis}
+    - REDIS_PORT=${REDIS_PORT:-6379}
+    - REDIS_PASSWORD=${REDIS_PASSWORD:-secret}
     depends_on:
       db:
         condition: service_healthy
@@ -66,6 +69,8 @@ services:
       context: ./redis
       dockerfile: Dockerfile
     image: web-rest-redis
+    ports:
+    - 6379:6379
     networks:
     - redisnet
     healthcheck:

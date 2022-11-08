@@ -163,6 +163,19 @@
 			<version>${version.hibernate-jpamodelgen}</version>
 		</dependency>
 
+		<!-- Redis -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+		 </dependency>
+		
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>3.3.0</version>
+			<type>jar</type>
+		</dependency>
+
 	</dependencies>
 
 	<build>
