@@ -13,11 +13,10 @@ public class WebRoutes {
 
 	}
 
-	@Authorization(isPublic = true)
 	public static final String FAVICON = "/favicon.ico";
 	@Authorization(isPublic = true)
 	public static final String BLANK = "/";
-	@Authorization(isPublic = true)
+	@Authorization(isPublic = true, httpMethods = { HttpMethod.GET, HttpMethod.POST })
 	public static final String LOGIN = "/login";
 	@Authorization(isPublic = true)
 	public static final String ERROR = "/error";
@@ -63,7 +62,7 @@ public class WebRoutes {
 			HttpMethod.POST })
 	public static final String UPDATE_ROLE = "/update-role/{roleId}";
 
-	public static final List<String> PUBLIC_ROUTE_PATTERNS = List.of(FAVICON, BLANK, LOGIN, LOGOUT, "/static/**",
+	public static final List<String> PUBLIC_ROUTE_PATTERNS = List.of(FAVICON, "/static/**",
 			"/webjars/**",
 			FORGOT_PASSWORD, RECOVER_PASSWORD.replace("{token}", "**"));
 }
