@@ -35,11 +35,6 @@ public class LoginController {
 		this.jwtService = jwtService;
 	}
 
-	@GetMapping(WebRoutes.BLANK)
-	public String blankURL() {
-		return String.format("redirect:%s", WebRoutes.LOGIN);
-	}
-
 	@GetMapping(WebRoutes.LOGIN)
 	public String getLoginForm(Model model, HttpServletRequest request, HttpServletResponse response) {
 
