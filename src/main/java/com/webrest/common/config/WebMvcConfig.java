@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.webrest.common.interceptor.AuthorizationInterceptor;
-import com.webrest.rest.constants.RestRoutes;
 import com.webrest.web.constants.WebRoutes;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		List<String> publicRoutePatterns = new ArrayList<String>();
-		publicRoutePatterns.addAll(RestRoutes.PUBLIC_ROUTE_PATTERNS);
 		publicRoutePatterns.addAll(WebRoutes.PUBLIC_ROUTE_PATTERNS);
 
 		registry.addInterceptor(authorizationInterceptor).excludePathPatterns(publicRoutePatterns);

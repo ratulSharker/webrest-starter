@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.webrest.common.annotation.Authorization;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
+import com.webrest.rest.constants.RestRoutes;
 import com.webrest.web.constants.WebRoutes;
 
 import org.springframework.http.HttpMethod;
@@ -53,17 +54,18 @@ public class AuthorizationService {
 
 	@PostConstruct
 	public void postConstruct() {
-		collectEndpoints();
+		// TODO: Prepare a provision such that, these classes can be sent via `application.properties`
+		collectEndpoints(WebRoutes.class.getDeclaredFields());
+		collectEndpoints(RestRoutes.class.getDeclaredFields());
 	}
 
-	private void collectEndpoints() {
-		Field[] fields = WebRoutes.class.getDeclaredFields();
-		for (int index = 0; index < fields.length; index++) {
-			Field field = fields[index];
+	private void collectEndpoints(Field[] fields) {
+		for (int fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
+			Field field = fields[fieldIndex];
 
 			Annotation[] annotations = field.getAnnotations();
-			for(int index2 = 0; index2 < annotations.length; index2++) {
-				Annotation annotation = annotations[index2];
+			for(int annotationIndex = 0; annotationIndex < annotations.length; annotationIndex++) {
+				Annotation annotation = annotations[annotationIndex];
 				if(annotation instanceof Authorization) {
 					Authorization authorization = (Authorization) annotation;
 					try {

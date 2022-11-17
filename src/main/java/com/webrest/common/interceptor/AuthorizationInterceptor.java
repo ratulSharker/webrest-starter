@@ -65,26 +65,50 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	}
 
-	private boolean handleRestAuthorization(HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
-		String token = request.getHeader(REST_AUTHORIZATION_HEADER);
+	private boolean handleRestAuthorization(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
 
 		try {
-			verifyTokenInjectAppUserAndExtractRoleIds(request, token);
+
+			Endpoint endpoint = authorizationService.getEndpoint(request);
+			if (endpoint.isPublic())
+				return true;
+
+			String token = request.getHeader(REST_AUTHORIZATION_HEADER);
+			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
+			if (hasAuthorizationToWebRoute(request, endpoint, roleIds) == false) {
+				sendForbiddenMessage(response);
+				return false;
+			}
 			return true;
 		} catch (Exception ex) {
 			// Send 401, with appropriate reasoning
-			response.setHeader("content-type", "application/json");
-			response.setStatus(401);
-
-			String message = ex.getMessage() == null ? "Unauthorized" : ex.getMessage();
-			Response<Object> responseBody = Response.<Object>builder()
-					.metadata(Metadata.builder().error(ErrorResponse.builder().message(message).build()).build())
-					.build();
-			response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+			log.error("Error during REST request authentication", ex);
+			sendUnauthorizedMessage(response);
 			return false;
 		}
+	}
 
+	private void sendForbiddenMessage(HttpServletResponse response) throws IOException {
+		sendJSONMessage(response, "Forbidden", 403);
+	}
+
+	private void sendUnauthorizedMessage(HttpServletResponse response)
+			throws IOException {
+		sendJSONMessage(response, "Unauthorized", 401);
+	}
+
+	private void sendJSONMessage(HttpServletResponse response, String message, int statusCode)
+			throws IOException {
+		response.setHeader("content-type", "application/json");
+		response.setStatus(statusCode);
+
+		Response<Object> responseBody =
+				Response.<Object>builder()
+						.metadata(Metadata.builder()
+								.error(ErrorResponse.builder().message(message).build()).build())
+						.build();
+		response.getWriter().write(objectMapper.writeValueAsString(responseBody));
 	}
 
 	private boolean handleWebappAuthorization(HttpServletRequest request, HttpServletResponse response)
@@ -126,7 +150,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 	}
 
 	// Delegate this verification process to `AuthenticationService`
-	private List<Long> verifyTokenInjectAppUserAndExtractRoleIds(HttpServletRequest request, String token) {
+	private List<Long> verifyTokenInjectAppUserAndExtractRoleIds(HttpServletRequest request,
+			String token) {
 		Map<String, Claim> claims = jwtService.verifyToken(token);
 
 		Long appUserId = claims.get(jwtService.APP_USER_ID_CLAIM_KEY).asLong();
