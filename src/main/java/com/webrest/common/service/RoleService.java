@@ -135,18 +135,18 @@ public class RoleService {
 		return roleRepository.getOne(roleId);
 	}
 
-	public Map<AuthorizedFeature, Set<AuthorizedAction>> getRolesWithAuthorization(List<Long> roleIds) throws JsonProcessingException {
+	public Map<AuthorizedFeature, Set<AuthorizedAction>> getAuthorizedFeatureActionsForGivenRoleIds(List<Long> roleIds) throws JsonProcessingException {
 
 		List<String> roleIdStrings = roleIds.stream().map((roleId) -> roleId.toString()).collect(Collectors.toList());
 		List<String> cachedFeatureActions = stringRedisTemplate.<String, String>opsForHash().multiGet(ROLE_ACCESS_HASH_KEY,
 				roleIdStrings);
 
-		Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> roleWiseCachedFeatureActions = roleWiseFeatureAction(roleIds, cachedFeatureActions);
+		Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> roleWiseCachedFeatureActions = getRoleWiseAuthorizedFeatureActionsFromCache(roleIds, cachedFeatureActions);
 		List<Long> cacheMissedRoleIds = calculateMissedCacheRoleIds(roleIds, roleWiseCachedFeatureActions);
 
 		// TODO: Use apache common utils
 		if (CollectionUtils.isEmpty(cacheMissedRoleIds) == false) {
-			Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> roleWiseFeatureActionsFromDB = getRolesAuthorizedFeatureActions(
+			Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> roleWiseFeatureActionsFromDB = getRoleWiseAuthorizedFeatureActionsFromDB(
 					cacheMissedRoleIds);
 			updateCache(roleWiseFeatureActionsFromDB);
 			roleWiseCachedFeatureActions.putAll(roleWiseFeatureActionsFromDB);
@@ -156,7 +156,7 @@ public class RoleService {
 		return mergeFeatureActions(roleWiseCachedFeatureActions.values());
 	}
 
-	private Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> roleWiseFeatureAction(List<Long> roleIds,
+	private Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> getRoleWiseAuthorizedFeatureActionsFromCache(List<Long> roleIds,
 			List<String> cachedFeatureActions) throws JsonMappingException, JsonProcessingException {
 		Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> roleWiseCachedFeatureAction = new HashMap<>();
 		for (int index = 0; index < cachedFeatureActions.size(); index++) {
@@ -181,7 +181,7 @@ public class RoleService {
 		}).collect(Collectors.toList());
 	}
 
-	private Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> getRolesAuthorizedFeatureActions(List<Long> roleIds) {
+	private Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> getRoleWiseAuthorizedFeatureActionsFromDB(List<Long> roleIds) {
 		List<Role> rolesWithAuthorization = roleRepository.rolesWithAuthorizationRoleIdIn(roleIds);
 
 		Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> rolesAuthorizedFeature = new HashMap<>(); 

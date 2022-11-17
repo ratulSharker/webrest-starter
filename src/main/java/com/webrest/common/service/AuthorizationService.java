@@ -145,6 +145,6 @@ public class AuthorizationService {
 	// TODO: Current implementation does db call and checking is not efficient.
 	// We want to introduce redis and optimize the lookup.
 	public Map<AuthorizedFeature, Set<AuthorizedAction>> getAuthorizedFeatureActions(List<Long> roleIds) throws JsonProcessingException {
-		return roleService.getRolesWithAuthorization(roleIds);
+		return roleService.getAuthorizedFeatureActionsForGivenRoleIds(roleIds);
 	}
 }
