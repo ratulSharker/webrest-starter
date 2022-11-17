@@ -10,16 +10,16 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import com.google.api.client.util.Objects;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.webrest.common.annotation.Authorization;
-import com.webrest.common.entity.Role;
-import com.webrest.common.entity.RoleAuthorization;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
 import com.webrest.web.constants.WebRoutes;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.HandlerMapping;
 
 import lombok.AllArgsConstructor;
@@ -125,46 +125,43 @@ public class AuthorizationService {
 		String bestMatchPattern =
 				(String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 
-		return endpointByVerbAndPath.get(httpMethod).get(bestMatchPattern);
+		Map<String, Endpoint> endpointByPattern = endpointByVerbAndPath.get(httpMethod);
+
+		if(endpointByPattern == null || endpointByPattern.isEmpty()) {
+			throwHttpRequestDoesNotMatchAnyEndpoint(httpMethod, bestMatchPattern);
+		}
+
+		Endpoint endpoint = endpointByPattern.get(bestMatchPattern);
+
+		if(endpoint == null) {
+			throwHttpRequestDoesNotMatchAnyEndpoint(httpMethod, bestMatchPattern);
+		}
+
+		return endpoint;
 	}
 
 	// TODO: Current implementation does db call and checking is not efficient.
 	// We want to introduce redis and optimize the lookup.
-	public boolean hasAccess(Endpoint endpoint, List<Long> roleIds) {
-		List<Role> rolesWithAuthorization = roleService.getRolesWithAuthorization(roleIds);
-		for(Role role : rolesWithAuthorization) {
-			Set<RoleAuthorization> authorizations = role.getAuthorizations();
-			for(RoleAuthorization authorization: authorizations) {
-				if(Objects.equal(authorization.getRoleAuthorizationId().getFeature(), endpoint.getFeature()) && 
-				Objects.equal(authorization.getRoleAuthorizationId().getAction(), endpoint.getAction())) {
-					return true;
-				}
-			}
+	public boolean hasAccess(Endpoint endpoint, Map<AuthorizedFeature, Set<AuthorizedAction>> authroizedFeatureActions)
+			throws JsonProcessingException {
+		Set<AuthorizedAction> features = authroizedFeatureActions.get(endpoint.getFeature());
+
+		// TODO: Use apache common utils
+		if (CollectionUtils.isEmpty(features)) {
+			return false;
 		}
 
-		return false;
+		return features.contains(endpoint.getAction());
 	}
 
 	// TODO: Current implementation does db call and checking is not efficient.
 	// We want to introduce redis and optimize the lookup.
-	public Map<AuthorizedFeature, Set<AuthorizedAction>> getAuthorizedFeatureActions(List<Long> roleIds) {
-		List<Role> rolesWithAuthorization = roleService.getRolesWithAuthorization(roleIds);
+	public Map<AuthorizedFeature, Set<AuthorizedAction>> getAuthorizedFeatureActions(List<Long> roleIds) throws JsonProcessingException {
+		return roleService.getAuthorizedFeatureActionsForGivenRoleIds(roleIds);
+	}
 
-		Map<AuthorizedFeature, Set<AuthorizedAction>> authorizedFeatureActions = new HashMap<>();
-		for(Role role : rolesWithAuthorization) {
-			Set<RoleAuthorization> authorizations = role.getAuthorizations();
-			for(RoleAuthorization authorization: authorizations) {
-				AuthorizedFeature feature = authorization.getRoleAuthorizationId().getFeature();
-				AuthorizedAction action = authorization.getRoleAuthorizationId().getAction();
-				Set<AuthorizedAction> actions = authorizedFeatureActions.get(feature);
-				if(actions == null) {
-					actions = new HashSet<>();
-					authorizedFeatureActions.put(feature, actions);
-				}
-				actions.add(action);
-			}
-		}
-
-		return authorizedFeatureActions;
+	private void throwHttpRequestDoesNotMatchAnyEndpoint(HttpMethod method, String bestMatchPattern) {
+		String errMsg = method + " : " + bestMatchPattern + " (No Endpoint Found)";
+		throw new RuntimeException(errMsg);
 	}
 }

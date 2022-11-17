@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.auth0.jwt.interfaces.Claim;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webrest.common.dto.response.ErrorResponse;
 import com.webrest.common.dto.response.Metadata;
@@ -39,6 +40,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	public static final String PRINCIPLE_APP_USER_KEY = "principle_app_user";
 	public static final String PRINCIPLE_APP_USER_ROLE_IDS_KEY = "principle_app_user_role_ids";
+	public static final String AUTHORIZED_FEATURE_ACTIONS = "authorized_feature_actions";
 	public final String REST_AUTHORIZATION_HEADER = "Authorization";
 
 	private final JWTService jwtService;
@@ -87,11 +89,16 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	private boolean handleWebappAuthorization(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		String token = CookieUtils.getAuthorization(request);
-
 		try {
+
+			Endpoint endpoint = authorizationService.getEndpoint(request);
+
+			if(endpoint.isPublic()) return true;
+
+			String token = CookieUtils.getAuthorization(request);
+
 			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
-			if(hasAuthorizationToRoute(request, roleIds) == false) {
+			if(hasAuthorizationToWebRoute(request, endpoint, roleIds) == false) {
 				response.sendRedirect(WebRoutes.ACCESS_DENIED);
 				return false;
 			}
@@ -99,7 +106,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		} catch (Exception ex) {
 			// Logout the web user
 			log.error("Error during web app authorization", ex);
-			response.sendRedirect(WebRoutes.LOGOUT);
+			response.sendRedirect(WebRoutes.LOGIN);
 			return false;
 		}
 	}
@@ -121,12 +128,17 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		return roleIds;
 	}
 
-	private boolean hasAuthorizationToRoute(HttpServletRequest request, List<Long> roleIds) {
-		Endpoint endpoint = authorizationService.getEndpoint(request);
+	private boolean hasAuthorizationToWebRoute(HttpServletRequest request, Endpoint endpoint,
+			List<Long> principleObjectRoleIds)
+			throws JsonProcessingException {
+		Map<AuthorizedFeature, Set<AuthorizedAction>> authorizedFeatureActions = authorizationService
+				.getAuthorizedFeatureActions(principleObjectRoleIds);
+		request.setAttribute(AUTHORIZED_FEATURE_ACTIONS, authorizedFeatureActions);
+
 		if (endpoint.isPublic() || endpoint.isPublicForAuthorizedUser()) {
 			return true;
 		}
-		return authorizationService.hasAccess(endpoint, roleIds);
+		return authorizationService.hasAccess(endpoint, authorizedFeatureActions);
 	}
 
 	public static AppUser getPrincipleObject(HttpServletRequest request) {
@@ -137,18 +149,22 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		return (List<Long>) request.getAttribute(PRINCIPLE_APP_USER_ROLE_IDS_KEY);
 	}
 
+	public static Map<AuthorizedFeature, Set<AuthorizedAction>> getAuthorizedFeatureActions(
+			HttpServletRequest request) {
+		return (Map<AuthorizedFeature, Set<AuthorizedAction>>) request.getAttribute(AUTHORIZED_FEATURE_ACTIONS);
+	}
+
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 
-		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);		
+		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
 		if (principleObject != null && modelAndView != null && !(modelAndView.getView() instanceof RedirectView)) {
 			modelAndView.addObject("loggedInUser", principleObject);
 			modelAndView.addObject("fileDownloadPath", RestRoutes.FILE_DOWNLOAD.replace("**", ""));
 
-			List<Long> principleObjectRoleIds = AuthorizationInterceptor.getPrincipleObjectRoleIds(request);
-			Map<AuthorizedFeature, Set<AuthorizedAction>> authorizedFeatureActions = authorizationService
-					.getAuthorizedFeatureActions(principleObjectRoleIds);
+			Map<AuthorizedFeature, Set<AuthorizedAction>> authorizedFeatureActions = AuthorizationInterceptor
+					.getAuthorizedFeatureActions(request);
 			modelAndView.addObject("authorizedFeatureActions", authorizedFeatureActions);
 		}
 
