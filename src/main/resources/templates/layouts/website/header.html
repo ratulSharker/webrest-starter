@@ -2,7 +2,7 @@
 	<a class="navbar-brand" href="#">
 		<img th:src="@{/static/image/common/brand-logo.jpeg}" width="30" height="30" class="d-inline-block align-top"
 			alt="">
-		Company
+		<span>Company</span>
 	</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
 		aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,15 +10,20 @@
 	</button>
 	<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
 		<ul class="navbar-nav">
-			<li class="nav-item active">
-				<a class="nav-link" href="#">Login <span class="sr-only">(current)</span></a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="#">Admin Panel</a>
-			</li>
-			<li class="nav-item">
-				<img th:src="@{/static/image/common/avatar.png}" class="avatar shadow">
-			</li>
+			<th:block th:if="${loggedInUser == null}">
+				<li class="nav-item active">
+					<a class="nav-link" th:href="@{/login}">Login <span class="sr-only">(current)</span></a>
+				</li>
+			</th:block>
+			<th:block th:if="${loggedInUser != null}">
+				<li class="nav-item">
+					<a class="nav-link" th:href="@{/login}">Admin Panel</a>
+				</li>
+				<li class="nav-item">
+					<img th:src="${#strings.isEmpty(loggedInUser?.profilePicturePath)} ? @{'/static/image/common/avatar.png'} : ${fileDownloadPath + loggedInUser?.profilePicturePath}"
+						onerror="this.src='/static/image/common/avatar.png';" class="avatar shadow">
+				</li>
+			</th:block>
 		</ul>
 	</div>
 </nav>

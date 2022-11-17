@@ -14,7 +14,7 @@ public class WebRoutes {
 	}
 
 	public static final String FAVICON = "/favicon.ico";
-	@Authorization(isPublic = true)
+	@Authorization(isPublicButOptionalAuthorizedUser = true)
 	public static final String BLANK = "/";
 	@Authorization(isPublic = true, httpMethods = { HttpMethod.GET, HttpMethod.POST })
 	public static final String LOGIN = "/login";

@@ -16,6 +16,7 @@ public @interface Authorization {
 	AuthorizedAction action() default AuthorizedAction.NONE;
 	boolean isPublicForAuthorizedUser() default false;
 	boolean isPublic() default false;
+	boolean isPublicButOptionalAuthorizedUser() default false;
 	HttpMethod[] httpMethods() default {HttpMethod.GET}; // For web, this is pretty straight forward, 
 	// but REST api's having some different stories.
 }
