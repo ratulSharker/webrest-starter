@@ -89,11 +89,16 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	private boolean handleWebappAuthorization(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		String token = CookieUtils.getAuthorization(request);
-
 		try {
+
+			Endpoint endpoint = authorizationService.getEndpoint(request);
+
+			if(endpoint.isPublic()) return true;
+
+			String token = CookieUtils.getAuthorization(request);
+
 			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
-			if(hasAuthorizationToWebRoute(request, roleIds) == false) {
+			if(hasAuthorizationToWebRoute(request, endpoint, roleIds) == false) {
 				response.sendRedirect(WebRoutes.ACCESS_DENIED);
 				return false;
 			}
@@ -101,7 +106,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		} catch (Exception ex) {
 			// Logout the web user
 			log.error("Error during web app authorization", ex);
-			response.sendRedirect(WebRoutes.LOGOUT);
+			response.sendRedirect(WebRoutes.LOGIN);
 			return false;
 		}
 	}
@@ -123,11 +128,9 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		return roleIds;
 	}
 
-	private boolean hasAuthorizationToWebRoute(HttpServletRequest request, List<Long> roleIds)
+	private boolean hasAuthorizationToWebRoute(HttpServletRequest request, Endpoint endpoint,
+			List<Long> principleObjectRoleIds)
 			throws JsonProcessingException {
-		Endpoint endpoint = authorizationService.getEndpoint(request);
-
-		List<Long> principleObjectRoleIds = AuthorizationInterceptor.getPrincipleObjectRoleIds(request);
 		Map<AuthorizedFeature, Set<AuthorizedAction>> authorizedFeatureActions = authorizationService
 				.getAuthorizedFeatureActions(principleObjectRoleIds);
 		request.setAttribute(AUTHORIZED_FEATURE_ACTIONS, authorizedFeatureActions);

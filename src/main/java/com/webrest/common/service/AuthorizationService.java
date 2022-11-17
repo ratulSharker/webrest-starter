@@ -125,7 +125,19 @@ public class AuthorizationService {
 		String bestMatchPattern =
 				(String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 
-		return endpointByVerbAndPath.get(httpMethod).get(bestMatchPattern);
+		Map<String, Endpoint> endpointByPattern = endpointByVerbAndPath.get(httpMethod);
+
+		if(endpointByPattern == null || endpointByPattern.isEmpty()) {
+			throwHttpRequestDoesNotMatchAnyEndpoint(httpMethod, bestMatchPattern);
+		}
+
+		Endpoint endpoint = endpointByPattern.get(bestMatchPattern);
+
+		if(endpoint == null) {
+			throwHttpRequestDoesNotMatchAnyEndpoint(httpMethod, bestMatchPattern);
+		}
+
+		return endpoint;
 	}
 
 	// TODO: Current implementation does db call and checking is not efficient.
@@ -146,5 +158,10 @@ public class AuthorizationService {
 	// We want to introduce redis and optimize the lookup.
 	public Map<AuthorizedFeature, Set<AuthorizedAction>> getAuthorizedFeatureActions(List<Long> roleIds) throws JsonProcessingException {
 		return roleService.getAuthorizedFeatureActionsForGivenRoleIds(roleIds);
+	}
+
+	private void throwHttpRequestDoesNotMatchAnyEndpoint(HttpMethod method, String bestMatchPattern) {
+		String errMsg = method + " : " + bestMatchPattern + " (No Endpoint Found)";
+		throw new RuntimeException(errMsg);
 	}
 }
