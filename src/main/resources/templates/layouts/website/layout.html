@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+
+    <!-- stylesheet -->
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.5.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/common.css}">
+    <link rel="stylesheet" th:href="@{/static/css/loader/loader.css}">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company</title>
+</head>
+
+<body>
+    <div id="full-screen-loader" class="spinner-container">
+        <div class="spinner"></div>
+    </div>
+
+    <div th:replace="layouts/website/header :: header"></div>
+    <th:block layout:fragment="content" class="website-body">
+
+	</th:block>
+
+    <!-- js lib -->
+
+    <!-- 3rd party -->
+	<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/4.5.3/js/bootstrap.min.js}"></script>
+
+    <!-- App Library -->
+    <script th:src="@{/static/js/app/loader.js}"></script>
+
+    <!-- Feature Specific JS Scripts -->
+    <th:block layout:fragment="scripts">
+    </th:block>
+
+    <script>
+        FullScreenLoader.hide();
+
+        window.addEventListener("beforeunload", function () {
+            FullScreenLoader.show();
+        });
+    </script>
+
+</body>
+
+</html>

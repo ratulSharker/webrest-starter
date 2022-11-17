@@ -24,7 +24,7 @@ import com.webrest.common.service.JWTService;
 import com.webrest.common.utils.CookieUtils;
 import com.webrest.rest.constants.RestRoutes;
 import com.webrest.web.constants.WebRoutes;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -89,13 +89,20 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	private boolean handleWebappAuthorization(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
+
+		boolean isPublicButOptionalAuthorizedUser = false;
+
 		try {
 
 			Endpoint endpoint = authorizationService.getEndpoint(request);
 
 			if(endpoint.isPublic()) return true;
 
+			isPublicButOptionalAuthorizedUser = endpoint.isPublicButOptionalAuthorizedUser();
+
 			String token = CookieUtils.getAuthorization(request);
+
+			if(isPublicButOptionalAuthorizedUser && StringUtils.isBlank(token)) return true;
 
 			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
 			if(hasAuthorizationToWebRoute(request, endpoint, roleIds) == false) {
@@ -104,10 +111,17 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			}
 			return true;
 		} catch (Exception ex) {
-			// Logout the web user
-			log.error("Error during web app authorization", ex);
-			response.sendRedirect(WebRoutes.LOGIN);
-			return false;
+			if (isPublicButOptionalAuthorizedUser) {
+				log.error(
+						"Error during web app authorization, but route marked as `isPublicButOptionalAuthorizedUser`",
+						ex);
+				return true;
+			} else {
+				// Logout the web user
+				log.error("Error during web app authorization", ex);
+				response.sendRedirect(WebRoutes.LOGIN);
+				return false;
+			}
 		}
 	}
 
@@ -135,7 +149,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 				.getAuthorizedFeatureActions(principleObjectRoleIds);
 		request.setAttribute(AUTHORIZED_FEATURE_ACTIONS, authorizedFeatureActions);
 
-		if (endpoint.isPublic() || endpoint.isPublicForAuthorizedUser()) {
+		if (endpoint.isPublic() || endpoint.isPublicButOptionalAuthorizedUser()
+				|| endpoint.isPublicForAuthorizedUser()) {
 			return true;
 		}
 		return authorizationService.hasAccess(endpoint, authorizedFeatureActions);

@@ -42,6 +42,7 @@ public class AuthorizationService {
 		private final AuthorizedAction action;
 		private final boolean isPublic;
 		private final boolean isPublicForAuthorizedUser;
+		private final boolean isPublicButOptionalAuthorizedUser;
 		private final String path;
 		private final HttpMethod[] methods;
 	}
@@ -69,8 +70,10 @@ public class AuthorizationService {
 						Object value = field.get(WebRoutes.class);
 						if(value instanceof String) {
 							String fieldValue = (String) value;
-							Endpoint endpoint = new Endpoint(authorization.feature(), authorization.action(),
-									authorization.isPublic(), authorization.isPublicForAuthorizedUser(), fieldValue,
+							Endpoint endpoint = new Endpoint(authorization.feature(),
+									authorization.action(), authorization.isPublic(),
+									authorization.isPublicForAuthorizedUser(),
+									authorization.isPublicButOptionalAuthorizedUser(), fieldValue,
 									authorization.httpMethods());
 							addEndpoint(endpoint);
 							addFeatureAndActions(endpoint);

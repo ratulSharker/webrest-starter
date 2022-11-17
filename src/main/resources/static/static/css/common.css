@@ -56,3 +56,11 @@
 .pb-70 {
     padding-bottom: 70px;
 }
+
+.website-body {
+	background-color: #fffdd0;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
