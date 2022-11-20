@@ -62,6 +62,10 @@ public class WebRoutes {
 			HttpMethod.POST })
 	public static final String UPDATE_ROLE = "/update-role/{roleId}";
 
+	// Dashboard
+	@Authorization(isPublicForAuthorizedUser = true)
+	public static final String DASHBOARD = "/dashboard";
+
 	public static final List<String> PUBLIC_ROUTE_PATTERNS = List.of(FAVICON, "/static/**",
 			"/webjars/**",
 			FORGOT_PASSWORD, RECOVER_PASSWORD.replace("{token}", "**"));
