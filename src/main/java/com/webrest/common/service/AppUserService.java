@@ -114,6 +114,11 @@ public class AppUserService {
 		}
 
 		handleUpdateProfilePicture(updatedUser, existingUser);
+		
+		if(checkIfRawPasswordExistsThenHashIt(updatedUser)) {
+			existingUser.setPassword(updatedUser.getPassword());
+		}
+
 		BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "password", "createdAt",
 				"updatedAt", "roles");
 
@@ -185,13 +190,9 @@ public class AppUserService {
 			throw new AppUserAlreadyExistsException(errMsg);
 		}
 
-		// For End user's password is not required
-		if (StringUtils.isNotBlank(appUser.getPassword())) {
-			String hashedPassword = HashUtils.hashPassword(appUser.getPassword());
-			appUser.setPassword(hashedPassword);
-		}
-
 		handleCreateProfilePicture(appUser);
+
+		checkIfRawPasswordExistsThenHashIt(appUser);
 
 		return appUserRepository.save(appUser);
 	}
@@ -212,5 +213,14 @@ public class AppUserService {
 		}
 	}
 
+	private boolean checkIfRawPasswordExistsThenHashIt(AppUser appUser) {
+		String plainTextPassword = appUser.getPassword(); 
+		if(StringUtils.isNotBlank(plainTextPassword)) {
+			String hashedPassword = HashUtils.hashPassword(plainTextPassword);
+			appUser.setPassword(hashedPassword);
+			return true;
+		}
+		return false;
+	}
 
 }
