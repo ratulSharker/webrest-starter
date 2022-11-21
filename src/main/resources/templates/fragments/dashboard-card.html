@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<div th:fragment="card(title, value, link, icon, cardClass)" class="col-3 p-2">
+
+	<a class="interactive-card embed-responsive embed-responsive-4by3 rounded shadow border d-flex align-items-center justify-content-center text-decoration-none"
+		th:href="@{${#strings.isEmpty(link)} ? '#' : ${link}}" th:classappend="${cardClass}">
+		<div class="text-center">
+			<h3 class="text-secondary"><i th:classappend="${icon}"></i> <span th:text="${title}"></span></h3>
+			<p class="display-3 text-primary" th:text="${value}">
+				Role Count</p>
+		</div>
+	</a>
+
+</div>

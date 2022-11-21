@@ -27,6 +27,16 @@
 					 actionListing=${T(com.webrest.common.enums.authorization.AuthorizedAction).LISTING},
 					 actionCreate=${T(com.webrest.common.enums.authorization.AuthorizedAction).CREATE}">
 
+			<!-- Dashboard Start -->
+			<div class="menu-group">
+				<a href="/dashboard" class="list-group-item list-group-item-action list-group-item-info menu-item menu-link">
+					<span class="pl-2">
+						<i class="fas fa-tachometer-alt"></i>
+						<span>Dashboard</span>
+					</span>
+				</a>
+			</div>
+
 			<!-- Role start -->
 			<div class="menu-group" th:unless="${ #lists.isEmpty(authorizedFeatureActions.get(featureRole)) }">
 				<a class="list-group-item list-group-item-action list-group-item-info menu-item menu-expander"
