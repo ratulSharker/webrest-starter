@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>All Roles</title>
+	<title>Admin Dashboard</title>
 </head>
 
 <body>
@@ -18,22 +18,14 @@
 		<div class="row">
 
 			<!-- Role count -->
-			<a class="col-3 ml-3 mr-2 interactive-card embed-responsive embed-responsive-4by3 rounded shadow border d-flex align-items-center justify-content-center text-decoration-none" href="/user" >
-				<div class="text-center">
-					<h3 class="text-secondary"><i class="fas fa-users"></i> Role</h3>
-					<p class="display-3 text-primary" th:text="${dashboardDto.roleCount}">
-						Role Count</p>
-				</div>	
-			</a>
+			<div
+				th:replace="fragments/dashboard-card :: card('Role', ${dashboardDto.roleCount}, '/role', 'fas fa-users', 'col-3 ml-3 mr-2')">
+			</div>
 
 			<!-- User count -->
-			<a class="col-3 ml-2 mr-3 interactive-card embed-responsive embed-responsive-4by3 rounded shadow border d-flex align-items-center justify-content-center text-decoration-none" href="/user" >
-				<div class="text-center">
-					<h3 class="text-secondary"><i class="fas fa-users"></i> User</h3>
-					<p class="display-3 text-primary" th:text="${dashboardDto.userCount}">
-						User Count</p>
-				</div>	
-			</a>
+			<div
+				th:replace="fragments/dashboard-card :: card('User', ${dashboardDto.userCount}, '/user', 'fas fa-users', 'col-3 ml-2 mr-3')">
+			</div>
 
 		</div>
 
