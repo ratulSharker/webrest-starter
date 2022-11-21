@@ -11,5 +11,9 @@ public class DashboardDto {
 	private boolean hasAccessToRoleCount;
 	private Long roleCount;
 	private boolean hasAccessToUserCount;
-	private Long userCount;	
+	private Long userCount;
+
+	public boolean hasAnyDashboard() {
+		return hasAccessToRoleCount || hasAccessToUserCount;
+	}
 }

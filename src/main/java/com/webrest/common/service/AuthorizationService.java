@@ -145,8 +145,7 @@ public class AuthorizationService {
 		return endpoint;
 	}
 
-	// TODO: Current implementation does db call and checking is not efficient.
-	// We want to introduce redis and optimize the lookup.
+	// TODO: Good candidate for `AuthorizationUtils`
 	public boolean hasAccess(Endpoint endpoint, Map<AuthorizedFeature, Set<AuthorizedAction>> authroizedFeatureActions)
 			throws JsonProcessingException {
 		Set<AuthorizedAction> features = authroizedFeatureActions.get(endpoint.getFeature());

@@ -32,4 +32,6 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
 	@Query("SELECT DISTINCT role FROM Role role " + "LEFT JOIN FETCH role.authorizations "
 			+ " WHERE role.roleId IN :roleIds")
 	public List<Role> rolesWithAuthorizationRoleIdIn(@Param("roleIds") List<Long> roleIds);
+
+	public Long countByActiveTrue();
 }
