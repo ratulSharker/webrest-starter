@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 @Builder
 public class DashboardDto {
+	private boolean hasAccessToRoleCount;
 	private Long roleCount;
+	private boolean hasAccessToUserCount;
 	private Long userCount;	
 }
