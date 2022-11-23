@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -35,13 +34,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import lombok.extern.slf4j.Slf4j;
 
 
 @Service
-@Slf4j
 public class RoleService {
 
 	private final RoleRepository roleRepository;
@@ -60,11 +58,13 @@ public class RoleService {
 		this.objectMapper = objectMapper;
 	}
 	
+	@Transactional(readOnly = true)
 	public Page<Role> filter(Pageable pageable, String searchValue) {
 		Specification<Role> specification = RoleSpecification.likeName(searchValue);
 		return roleRepository.findAll(specification, pageable);
 	}
 
+	// TODO: Consider moving this function into `AuthorizationService`
 	public List<Pair<AuthorizedFeature, List<AuthorizedAction>>> getAssignableFeaturesWithAction() {
 		Map<AuthorizedFeature, Set<AuthorizedAction>> featuresWithAction = authorizationService
 				.getFeaturesWithActions();
@@ -83,6 +83,7 @@ public class RoleService {
 		return roleRepository.save(role);
 	}
 
+	@Transactional(readOnly = true)
 	public Role getRoleDetails(Long roleId) {
 		Optional<Role> optionalRole = roleRepository.getRoleDetailsById(roleId);
 		return optionalRole.orElseThrow(() -> {
@@ -127,6 +128,7 @@ public class RoleService {
 		}
 	}
 
+	@Transactional(readOnly = true)
 	public List<Role> getActiveRoles() {
 		return roleRepository.findActiveRoles();
 	}
@@ -135,6 +137,7 @@ public class RoleService {
 		return roleRepository.getOne(roleId);
 	}
 
+	@Transactional(readOnly = true)
 	public Map<AuthorizedFeature, Set<AuthorizedAction>> getAuthorizedFeatureActionsForGivenRoleIds(List<Long> roleIds) throws JsonProcessingException {
 
 		List<String> roleIdStrings = roleIds.stream().map((roleId) -> roleId.toString()).collect(Collectors.toList());
@@ -156,6 +159,7 @@ public class RoleService {
 		return mergeFeatureActions(roleWiseCachedFeatureActions.values());
 	}
 
+	@Transactional(readOnly = true)
 	public Long getActiveRoleCount() {
 		return roleRepository.countByActiveTrue();
 	}
