@@ -213,6 +213,10 @@ public class AppUserService {
 		}
 	}
 
+	public Long getUserCount() {
+		return appUserRepository.count();
+	}
+
 	private boolean checkIfRawPasswordExistsThenHashIt(AppUser appUser) {
 		String plainTextPassword = appUser.getPassword(); 
 		if(StringUtils.isNotBlank(plainTextPassword)) {

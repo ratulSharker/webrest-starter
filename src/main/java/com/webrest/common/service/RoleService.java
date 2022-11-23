@@ -156,6 +156,10 @@ public class RoleService {
 		return mergeFeatureActions(roleWiseCachedFeatureActions.values());
 	}
 
+	public Long getActiveRoleCount() {
+		return roleRepository.countByActiveTrue();
+	}
+
 	private Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> getRoleWiseAuthorizedFeatureActionsFromCache(List<Long> roleIds,
 			List<String> cachedFeatureActions) throws JsonMappingException, JsonProcessingException {
 		Map<Long, Map<AuthorizedFeature, Set<AuthorizedAction>>> roleWiseCachedFeatureAction = new HashMap<>();

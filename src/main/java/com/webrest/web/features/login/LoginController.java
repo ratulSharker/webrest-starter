@@ -78,8 +78,8 @@ public class LoginController {
 			return "features/login/login-form";
 		}
 
-		CookieUtils.setLastSelectedMenu(WebRoutes.USER, response, Integer.MAX_VALUE);
-		return String.format("redirect:%s", WebRoutes.USER);
+		CookieUtils.setLastSelectedMenu(WebRoutes.DASHBOARD, response, Integer.MAX_VALUE);
+		return String.format("redirect:%s", WebRoutes.DASHBOARD);
 	}
 
 	@GetMapping(WebRoutes.LOGOUT)
