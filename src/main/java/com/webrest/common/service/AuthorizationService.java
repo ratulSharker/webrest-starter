@@ -145,19 +145,6 @@ public class AuthorizationService {
 		return endpoint;
 	}
 
-	// TODO: Good candidate for `AuthorizationUtils`
-	public boolean hasAccess(Endpoint endpoint, Map<AuthorizedFeature, Set<AuthorizedAction>> authroizedFeatureActions)
-			throws JsonProcessingException {
-		Set<AuthorizedAction> features = authroizedFeatureActions.get(endpoint.getFeature());
-
-		// TODO: Use apache common utils
-		if (CollectionUtils.isEmpty(features)) {
-			return false;
-		}
-
-		return features.contains(endpoint.getAction());
-	}
-
 	// TODO: Current implementation does db call and checking is not efficient.
 	// We want to introduce redis and optimize the lookup.
 	public Map<AuthorizedFeature, Set<AuthorizedAction>> getAuthorizedFeatureActions(List<Long> roleIds) throws JsonProcessingException {

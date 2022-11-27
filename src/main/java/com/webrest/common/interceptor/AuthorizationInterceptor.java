@@ -21,6 +21,7 @@ import com.webrest.common.service.AppUserService;
 import com.webrest.common.service.AuthorizationService;
 import com.webrest.common.service.AuthorizationService.Endpoint;
 import com.webrest.common.service.JWTService;
+import com.webrest.common.utils.AuthorizationUtils;
 import com.webrest.common.utils.CookieUtils;
 import com.webrest.rest.constants.RestRoutes;
 import com.webrest.web.constants.WebRoutes;
@@ -178,7 +179,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 				|| endpoint.isPublicForAuthorizedUser()) {
 			return true;
 		}
-		return authorizationService.hasAccess(endpoint, authorizedFeatureActions);
+		return AuthorizationUtils.hasAccess(endpoint, authorizedFeatureActions);
 	}
 
 	public static AppUser getPrincipleObject(HttpServletRequest request) {
