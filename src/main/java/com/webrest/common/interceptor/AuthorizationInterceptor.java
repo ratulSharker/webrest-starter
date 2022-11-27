@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.ModelAndViewDefiningException;
 import org.springframework.web.servlet.view.RedirectView;
 
 import lombok.RequiredArgsConstructor;
@@ -104,16 +105,15 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		response.setHeader("content-type", "application/json");
 		response.setStatus(statusCode);
 
-		Response<Object> responseBody =
-				Response.<Object>builder()
-						.metadata(Metadata.builder()
-								.error(ErrorResponse.builder().message(message).build()).build())
-						.build();
+		Response<Object> responseBody = Response.<Object>builder()
+				.metadata(Metadata.builder()
+						.error(ErrorResponse.builder().message(message).build()).build())
+				.build();
 		response.getWriter().write(objectMapper.writeValueAsString(responseBody));
 	}
 
 	private boolean handleWebappAuthorization(HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+			throws IOException, ModelAndViewDefiningException {
 
 		boolean isPublicButOptionalAuthorizedUser = false;
 
@@ -131,10 +131,13 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
 			if(hasAuthorizationToWebRoute(request, endpoint, roleIds) == false) {
-				response.sendRedirect(WebRoutes.ACCESS_DENIED);
-				return false;
+				log.error("Unauthorized access to route");
+				ModelAndView forbiddenModelAndView = getForbiddenModelAndView(request);
+				throw new ModelAndViewDefiningException(forbiddenModelAndView);
 			}
 			return true;
+		} catch (ModelAndViewDefiningException modelAndViewDefiningException) {
+			throw modelAndViewDefiningException;
 		} catch (Exception ex) {
 			if (isPublicButOptionalAuthorizedUser) {
 				log.error(
@@ -199,6 +202,16 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 
+		addCommonModels(modelAndView, request);
+	}
+
+	private ModelAndView getForbiddenModelAndView(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView("features/misc/access-denied");
+		addCommonModels(modelAndView, request);
+		return modelAndView;
+	}
+
+	private void addCommonModels(ModelAndView modelAndView, HttpServletRequest request) {
 		AppUser principleObject = AuthorizationInterceptor.getPrincipleObject(request);
 		if (principleObject != null && modelAndView != null && !(modelAndView.getView() instanceof RedirectView)) {
 			modelAndView.addObject("loggedInUser", principleObject);
@@ -208,6 +221,5 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 					.getAuthorizedFeatureActions(request);
 			modelAndView.addObject("authorizedFeatureActions", authorizedFeatureActions);
 		}
-
 	}
 }
