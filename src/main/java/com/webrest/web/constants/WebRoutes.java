@@ -21,7 +21,7 @@ public class WebRoutes {
 	@Authorization(isPublic = true)
 	public static final String ERROR = "/error";
 	@Authorization(isPublicForAuthorizedUser = true)
-	public static final String ACCESS_DENIED = "/access-denied";
+	public static final String ACCESS_DENIED = "/access-denied"; // TODO: Remove this route.
 	@Authorization(isPublicForAuthorizedUser = true)
 	public static final String LOGOUT = "/logout";
 

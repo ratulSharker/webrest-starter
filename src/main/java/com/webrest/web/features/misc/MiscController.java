@@ -5,6 +5,7 @@ import com.webrest.web.constants.WebRoutes;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+// TODO: Remove this un-used controller
 @Controller
 public class MiscController {
 	
