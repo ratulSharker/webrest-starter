@@ -41,7 +41,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 	public static final String PRINCIPLE_APP_USER_KEY = "principle_app_user";
 	public static final String PRINCIPLE_APP_USER_ROLE_IDS_KEY = "principle_app_user_role_ids";
 	public static final String AUTHORIZED_FEATURE_ACTIONS = "authorized_feature_actions";
-	public final String REST_AUTHORIZATION_HEADER = "Authorization";
+	public static final String REST_AUTHORIZATION_HEADER = "Authorization";
 
 	private final JWTService jwtService;
 	// TODO: Remove this app user service from here
