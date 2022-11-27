@@ -2,7 +2,7 @@ package com.webrest.common.service;
 
 import java.util.Objects;
 import java.util.Optional;
-import javax.persistence.EntityManager;
+
 import javax.persistence.EntityNotFoundException;
 
 import com.webrest.common.entity.AppUser;
@@ -13,10 +13,8 @@ import com.webrest.common.service.storage.StorageService;
 import com.webrest.common.service.storage.SubDirectory;
 import com.webrest.common.specification.AppUserSpecification;
 import com.webrest.common.utils.HashUtils;
-import lombok.RequiredArgsConstructor;
+
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,16 +23,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AppUserService {
-
-	// Use log4j's `@Slf4j` api.
-	private Logger logger = LoggerFactory.getLogger(AppUserService.class);
 
 	private final AppUserRepository appUserRepository;
 	private final RoleService roleService;
-	private final EntityManager entityManager; // TODO: Introduce Custom Base Repository, Introduce `detach` method into that repository.
 	private final StorageService storageService;
 
 	@Transactional(readOnly = true)
@@ -42,7 +40,7 @@ public class AppUserService {
 		Optional<AppUser> optionalAppUser = appUserRepository.findByMobileOrEmailAndPassword(mobileOrEmail, password);
 		optionalAppUser.orElseThrow(() -> {
 			String errMsg = String.format("User not found with emailOrEmail : %s", mobileOrEmail);
-			logger.info(errMsg);
+			log.info(errMsg);
 			throw new EntityNotFoundException(errMsg);
 		});
 
@@ -160,14 +158,14 @@ public class AppUserService {
 						updatedUser.getProfilePicturePath());
 				updatedUser.setProfilePicturePath(finalPath);
 			} catch (Exception ex) {
-				logger.error("Error moving profile picture", ex);
+				log.error("Error moving profile picture", ex);
 				updatedUser.setProfilePicturePath(null);
 			}
 		}
 	}
 
 	public void detachAppUserFromJPA(AppUser appUser) {
-		this.entityManager.detach(appUser);
+		this.appUserRepository.detach(appUser);
 	}
 
 	@Transactional
@@ -214,7 +212,7 @@ public class AppUserService {
 						newUser.getProfilePicturePath());
 				newUser.setProfilePicturePath(finalPath);
 			} catch (Exception ex) {
-				logger.error("Error moving profile picture", ex);
+				log.error("Error moving profile picture", ex);
 				newUser.setProfilePicturePath(null);
 			}
 		}

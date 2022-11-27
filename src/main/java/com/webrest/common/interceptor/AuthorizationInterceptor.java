@@ -21,6 +21,7 @@ import com.webrest.common.service.AppUserService;
 import com.webrest.common.service.AuthorizationService;
 import com.webrest.common.service.AuthorizationService.Endpoint;
 import com.webrest.common.service.JWTService;
+import com.webrest.common.utils.AuthorizationUtils;
 import com.webrest.common.utils.CookieUtils;
 import com.webrest.rest.constants.RestRoutes;
 import com.webrest.web.constants.WebRoutes;
@@ -41,7 +42,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 	public static final String PRINCIPLE_APP_USER_KEY = "principle_app_user";
 	public static final String PRINCIPLE_APP_USER_ROLE_IDS_KEY = "principle_app_user_role_ids";
 	public static final String AUTHORIZED_FEATURE_ACTIONS = "authorized_feature_actions";
-	public final String REST_AUTHORIZATION_HEADER = "Authorization";
+	public static final String REST_AUTHORIZATION_HEADER = "Authorization";
 
 	private final JWTService jwtService;
 	// TODO: Remove this app user service from here
@@ -178,7 +179,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 				|| endpoint.isPublicForAuthorizedUser()) {
 			return true;
 		}
-		return authorizationService.hasAccess(endpoint, authorizedFeatureActions);
+		return AuthorizationUtils.hasAccess(endpoint, authorizedFeatureActions);
 	}
 
 	public static AppUser getPrincipleObject(HttpServletRequest request) {

@@ -4,15 +4,13 @@ import java.util.Optional;
 
 import com.webrest.common.entity.AppUser;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AppUserRepository extends JpaRepository<AppUser, Long>, JpaSpecificationExecutor<AppUser> {
+public interface AppUserRepository extends BaseRepository<AppUser, Long> {
 
 	@Query(value = "SELECT au FROM AppUser au" + " LEFT JOIN FETCH au.roles "
 			+ " WHERE (au.mobile = :mobileOrEmail OR au.email = :mobileOrEmail) AND"
