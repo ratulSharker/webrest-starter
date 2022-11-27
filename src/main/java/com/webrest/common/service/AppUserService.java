@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 
 import com.webrest.common.entity.AppUser;
 import com.webrest.common.entity.Role;
@@ -23,10 +22,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AppUserService {
 
@@ -38,7 +37,7 @@ public class AppUserService {
 	private final EntityManager entityManager; // TODO: Introduce Custom Base Repository, Introduce `detach` method into that repository.
 	private final StorageService storageService;
 
-
+	@Transactional(readOnly = true)
 	public AppUser getAppUserMobileOrEmailAndPassword(String mobileOrEmail, String password) {
 		Optional<AppUser> optionalAppUser = appUserRepository.findByMobileOrEmailAndPassword(mobileOrEmail, password);
 		optionalAppUser.orElseThrow(() -> {
@@ -50,6 +49,7 @@ public class AppUserService {
 		return optionalAppUser.get();
 	}
 
+	@Transactional(readOnly = true)
 	public AppUser getAppUserByEmail(String email) {
 		Optional<AppUser> optionalUser = appUserRepository.findByEmail(email);
 		return optionalUser.orElseThrow(() -> {
@@ -58,6 +58,7 @@ public class AppUserService {
 		});
 	}
 
+	@Transactional(readOnly = true)
 	public AppUser findById(Long userId) {
 		Optional<AppUser> optionalAppUser = appUserRepository.findById(userId);
 
@@ -67,6 +68,7 @@ public class AppUserService {
 		});
 	}
 
+	@Transactional(readOnly = true)
 	public AppUser findByIdWithRoles(Long appUserId) {
 		Optional<AppUser> optionalAppUser = appUserRepository.findByIdWithRoles(appUserId);
 
@@ -76,6 +78,7 @@ public class AppUserService {
 		});
 	}
 
+	@Transactional
 	public AppUser updateOwnProfile(Long appUserId, AppUser updatedUser) {
 		AppUser existingUser = findById(appUserId);
 
@@ -98,6 +101,7 @@ public class AppUserService {
 		return existingUser;
 	}
 
+	@Transactional
 	public AppUser update(Long appUserId, AppUser updatedUser) {
 		AppUser existingUser = findById(appUserId);
 
@@ -135,7 +139,7 @@ public class AppUserService {
 		return existingUser;
 	}
 
-	public void handleUpdateProfilePicture(AppUser updatedUser, AppUser existingUser) {
+	private void handleUpdateProfilePicture(AppUser updatedUser, AppUser existingUser) {
 
 		if (Objects.equals(updatedUser.getProfilePicturePath(), existingUser.getProfilePicturePath())) {
 			// Both are same, so proceed
@@ -166,10 +170,12 @@ public class AppUserService {
 		this.entityManager.detach(appUser);
 	}
 
+	@Transactional
 	public void updatePassword(Long appUserId, String password) {
 		appUserRepository.updateUserPassword(appUserId, password);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<AppUser> filter(Pageable pageable, String searchValue) {
 		Specification<AppUser> specification = Specification
 				.where(AppUserSpecification.likeNameOrMobileOrEmail(searchValue));
@@ -177,6 +183,7 @@ public class AppUserService {
 		return appUserRepository.findAll(specification, pageable);
 	}
 
+	@Transactional
 	public AppUser createAppUser(AppUser appUser) {
 		Long mobileCount = appUserRepository.countByMobile(appUser.getMobile());
 		if (mobileCount > 0) {
@@ -197,7 +204,7 @@ public class AppUserService {
 		return appUserRepository.save(appUser);
 	}
 
-	public void handleCreateProfilePicture(AppUser newUser) {
+	private void handleCreateProfilePicture(AppUser newUser) {
 
 		if (StringUtils.isNotBlank(newUser.getProfilePicturePath())) {
 			// We are now sure, that it is the temp file
@@ -213,6 +220,7 @@ public class AppUserService {
 		}
 	}
 
+	@Transactional(readOnly = true)
 	public Long getUserCount() {
 		return appUserRepository.count();
 	}

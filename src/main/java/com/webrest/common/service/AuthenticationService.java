@@ -1,22 +1,18 @@
 package com.webrest.common.service;
 
-import javax.transaction.Transactional;
-
 import com.webrest.common.dto.authentication.request.web.AuthenticationRequestDto;
 import com.webrest.common.dto.authentication.response.AuthenticationResponseDto;
 import com.webrest.common.entity.AppUser;
 import com.webrest.common.exception.InvalidCredentialsException;
 import com.webrest.common.utils.HashUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Service
-@Transactional
-public class AuthenticationService {
+import lombok.extern.slf4j.Slf4j;
 
-	private Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+@Service
+@Slf4j
+public class AuthenticationService {
 
 	private AppUserService appUserService;
 	private JWTService jwtService;
@@ -34,7 +30,7 @@ public class AuthenticationService {
 			String token = jwtService.generateJWTTokenForAuthentication(user);
 			return AuthenticationResponseDto.builder().token(token).build();
 		} catch (Exception ex) {
-			logger.error("ERROR : During authentication", ex);
+			log.error("ERROR : During authentication", ex);
 			throw new InvalidCredentialsException("Wrong username or password");
 		}
 	}
