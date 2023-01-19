@@ -33,6 +33,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice(basePackages = "com.webrest.rest")
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+	// TODO: Use @Slf4j
 	private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
 	@ExceptionHandler(EntityNotFoundException.class)

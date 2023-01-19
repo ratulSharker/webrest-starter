@@ -2,6 +2,7 @@ package com.webrest.web.features.user;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -91,6 +92,9 @@ public class AppUserController {
 			model.addAttribute("appUser", appUser);
 			Breadcrumb.builder().addItem("All Users", WebRoutes.USER)
 					.addItem(String.format("User details (%s)", appUser.getEmail())).build(model);
+		} catch(EntityNotFoundException entityNotFoundException) {
+			// TODO: add a logger error
+			throw entityNotFoundException;
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 		}
