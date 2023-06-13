@@ -20,7 +20,6 @@ import com.webrest.web.constants.WebRoutes;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.HandlerMapping;
 
 import lombok.AllArgsConstructor;
