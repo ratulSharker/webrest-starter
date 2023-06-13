@@ -3,6 +3,7 @@ package com.webrest.common.entity;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Column;
@@ -26,7 +27,6 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.api.client.util.Objects;
 import com.webrest.common.annotation.ValidJson;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -113,7 +113,7 @@ public class AppUser {
 	@JsonIgnore
 	public boolean containsRoleId(Long roleId) {
 		return roles.stream().filter(role -> {
-			return Objects.equal(role.getRoleId(), roleId);
+			return Objects.equals(role.getRoleId(), roleId);
 		}).findFirst().isPresent();
 	}
 
