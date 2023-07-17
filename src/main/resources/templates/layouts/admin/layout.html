@@ -63,12 +63,18 @@
     <th:block layout:fragment="scripts">
     </th:block>
 
-    <script>
+    <script th:inline="javascript">
         FullScreenLoader.hide();
 
         window.addEventListener("beforeunload", function () {
             FullScreenLoader.show();
         });
+
+        window.GLOBAL_CONSTANTS = {
+            file_upload_route : /*[[@{/api/v1/upload}]]*/ "FILE_UPLOAD_ROUTE",
+            context_path: /*[[@{./}]]*/ "CONTEXT_PATH"
+        };
+
     </script>
 
     <!-- Alert -->

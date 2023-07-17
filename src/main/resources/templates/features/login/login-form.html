@@ -22,7 +22,7 @@
 			<div class="card col-xl-4 col-lg-5 col-md-6 max-width-500px shadow">
 				<div class="card-body">
 					<h4 class="card-title">Admin Login</h4>
-					<form th:action="@{${T(com.webrest.web.constants.WebRoutes).LOGIN}}" method="POST"
+					<form th:action="@{/login}" method="POST"
 						th:object="${loginForm}">
 						<div class="form-group">
 							<label for="username-input"><i class="fas fa-user-tie"></i><span

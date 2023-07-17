@@ -13,8 +13,9 @@ public class CookieUtils {
 	public static final String AUTHORIZATION = "authorization";
 	public static final String LAST_SELECTED_MENU_KEY = "last-selected-menu-key";
 
-	public static boolean setAuthorization(String token, HttpServletResponse response, int maxAge) {
-		return set(AUTHORIZATION, token, response, maxAge);
+	public static boolean setAuthorization(String token, HttpServletRequest request, HttpServletResponse response,
+			int maxAge) {
+		return set(AUTHORIZATION, token, response, request.getContextPath(), maxAge);
 	}
 
 	public static String getAuthorization(HttpServletRequest request) {
@@ -30,8 +31,13 @@ public class CookieUtils {
 		clearCookie(AUTHORIZATION, request, response);
 	}
 
-	public static boolean setLastSelectedMenu(String lastSelectedMenuPath, HttpServletResponse response, int maxAge) {
-		return set(LAST_SELECTED_MENU_KEY, lastSelectedMenuPath, response, maxAge);
+	public static boolean setLastSelectedMenu(String lastSelectedMenuPath, HttpServletRequest request,
+			HttpServletResponse response, int maxAge) {
+
+		String contextPath = request.getContextPath();
+		String lastSelectedMenuPathWithContext = contextPath + lastSelectedMenuPath;
+
+		return set(LAST_SELECTED_MENU_KEY, lastSelectedMenuPathWithContext, response, contextPath, maxAge);
 	}
 
 	public static String getLastSelectedMenu(HttpServletRequest request) {
@@ -47,10 +53,10 @@ public class CookieUtils {
 		clearCookie(LAST_SELECTED_MENU_KEY, request, response);
 	}
 
-	private static boolean set(String name, String value, HttpServletResponse response, int maxAge) {
+	private static boolean set(String name, String value, HttpServletResponse response, String contextPath, int maxAge) {
 		if (StringUtils.isNotEmpty(value)) {
 			Cookie cookie = new Cookie(name, value);
-			cookie.setPath("/");
+			cookie.setPath(contextPath);
 			cookie.setMaxAge(maxAge);
 			response.addCookie(cookie);
 			return true;
@@ -75,6 +81,7 @@ public class CookieUtils {
 		if (cookie.isPresent()) {
 			cookie.get().setMaxAge(0);
 			cookie.get().setValue(null);
+			cookie.get().setPath(request.getContextPath());
 
 			response.addCookie(cookie.get());
 		}

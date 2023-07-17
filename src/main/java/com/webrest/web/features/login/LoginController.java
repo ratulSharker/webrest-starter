@@ -44,7 +44,7 @@ public class LoginController {
 			try {
 				jwtService.verifyToken(token);
 
-				CookieUtils.setLastSelectedMenu(WebRoutes.USER, response, Integer.MAX_VALUE);
+				CookieUtils.setLastSelectedMenu(WebRoutes.USER, request, response, Integer.MAX_VALUE);
 				return String.format("redirect:%s", WebRoutes.USER);
 			} catch (Exception ex) {
 				logger.error("Error during token verification", ex);
@@ -59,7 +59,7 @@ public class LoginController {
 
 	@PostMapping(WebRoutes.LOGIN)
 	public String submitLoginForm(@Valid @ModelAttribute("loginForm") AuthenticationRequestDto authenticationRequestDto,
-			BindingResult result, Model model, HttpServletResponse response) {
+			BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) {
 
 		if (result.hasErrors()) {
 			model.addAttribute("loginForm", authenticationRequestDto);
@@ -71,14 +71,14 @@ public class LoginController {
 			AuthenticationResponseDto authenticationResponseDto = authenticationService
 					.authenticate(authenticationRequestDto);
 			int tokenExpiryTimeInSeconds = (int) authenticationService.tokenExpiryTimeInMinutes() * 60;
-			CookieUtils.setAuthorization(authenticationResponseDto.getToken(), response, tokenExpiryTimeInSeconds);
+			CookieUtils.setAuthorization(authenticationResponseDto.getToken(), request, response, tokenExpiryTimeInSeconds);
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("Authentication failed", ex, model);
 			model.addAttribute("forgotPasswordPath", WebRoutes.FORGOT_PASSWORD);
 			return "features/login/login-form";
 		}
 
-		CookieUtils.setLastSelectedMenu(WebRoutes.DASHBOARD, response, Integer.MAX_VALUE);
+		CookieUtils.setLastSelectedMenu(WebRoutes.DASHBOARD, request, response, Integer.MAX_VALUE);
 		return String.format("redirect:%s", WebRoutes.DASHBOARD);
 	}
 
@@ -87,6 +87,6 @@ public class LoginController {
 
 		CookieUtils.clearAuthorization(request, response);
 
-		return new RedirectView(WebRoutes.LOGIN);
+		return new RedirectView(WebRoutes.LOGIN, true);
 	}
 }

@@ -6,12 +6,16 @@ $(document).ready(function () {
     // store the last clicked menu path
     $(".menu-link").on("click", function () {
         let clickedPath = $(this).attr("href");
-        Cookies.set(lastSelectedMenuPathKey, clickedPath);
+        Cookies.set(lastSelectedMenuPathKey, clickedPath, {
+            path: window.GLOBAL_CONSTANTS.context_path
+        });
     });
 
     // paths, which have no menu entries `/profile`, `update-profile`
     $(".no-menu-group").on("click", function () {
-        Cookies.remove(lastSelectedMenuPathKey);
+        Cookies.remove(lastSelectedMenuPathKey, {
+            path: window.GLOBAL_CONSTANTS.context_path
+        });
     });
 
 
@@ -25,7 +29,9 @@ $(document).ready(function () {
     let links = $(`a[href='${lastSelectedMenuPath}'].menu-link`);
 
     if (links.length > 0 && Cookies.get(lastSelectedMenuPathKey) == undefined) {
-        Cookies.set(lastSelectedMenuPathKey, lastSelectedMenuPath);
+        Cookies.set(lastSelectedMenuPathKey, lastSelectedMenuPath, {
+            path: window.GLOBAL_CONSTANTS.context_path
+        });
     }
     
     links.each(function () {
