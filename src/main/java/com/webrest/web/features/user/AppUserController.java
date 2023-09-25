@@ -76,7 +76,7 @@ public class AppUserController {
 		try {
 			appUserService.createAppUser(appUser);
 			cookieFlashAttribute.setAlertValues(true, "Success", "User creation successful", response);
-			return new ModelAndView(new RedirectView(WebRoutes.CREATE_USER));
+			return new ModelAndView(new RedirectView(WebRoutes.CREATE_USER, true));
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("User creation failed", ex, model);
 			Breadcrumb.builder().addItem("Create User").build(model);
@@ -124,7 +124,7 @@ public class AppUserController {
 			appUserService.update(appUserId, appUser);
 			cookieFlashAttribute.setAlertValues(true, "Success", "User Updated Successfully",
 					response);
-			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_USER));
+			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_USER, true));
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("Failure", ex, model);
 			return new ModelAndView("features/user/user-update");

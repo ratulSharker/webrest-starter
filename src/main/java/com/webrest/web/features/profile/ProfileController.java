@@ -71,7 +71,7 @@ public class ProfileController {
 
 			cookieFlashAttribute.setAlertValues(true, "Success", "Profile updated successfully", response);
 
-			return new ModelAndView(new RedirectView(WebRoutes.MY_PROFILE_UPDATE));
+			return new ModelAndView(new RedirectView(WebRoutes.MY_PROFILE_UPDATE, true));
 
 		} catch (Exception ex) {
 			logger.error("Error During profile update", ex);
