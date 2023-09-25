@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.webrest.common.annotation.Authorization;
+import com.webrest.common.annotation.Authorizations;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
 import com.webrest.rest.constants.RestRoutes;
@@ -63,29 +64,43 @@ public class AuthorizationService {
 			Field field = fields[fieldIndex];
 
 			Annotation[] annotations = field.getAnnotations();
-			for(int annotationIndex = 0; annotationIndex < annotations.length; annotationIndex++) {
-				Annotation annotation = annotations[annotationIndex];
-				if(annotation instanceof Authorization) {
-					Authorization authorization = (Authorization) annotation;
-					try {
-						Object value = field.get(WebRoutes.class);
-						if(value instanceof String) {
-							String fieldValue = (String) value;
-							Endpoint endpoint = new Endpoint(authorization.feature(),
-									authorization.action(), authorization.isPublic(),
-									authorization.isPublicForAuthorizedUser(),
-									authorization.isPublicButOptionalAuthorizedUser(), fieldValue,
-									authorization.httpMethods());
-							addEndpoint(endpoint);
-							addFeatureAndActions(endpoint);
+			for(Annotation annotation : annotations) {
+
+				try {
+					Object value = field.get(WebRoutes.class);
+					if(value instanceof String) {
+						String fieldValue = (String) value;
+
+						if(annotation instanceof Authorization) {
+							Authorization authorization = (Authorization) annotation;
+							processAuthorizationAnnotation(authorization, fieldValue);
+						} else if (annotation instanceof Authorizations) {
+							Authorizations authorizations = (Authorizations) annotation;
+							for(Authorization authorization: authorizations.value()) {
+								processAuthorizationAnnotation(authorization, fieldValue);
+							}
 						}
-						
-					} catch (IllegalArgumentException | IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
+		}
+	}
+
+	private void processAuthorizationAnnotation(Authorization authorization, String fieldValue) {
+		try {
+			Endpoint endpoint = new Endpoint(authorization.feature(),
+					authorization.action(), authorization.isPublic(),
+					authorization.isPublicForAuthorizedUser(),
+					authorization.isPublicButOptionalAuthorizedUser(), fieldValue,
+					authorization.httpMethods());
+			addEndpoint(endpoint);
+			addFeatureAndActions(endpoint);
+
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
 		}
 	}
 
