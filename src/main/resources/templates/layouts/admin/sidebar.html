@@ -110,8 +110,11 @@
 				<a class="dropdown-toggle" href="#" id="profile-dropdown" data-toggle="dropdown" aria-haspopup="true"
 					aria-expanded="false">
 
-					<img th:src="${#strings.isEmpty(loggedInUser.profilePicturePath)} ? @{'/static/image/common/avatar.png'} : ${fileDownloadPath + loggedInUser.profilePicturePath}"
-						onerror="this.src='/static/image/common/avatar.png';" class="avatar shadow">
+					<div th:replace="fragments/picture :: picture(
+									image = ${loggedInUser.profilePicturePath},
+									fallbackImage = '/static/image/common/avatar.png',
+									classes = 'avatar shadow')">
+					</div>
 
 				</a>
 				<div class="dropdown-menu small">

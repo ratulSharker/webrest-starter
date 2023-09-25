@@ -41,7 +41,7 @@ public class FileController {
 	@GetMapping(value = RestRoutes.FILE_DOWNLOAD)
 	public ResponseEntity<Resource> download(HttpServletRequest request) {
 
-		String basePath = RestRoutes.FILE_DOWNLOAD.replace("**", "");
+		String basePath = request.getContextPath() + RestRoutes.FILE_DOWNLOAD.replace("**", "");
 		String subpath = request.getRequestURI().replace(basePath, "");
 
 		InputStream inputStream = storageService.getPermanentFileInputStream(subpath);

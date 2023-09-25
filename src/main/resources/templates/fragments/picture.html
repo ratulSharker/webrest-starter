@@ -1,0 +1,6 @@
+<th:block th:fragment="picture(image, fallbackImage, classes)" th:with="id=${id}, alt=${alt}">
+	<img th:src="${#strings.isEmpty(image)} ? @{${fallbackImage}} : @{${fileDownloadPath + image}}"
+		th:id="${id}"
+		th:alt="${alt}"
+		th:attr="onerror='this.src=\'' + @{${fallbackImage}} + '\';'" th:class="${classes}">
+</th:block>

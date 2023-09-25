@@ -65,9 +65,12 @@
 						<!-- End user profile picture path end -->
 						<div class="col">
 							<div class="row justify-content-center">
-								<img id="profile-picture-image" class="avatar-lg shadow-lg"
-									th:src="${#strings.isEmpty(appUserForm?.profilePicturePath)} ? @{/static/image/common/avatar.png} : @{${fileDownloadPath + appUserForm?.profilePicturePath}}"
-									alt="Profile Picture">
+								<div th:replace="fragments/picture :: picture(
+									image = ${appUserForm?.profilePicturePath},
+									fallbackImage = '/static/image/common/avatar.png',
+									classes = 'avatar-lg shadow-lg',
+									alt = 'Profile Picture')">
+								</div>
 							</div>
 							<div class="row justify-content-center mt-2">
 								<button type="button" id="upload-user-picture-button"

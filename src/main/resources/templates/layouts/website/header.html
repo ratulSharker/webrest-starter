@@ -20,8 +20,11 @@
 					<a class="nav-link" th:href="@{/login}">Admin Panel</a>
 				</li>
 				<li class="nav-item">
-					<img th:src="${#strings.isEmpty(loggedInUser?.profilePicturePath)} ? @{'/static/image/common/avatar.png'} : ${fileDownloadPath + loggedInUser?.profilePicturePath}"
-						onerror="this.src='/static/image/common/avatar.png';" class="avatar shadow">
+					<div th:replace="fragments/picture :: picture(
+						image = ${loggedInUser?.profilePicturePath},
+						fallbackImage = '/static/image/common/avatar.png',
+						classes = 'avatar shadow')">
+					</div>
 				</li>
 			</th:block>
 		</ul>
