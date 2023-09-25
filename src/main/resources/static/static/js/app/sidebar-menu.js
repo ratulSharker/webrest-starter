@@ -18,12 +18,17 @@ $(document).ready(function () {
         });
     });
 
-
     // Opening the selected menu
     let lastSelectedMenuPath = Cookies.get(lastSelectedMenuPathKey);
-    if (lastSelectedMenuPath == undefined) {
-        // first time, when no cookie is set.
-        lastSelectedMenuPath = window.location.pathname;
+    if (lastSelectedMenuPath == undefined || lastSelectedMenuPath != window.location.pathname) {
+		// If the window.location.pathname exists in sidebar, then try to select it
+		let sideMenuLinks = $(`a[href='${window.location.pathname}'].menu-link`);
+		if(sideMenuLinks.length > 0) {
+			lastSelectedMenuPath = window.location.pathname;
+			Cookies.set(lastSelectedMenuPathKey, lastSelectedMenuPath, {
+				path: window.GLOBAL_CONSTANTS.context_path
+			});
+		}
     }
 
     let links = $(`a[href='${lastSelectedMenuPath}'].menu-link`);
