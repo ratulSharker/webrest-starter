@@ -93,7 +93,7 @@ public class AppUserService {
 		}
 
 		handleUpdateProfilePicture(updatedUser, existingUser);
-		BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "createdAt", "updatedAt");
+		BeanUtils.copyProperties(updatedUser, existingUser, "appUserId", "password", "createdAt", "updatedAt");
 
 		appUserRepository.save(existingUser);
 		return existingUser;
