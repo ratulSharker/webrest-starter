@@ -39,7 +39,8 @@
 		<script th:inline="javascript">
 			$(document).ready(function() {
 				const loadRoleDataRoute =  /*[[@{/role-load-data}]]*/ "ROLE_LOAD_DATA";
-				initRoleDataTable(loadRoleDataRoute);
+				const roleUpdateRoute = /*[[@{/update-role/}]]*/ "ROLE_UPDATE_ROUTE";
+				initRoleDataTable(loadRoleDataRoute, roleUpdateRoute);
 			});
 		</script>
 	</div>

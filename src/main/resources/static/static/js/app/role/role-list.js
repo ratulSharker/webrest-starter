@@ -1,4 +1,4 @@
-function initRoleDataTable(roleLoadDataRoute) {
+function initRoleDataTable(roleLoadDataRoute, roleUpdateRoute) {
 	const dataTable = initDataTable("role-table", roleLoadDataRoute, [
 		{
 			data: "roleId",
@@ -33,7 +33,7 @@ function initRoleDataTable(roleLoadDataRoute) {
 						</a>
 						<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="user-manage-dropdown-${row.appUserId}">
 							<li><a class="dropdown-item text-primary" href="${'#'}"><span><i class="fas fa-info-circle"></i> Details</span></a></li>
-							<li><a class="dropdown-item text-primary" href="${'/update-role/' + row.roleId}"><span><i class="fa fa-edit"></i> Update</span></a></li>
+							<li><a class="dropdown-item text-primary" href="${roleUpdateRoute + row.roleId}"><span><i class="fa fa-edit"></i> Update</span></a></li>
 						</ul>
 						</div>
 					</div>
