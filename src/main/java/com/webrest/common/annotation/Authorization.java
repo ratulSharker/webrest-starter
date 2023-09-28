@@ -1,6 +1,7 @@
 package com.webrest.common.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpMethod;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
+@Repeatable(Authorizations.class)
 public @interface Authorization {
 	AuthorizedFeature feature() default AuthorizedFeature.NONE;
 	AuthorizedAction action() default AuthorizedAction.NONE;
