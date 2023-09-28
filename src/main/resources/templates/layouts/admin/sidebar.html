@@ -29,7 +29,7 @@
 
 			<!-- Dashboard Start -->
 			<div class="menu-group">
-				<a href="/dashboard" class="list-group-item list-group-item-action list-group-item-info menu-item menu-link">
+				<a th:href="@{/dashboard}" class="list-group-item list-group-item-action list-group-item-info menu-item menu-link">
 					<span class="pl-2">
 						<i class="fas fa-tachometer-alt"></i>
 						<span>Dashboard</span>
@@ -48,7 +48,7 @@
 					</span>
 				</a>
 				<div class="collapse small menu-link-collapse" id="role-actions" data-parent="#menu-container-id">
-					<a href="/role"
+					<a th:href="@{/role}"
 						class="list-group-item list-group-item-action list-group-item-light menu-item menu-link"
 						th:if="${ authorizedFeatureActions.get(featureRole).contains(actionListing) }">
 						<span class="pl-2">
@@ -57,7 +57,7 @@
 						</span>
 
 					</a>
-					<a href="/create-role"
+					<a th:href="@{/create-role}"
 						class="list-group-item list-group-item-action list-group-item-light menu-item menu-link"
 						th:if="${ authorizedFeatureActions.get(featureRole).contains(actionCreate) }">
 						<span class="pl-2">
@@ -80,7 +80,7 @@
 					</span>
 				</a>
 				<div class="collapse small menu-link-collapse" id="user-actions" data-parent="#menu-container-id">
-					<a href="/user"
+					<a th:href="@{/user}"
 						class="list-group-item list-group-item-action list-group-item-light menu-item menu-link"
 						th:if="${ authorizedFeatureActions.get(featureUser).contains(actionListing) }">
 						<span class="pl-2">
@@ -89,7 +89,7 @@
 						</span>
 
 					</a>
-					<a href="/create-user"
+					<a th:href="@{/create-user}"
 						class="list-group-item list-group-item-action list-group-item-light menu-item menu-link"
 						th:if="${ authorizedFeatureActions.get(featureUser).contains(actionCreate) }">
 						<span class="pl-2">
@@ -110,8 +110,11 @@
 				<a class="dropdown-toggle" href="#" id="profile-dropdown" data-toggle="dropdown" aria-haspopup="true"
 					aria-expanded="false">
 
-					<img th:src="${#strings.isEmpty(loggedInUser.profilePicturePath)} ? @{'/static/image/common/avatar.png'} : ${fileDownloadPath + loggedInUser.profilePicturePath}"
-						onerror="this.src='/static/image/common/avatar.png';" class="avatar shadow">
+					<div th:replace="fragments/picture :: picture(
+									image = ${loggedInUser.profilePicturePath},
+									fallbackImage = '/static/image/common/avatar.png',
+									classes = 'avatar shadow')">
+					</div>
 
 				</a>
 				<div class="dropdown-menu small">

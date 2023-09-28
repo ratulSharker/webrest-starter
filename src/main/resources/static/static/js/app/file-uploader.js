@@ -5,7 +5,7 @@ function uploadFilePromise(file) {
 
     return ajaxPromise({
         type: "POST",
-        url: "/api/v1/upload",
+        url: window.GLOBAL_CONSTANTS.file_upload_route,
         data: formData,
         contentType: false,
         processData: false

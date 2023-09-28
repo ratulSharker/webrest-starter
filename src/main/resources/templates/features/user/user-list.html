@@ -40,6 +40,14 @@
 	</div>
 	<div layout:fragment="scripts">
 		<script th:src="@{/static/js/app/user/user-list.js}"></script>
+		<script th:inline="javascript">
+			const userLoadRoute = /*[[@{/user-load-data}]]*/ "USER_LOAD_ROUTE";
+			const userDetailsRoute = /*[[@{/user-details/}]]*/ "USER_DETAILS";
+			const userUpdateRoute = /*[[@{/update-user/}]]*/ "USER_UPDATE";
+			$(document).ready(function() {
+				initUserDataTable (userLoadRoute, userDetailsRoute, userUpdateRoute);
+			});
+		</script>
 	</div>
 </body>
 

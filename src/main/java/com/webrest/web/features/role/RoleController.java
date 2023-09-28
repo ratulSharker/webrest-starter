@@ -74,7 +74,7 @@ public class RoleController {
 			roleService.createNewRole(role);
 			String message = String.format("Role created with name `%s`", role.getName());
 			cookieFlashAttribute.setAlertValues(true, "Success", message, response);
-			return new ModelAndView(new RedirectView(WebRoutes.CREATE_ROLE));
+			return new ModelAndView(new RedirectView(WebRoutes.CREATE_ROLE, true));
 		} catch (Exception ex) {
 			Alert.addExceptionAlertAttributeToModel("Role creation failed", ex, model);
 			Breadcrumb.builder().addItem("Create Role").build(model);
@@ -113,10 +113,10 @@ public class RoleController {
 			roleService.updateRole(role);
 			cookieFlashAttribute.setAlertValues(true, "Success", "Role updated successfully",
 					response);
-			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_ROLE));
+			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_ROLE, true));
 		} catch (Exception ex) {
 			cookieFlashAttribute.setAlertValues(false, "Failure", ex.getMessage(), response);
-			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_ROLE));
+			return new ModelAndView(new RedirectView(WebRoutes.UPDATE_ROLE, true));
 		}
 	}
 }

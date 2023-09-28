@@ -131,7 +131,9 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 			List<Long> roleIds = verifyTokenInjectAppUserAndExtractRoleIds(request, token);
 			if(hasAuthorizationToWebRoute(request, endpoint, roleIds) == false) {
-				response.sendRedirect(WebRoutes.ACCESS_DENIED);
+				// TODO: Take an attempt to keep the top url
+				// and then tries to show the `ACCESS_DENIED` route content
+				response.sendRedirect(request.getContextPath() + WebRoutes.ACCESS_DENIED);
 				return false;
 			}
 			return true;
@@ -144,7 +146,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			} else {
 				// Logout the web user
 				log.error("Error during web app authorization", ex);
-				response.sendRedirect(WebRoutes.LOGIN);
+				response.sendRedirect( request.getContextPath() + WebRoutes.LOGIN);
 				return false;
 			}
 		}

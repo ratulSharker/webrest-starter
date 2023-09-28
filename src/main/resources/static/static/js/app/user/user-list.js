@@ -1,6 +1,6 @@
-$(document).ready(function () {
+function initUserDataTable (userLoadRoute, userDetailsRoute, userUpdateRoute) {
 
-	const dataTable = initDataTable("user-table", "/user-load-data", [
+	const dataTable = initDataTable("user-table", userLoadRoute, [
 			{
 				data: "appUserId",
 			},
@@ -23,8 +23,8 @@ $(document).ready(function () {
 								Manage
 							</a>
 							<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="user-manage-dropdown-${row.appUserId}">
-								<li><a class="dropdown-item text-primary" href="${"/user-details/" + row.appUserId}"><span><i class="fas fa-info-circle"></i> Details</span></a></li>
-								<li><a class="dropdown-item text-primary" href="${"/update-user/" + row.appUserId}"><span><i class="fa fa-edit"></i> Update</span></a></li>
+								<li><a class="dropdown-item text-primary" href="${userDetailsRoute + row.appUserId}"><span><i class="fas fa-info-circle"></i> Details</span></a></li>
+								<li><a class="dropdown-item text-primary" href="${userUpdateRoute + row.appUserId}"><span><i class="fa fa-edit"></i> Update</span></a></li>
 							</ul>
 						</div>
 					</div>
@@ -48,4 +48,4 @@ $(document).ready(function () {
 				}
 			}
 		});
-});
+}

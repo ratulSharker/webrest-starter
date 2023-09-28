@@ -62,7 +62,11 @@
             <!-- Profile picture start -->
             <div class="col-6">
                 <div class="row">
-                    <img th:src="${#strings.isEmpty(user.profilePicturePath)} ? @{'/static/image/common/avatar.png'} : ${fileDownloadPath + user.profilePicturePath}" onerror="this.src='/static/image/common/avatar.png';" class="m-auto avatar-lg shadow-lg">
+					<div th:replace="fragments/picture :: picture(
+						image = ${user.profilePicturePath},
+						fallbackImage = '/static/image/common/avatar.png',
+						classes = 'm-auto avatar-lg shadow-lg')">
+					</div>
                 </div>
             </div>
             <!-- Profile picture end -->
