@@ -15,7 +15,7 @@
 	<description>Simple starter for building web and rest application.</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<version.hibernate-jpamodelgen>5.3.7.Final</version.hibernate-jpamodelgen>
 	</properties>
 	<dependencies>

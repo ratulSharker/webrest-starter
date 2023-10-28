@@ -24,7 +24,7 @@ services:
         reservations:
           memory: 300M
     environment:
-    - DB_SERVER=${WEB_REST_DB_SERVER:-jdbc:mysql://db:3306/webrest}
+    - DB_SERVER=${WEB_REST_DB_SERVER:-jdbc:mysql://db:3306/webrest?useSSL=false}
     - DB_USERNAME=${WEB_REST_DB_USERNAME:-webrest-user}
     - DB_PASSWORD=${WEB_REST_DB_PASSWORD:-secret}
     - DB_DRIVER=${WEB_REST_DB_DRIVER:-com.mysql.cj.jdbc.Driver}
@@ -42,6 +42,7 @@ services:
     - REDIS_PORT=${REDIS_PORT:-6379}
     - REDIS_PASSWORD=${REDIS_PASSWORD:-secret}
     - SPRING_FLYWAY_ENABLED=true
+    - SPRING_FLYWAY_BASELINE_ON_MIGRATE=true
     depends_on:
       db:
         condition: service_healthy
