@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS `role` (
 
 -- creating `role_authorization` table
 CREATE TABLE IF NOT EXISTS `role_authorization` (
-  `action` varchar(255) NOT NULL,
-  `feature` varchar(255) NOT NULL,
+  `action` enum('NONE',	'CREATE', 'VIEW', 'UPDATE', 'LISTING', 'DELETE') NOT NULL,
+  `feature` enum('NONE',	'ROLE', 'USER')NOT NULL,
   `role_id` bigint NOT NULL,
   PRIMARY KEY (`action`,`feature`,`role_id`),
   CONSTRAINT `role_authorization_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)

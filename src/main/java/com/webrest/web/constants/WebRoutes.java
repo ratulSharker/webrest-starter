@@ -1,12 +1,11 @@
 package com.webrest.web.constants;
 
-import java.util.List;
-
 import com.webrest.common.annotation.Authorization;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
+import com.webrest.common.enums.authorization.http.HttpMethod;
 
-import org.springframework.http.HttpMethod;
+import java.util.List;
 
 public class WebRoutes {
 	private WebRoutes() {

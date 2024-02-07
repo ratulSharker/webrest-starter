@@ -1,7 +1,6 @@
 package com.webrest.common.dto.authentication.request.web;
 
-import javax.validation.constraints.NotEmpty;
-
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

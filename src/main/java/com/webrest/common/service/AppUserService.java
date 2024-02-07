@@ -1,10 +1,5 @@
 package com.webrest.common.service;
 
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
 import com.webrest.common.entity.AppUser;
 import com.webrest.common.entity.Role;
 import com.webrest.common.exception.AppUserAlreadyExistsException;
@@ -13,7 +8,9 @@ import com.webrest.common.service.storage.StorageService;
 import com.webrest.common.service.storage.SubDirectory;
 import com.webrest.common.specification.AppUserSpecification;
 import com.webrest.common.utils.HashUtils;
-
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -23,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

@@ -1,10 +1,5 @@
 package com.webrest.rest;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
-
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.webrest.common.annotation.ValidJson;
 import com.webrest.common.dto.response.ErrorResponse;
@@ -14,13 +9,16 @@ import com.webrest.common.exception.AppUserAlreadyExistsException;
 import com.webrest.common.exception.FileNotFoundException;
 import com.webrest.common.exception.FileUploadOrMoveException;
 import com.webrest.common.exception.InvalidCredentialsException;
-
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,6 +27,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice(basePackages = "com.webrest.rest")
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -93,10 +94,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@Override
-	protected ResponseEntity<java.lang.Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
-			HttpHeaders headers, org.springframework.http.HttpStatus status,
-			org.springframework.web.context.request.WebRequest request) {
-
+	@Nullable
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		String errorMsg = null;
 
 		if (ex.getMostSpecificCause() instanceof InvalidFormatException) {
@@ -121,9 +121,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@Override
+	@Nullable
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		String message = ex.getBindingResult().getAllErrors().stream().map(error -> error.getDefaultMessage())
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+				String message = ex.getBindingResult().getAllErrors().stream().map(error -> error.getDefaultMessage())
 				.collect(Collectors.joining(", "));
 		return new ResponseEntity<>(buildErrorResponse(message), status);
 	}

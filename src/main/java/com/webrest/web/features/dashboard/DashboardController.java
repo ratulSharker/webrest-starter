@@ -1,10 +1,5 @@
 package com.webrest.web.features.dashboard;
 
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.webrest.common.dto.dashboard.DashboardDto;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
@@ -12,12 +7,14 @@ import com.webrest.common.interceptor.AuthorizationInterceptor;
 import com.webrest.common.service.DashboardService;
 import com.webrest.web.common.Breadcrumb;
 import com.webrest.web.constants.WebRoutes;
-
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor

@@ -1,10 +1,7 @@
 package com.webrest.common.dto.datatable;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +10,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 
-import lombok.Getter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Getter
 public class DataTableRequestModel {

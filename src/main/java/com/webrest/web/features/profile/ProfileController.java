@@ -1,7 +1,5 @@
 package com.webrest.web.features.profile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import com.webrest.common.entity.AppUser;
 import com.webrest.common.interceptor.AuthorizationInterceptor;
 import com.webrest.common.service.AppUserService;
@@ -9,6 +7,9 @@ import com.webrest.web.common.Alert;
 import com.webrest.web.common.Breadcrumb;
 import com.webrest.web.common.CookieFlashAttribute;
 import com.webrest.web.constants.WebRoutes;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor

@@ -1,8 +1,7 @@
 package com.webrest.common.entity;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

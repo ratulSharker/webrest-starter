@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
 import com.webrest.common.interceptor.AuthorizationInterceptor;
 import com.webrest.web.constants.WebRoutes;
 
@@ -26,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
 		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 		ObjectMapper mapper = converter.getObjectMapper();
-		Hibernate5Module hibernate5Module = new Hibernate5Module();
+		Hibernate6Module hibernate5Module = new Hibernate6Module();
 		mapper.registerModule(hibernate5Module);
 		mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true);
 		return converter;

@@ -1,7 +1,6 @@
 package com.webrest.common.service;
 
-import java.util.List;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -9,6 +8,8 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import java.util.List;
 
 @Service
 public class EmailService {

@@ -1,9 +1,9 @@
 package com.webrest.common.specification;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.domain.Specification;
 import com.webrest.common.entity.Role;
 import com.webrest.common.entity.Role_;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 
 public class RoleSpecification {
 	
