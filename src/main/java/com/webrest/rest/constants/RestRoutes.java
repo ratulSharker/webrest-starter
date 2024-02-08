@@ -1,7 +1,7 @@
 package com.webrest.rest.constants;
 
-import org.springframework.http.HttpMethod;
 import com.webrest.common.annotation.Authorization;
+import com.webrest.common.enums.authorization.http.HttpMethod;
 
 public final class RestRoutes {
 	private RestRoutes() {

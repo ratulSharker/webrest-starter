@@ -1,6 +1,6 @@
 package com.webrest.common.specification;
 
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Predicate;
 
 import com.webrest.common.entity.AppUser;
 import com.webrest.common.entity.AppUser_;

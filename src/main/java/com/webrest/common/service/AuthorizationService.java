@@ -1,5 +1,22 @@
 package com.webrest.common.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.webrest.common.annotation.Authorization;
+import com.webrest.common.annotation.Authorizations;
+import com.webrest.common.enums.authorization.AuthorizedAction;
+import com.webrest.common.enums.authorization.AuthorizedFeature;
+import com.webrest.common.enums.authorization.http.HttpMethod;
+import com.webrest.rest.constants.RestRoutes;
+import com.webrest.web.constants.WebRoutes;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.HandlerMapping;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -7,26 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.webrest.common.annotation.Authorization;
-import com.webrest.common.annotation.Authorizations;
-import com.webrest.common.enums.authorization.AuthorizedAction;
-import com.webrest.common.enums.authorization.AuthorizedFeature;
-import com.webrest.rest.constants.RestRoutes;
-import com.webrest.web.constants.WebRoutes;
-
-import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.HandlerMapping;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j

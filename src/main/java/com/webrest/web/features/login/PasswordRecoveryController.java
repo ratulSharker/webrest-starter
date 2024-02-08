@@ -1,13 +1,11 @@
 package com.webrest.web.features.login;
 
-import javax.validation.Valid;
-
 import com.webrest.common.dto.authentication.request.web.ForgotPasswordRequestDto;
 import com.webrest.common.dto.authentication.request.web.RecoverPasswordRequestDto;
 import com.webrest.common.service.PasswordRecoveryService;
 import com.webrest.web.common.Alert;
 import com.webrest.web.constants.WebRoutes;
-
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

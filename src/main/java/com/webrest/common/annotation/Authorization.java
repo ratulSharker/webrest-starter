@@ -7,8 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import com.webrest.common.enums.authorization.AuthorizedAction;
 import com.webrest.common.enums.authorization.AuthorizedFeature;
+import com.webrest.common.enums.authorization.http.HttpMethod;
 
-import org.springframework.http.HttpMethod;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

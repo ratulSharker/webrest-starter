@@ -1,10 +1,5 @@
 package com.webrest.web.features.user;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.webrest.common.dto.datatable.DataTableResponseModel;
 import com.webrest.common.entity.AppUser;
 import com.webrest.common.entity.Role;
@@ -15,7 +10,9 @@ import com.webrest.web.common.Alert;
 import com.webrest.web.common.Breadcrumb;
 import com.webrest.web.common.CookieFlashAttribute;
 import com.webrest.web.constants.WebRoutes;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor

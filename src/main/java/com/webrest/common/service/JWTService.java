@@ -2,7 +2,7 @@ package com.webrest.common.service;
 
 import java.util.Date;
 import java.util.Map;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.5</version>
+		<version>3.2.2</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.webrest</groupId>
@@ -16,7 +16,7 @@
 
 	<properties>
 		<java.version>17</java.version>
-		<version.hibernate-jpamodelgen>5.3.7.Final</version.hibernate-jpamodelgen>
+		<version.hibernate-jpamodelgen>6.4.1.Final</version.hibernate-jpamodelgen>
 	</properties>
 	<dependencies>
 		<!-- Web -->
@@ -102,21 +102,23 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-mysql</artifactId>
-			<version>9.15.2</version>
+			<version>10.7.1</version>
 		</dependency>
+
 
 		<!-- Hibernate + REST -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-hibernate5</artifactId>
+			<artifactId>jackson-datatype-hibernate6</artifactId>
 		</dependency>
+
 
 		<!-- Thymeleaf -->
 		<dependency>
@@ -127,7 +129,7 @@
 		<dependency>
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
 			<artifactId>thymeleaf-layout-dialect</artifactId>
-			<version>2.3.0</version>
+			<version>3.3.0</version>
 		</dependency>
 
 		<!-- Validation -->
@@ -157,7 +159,7 @@
 
 		<!-- JPA Modelgen -->
 		<dependency>
-			<groupId>org.hibernate</groupId>
+			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-jpamodelgen</artifactId>
 			<version>${version.hibernate-jpamodelgen}</version>
 		</dependency>
@@ -171,8 +173,15 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>3.3.0</version>
+			<version>5.1.0</version>
 			<type>jar</type>
+		</dependency>
+
+		<!-- Third party API -->
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<version>4.0.1</version>
 		</dependency>
 
 	</dependencies>
@@ -193,8 +202,8 @@
 			</plugin>
 			<plugin>
 				<groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>9.15.2</version>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>10.7.1</version>
 			</plugin>
 		</plugins>
 	</build>

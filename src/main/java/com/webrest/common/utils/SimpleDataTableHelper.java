@@ -1,17 +1,14 @@
 package com.webrest.common.utils;
 
-import java.util.function.BiFunction;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.webrest.common.dto.datatable.DataTableRequestModel;
 import com.webrest.common.dto.datatable.DataTableResponseModel;
-
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
+import java.util.function.BiFunction;
 
 @Builder
 @Slf4j

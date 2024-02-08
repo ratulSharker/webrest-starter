@@ -1,9 +1,5 @@
 package com.webrest.web.features.login;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
 import com.webrest.common.dto.authentication.request.web.AuthenticationRequestDto;
 import com.webrest.common.dto.authentication.response.AuthenticationResponseDto;
 import com.webrest.common.service.AuthenticationService;
@@ -11,7 +7,9 @@ import com.webrest.common.service.JWTService;
 import com.webrest.common.utils.CookieUtils;
 import com.webrest.web.common.Alert;
 import com.webrest.web.constants.WebRoutes;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
