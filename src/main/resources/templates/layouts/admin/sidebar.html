@@ -110,10 +110,10 @@
 				<a class="dropdown-toggle" href="#" id="profile-dropdown" data-toggle="dropdown" aria-haspopup="true"
 					aria-expanded="false">
 
-					<div th:replace="fragments/picture :: picture(
+					<div th:replace="~{fragments/picture :: picture(
 									image = ${loggedInUser.profilePicturePath},
 									fallbackImage = '/static/image/common/avatar.png',
-									classes = 'avatar shadow')">
+									classes = 'avatar shadow')}">
 					</div>
 
 				</a>

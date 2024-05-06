@@ -26,7 +26,7 @@
         <div id="full-screen-loader" class="spinner-container">
             <div class="spinner"></div>
         </div>
-        <div th:replace="layouts/admin/sidebar :: sidebar"></div>
+        <div th:replace="~{layouts/admin/sidebar :: sidebar}"></div>
         <th:block class="content ml-4 mr-4 pb-3 mt-2" layout:fragment="content"></th:block>
     </div>
 
@@ -78,7 +78,7 @@
     </script>
 
     <!-- Alert -->
-    <div th:replace="fragments/alert :: alert"></div>
+    <div th:replace="~{fragments/alert :: alert}"></div>
 
 </body>
 

@@ -11,7 +11,7 @@
 
 <body>
 	<div layout:fragment="content">
-		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('User Detail')">
+		<div th:replace="~{fragments/breadcrumb-title :: breadcrumb-title('User Detail')}">
 		</div>
 
 		<div class="row">
@@ -69,11 +69,11 @@
 			<div class="col-4">
 				<div class="row">
 					<!-- End user profile picture path end -->
-					<div th:replace="fragments/picture :: picture(
+					<div th:replace="~{fragments/picture :: picture(
 						image = ${appUser?.profilePicturePath},
 						fallbackImage = '/static/image/common/avatar.png',
 						classes = 'm-auto avatar-lg shadow-lg',
-						alt = 'Profile Picture')">
+						alt = 'Profile Picture')}">
 					</div>
 					<!-- End user profile picture path end -->
 				</div>
@@ -96,7 +96,7 @@
 			<div>
 				<!-- Empty div -->
 			</div>
-			<div th:replace="fragments/back-button :: back-button('/user')"></div>
+			<div th:replace="~{fragments/back-button :: back-button('/user')}"></div>
 		</div>
 	</div>
 

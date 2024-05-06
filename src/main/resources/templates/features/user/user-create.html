@@ -11,7 +11,7 @@
 
 <body>
 	<div layout:fragment="content">
-		<div th:replace="fragments/breadcrumb-title :: breadcrumb-title('Create User')">
+		<div th:replace="~{fragments/breadcrumb-title :: breadcrumb-title('Create User')}">
 		</div>
 		<form method="post" th:object="${appUserForm}" class="pb-70">
 

@@ -20,10 +20,10 @@
 					<a class="nav-link" th:href="@{/login}">Admin Panel</a>
 				</li>
 				<li class="nav-item">
-					<div th:replace="fragments/picture :: picture(
+					<div th:replace="~{fragments/picture :: picture(
 						image = ${loggedInUser?.profilePicturePath},
 						fallbackImage = '/static/image/common/avatar.png',
-						classes = 'avatar shadow')">
+						classes = 'avatar shadow')}">
 					</div>
 				</li>
 			</th:block>
