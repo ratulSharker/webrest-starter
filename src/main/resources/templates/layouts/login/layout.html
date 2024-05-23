@@ -20,7 +20,7 @@
         <div class="spinner"></div>
     </div>
 
-    <div th:replace="layouts/login/header :: header"></div>
+    <div th:replace="~{layouts/login/header :: header}"></div>
     <th:block layout:fragment="content"></th:block>
 
     <!-- js lib -->
@@ -47,7 +47,7 @@
         });
     </script>
 
-    <div th:replace="fragments/alert :: alert"></div>
+    <div th:replace="~{fragments/alert :: alert}"></div>
 </body>
 
 </html>
