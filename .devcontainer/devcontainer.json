@@ -10,11 +10,16 @@
 			"version": "none",
 			"installMaven": "true",
 			"installGradle": "false"
-		}
-	}
+		},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1.6.0": {}
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [
+		8080
+	],
+
+	"runArgs": ["--add-host=host.docker.internal:host-gateway"]
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "java -version",
