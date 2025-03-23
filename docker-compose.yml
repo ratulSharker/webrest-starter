@@ -69,7 +69,7 @@ services:
     build:
       context: ./redis
       dockerfile: Dockerfile
-    image: web-rest-redis
+    image: ratulsharker/web-rest-redis:v1
     ports:
     - 6379:6379
     networks:
